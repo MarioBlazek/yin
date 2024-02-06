@@ -1,8 +1,8 @@
 {
-    "name": "woohoolabs/yin",
+    "name": "marioblazek/yin",
     "description": "Woohoo Labs. Yin",
     "type": "library",
-    "keywords": ["Woohoo Labs.", "Yin", "JSON API", "PSR-7"],
+    "keywords": ["Yin", "JSON API", "PSR-7"],
     "license": "MIT",
     "authors": [
         {
@@ -11,8 +11,8 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/woohoolabs/yin/issues",
-        "source": "https://github.com/woohoolabs/yin"
+        "issues": "https://github.com/marioblazek/yin/issues",
+        "source": "https://github.com/marioblazek/yin"
     },
     "require": {
         "php": "^8.3",
