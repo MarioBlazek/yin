@@ -30,7 +30,7 @@ class PaginationFactoryTest extends TestCase
 
         $pagination = $paginationFactory->createFixedPageBasedPagination();
 
-        self::assertSame(new FixedPageBasedPagination(1), $pagination);
+        self::assertEquals(new FixedPageBasedPagination(1), $pagination);
     }
 
     #[Test]
@@ -44,7 +44,7 @@ class PaginationFactoryTest extends TestCase
 
         $pagination = $paginationFactory->createPageBasedPagination();
 
-        self::assertSame(new PageBasedPagination(1, 10), $pagination);
+        self::assertEquals(new PageBasedPagination(1, 10), $pagination);
     }
 
     #[Test]
@@ -58,7 +58,7 @@ class PaginationFactoryTest extends TestCase
 
         $pagination = $paginationFactory->createOffsetBasedPagination();
 
-        self::assertSame(new OffsetBasedPagination(1, 10), $pagination);
+        self::assertEquals(new OffsetBasedPagination(1, 10), $pagination);
     }
 
     #[Test]
@@ -72,7 +72,7 @@ class PaginationFactoryTest extends TestCase
 
         $pagination = $paginationFactory->createCursorBasedPagination();
 
-        self::assertSame(new CursorBasedPagination('abc', 10), $pagination);
+        self::assertEquals(new CursorBasedPagination('abc', 10), $pagination);
     }
 
     #[Test]
@@ -86,7 +86,7 @@ class PaginationFactoryTest extends TestCase
 
         $pagination = $paginationFactory->createFixedCursorBasedPagination();
 
-        self::assertSame(new FixedCursorBasedPagination('abc'), $pagination);
+        self::assertEquals(new FixedCursorBasedPagination('abc'), $pagination);
     }
 
     private function createPaginationFactoryFromRequestQueryParams(array $queryParams): PaginationFactory

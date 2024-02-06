@@ -19,7 +19,7 @@ class ErrorDocumentTest extends TestCase
 
         $errorDocument->setJsonApi(new JsonApiObject('1.0'));
 
-        self::assertSame(new JsonApiObject('1.0'), $errorDocument->getJsonApi());
+        self::assertEquals(new JsonApiObject('1.0'), $errorDocument->getJsonApi());
     }
 
     #[Test]
@@ -29,7 +29,7 @@ class ErrorDocumentTest extends TestCase
 
         $errorDocument->setMeta(['abc' => 'def']);
 
-        self::assertSame(['abc' => 'def'], $errorDocument->getMeta());
+        self::assertEquals(['abc' => 'def'], $errorDocument->getMeta());
     }
 
     #[Test]
@@ -39,7 +39,7 @@ class ErrorDocumentTest extends TestCase
 
         $errorDocument->setLinks(new DocumentLinks('https://example.com'));
 
-        self::assertSame(new DocumentLinks('https://example.com'), $errorDocument->getLinks());
+        self::assertEquals(new DocumentLinks('https://example.com'), $errorDocument->getLinks());
     }
 
     private function createErrorDocument(): ErrorDocument

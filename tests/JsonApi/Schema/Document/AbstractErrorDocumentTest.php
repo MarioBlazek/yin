@@ -30,7 +30,7 @@ class AbstractErrorDocumentTest extends TestCase
 
         $errors = $errorDocument->getErrors();
 
-        self::assertSame([new Error(), new Error()], $errors);
+        self::assertEquals([new Error(), new Error()], $errors);
     }
 
     #[Test]

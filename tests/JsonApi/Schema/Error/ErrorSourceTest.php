@@ -16,7 +16,7 @@ class ErrorSourceTest extends TestCase
         $pointer = '/data/attributes/name';
 
         $errorSource = $this->createErrorSource($pointer, '');
-        self::assertSame($errorSource, ErrorSource::fromPointer($pointer));
+        self::assertEquals($errorSource, ErrorSource::fromPointer($pointer));
     }
 
     #[Test]
@@ -25,7 +25,7 @@ class ErrorSourceTest extends TestCase
         $parameter = 'name';
 
         $errorSource = $this->createErrorSource('', $parameter);
-        self::assertSame($errorSource, ErrorSource::fromParameter($parameter));
+        self::assertEquals($errorSource, ErrorSource::fromParameter($parameter));
     }
 
     #[Test]

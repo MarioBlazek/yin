@@ -139,11 +139,11 @@ class DocumentLinksTest extends TestCase
 
         $links = $this->createLinks()->setPagination('https://example.com/api/users/', $pagination);
 
-        self::assertSame(new Link('https://example.com/api/users/self'), $links->getSelf());
-        self::assertSame(new Link('https://example.com/api/users/first'), $links->getFirst());
-        self::assertSame(new Link('https://example.com/api/users/last'), $links->getLast());
-        self::assertSame(new Link('https://example.com/api/users/prev'), $links->getPrev());
-        self::assertSame(new Link('https://example.com/api/users/next'), $links->getNext());
+        self::assertEquals(new Link('https://example.com/api/users/self'), $links->getSelf());
+        self::assertEquals(new Link('https://example.com/api/users/first'), $links->getFirst());
+        self::assertEquals(new Link('https://example.com/api/users/last'), $links->getLast());
+        self::assertEquals(new Link('https://example.com/api/users/prev'), $links->getPrev());
+        self::assertEquals(new Link('https://example.com/api/users/next'), $links->getNext());
     }
 
     #[Test]

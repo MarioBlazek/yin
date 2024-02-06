@@ -62,7 +62,7 @@ class ResourceIdentifierTest extends TestCase
             new DefaultExceptionFactory(),
         );
 
-        self::assertSame($resourceIdentifier, $resourceIdentifierFromArray);
+        self::assertEquals($resourceIdentifier, $resourceIdentifierFromArray);
     }
 
     #[Test]
@@ -80,7 +80,7 @@ class ResourceIdentifierTest extends TestCase
             new DefaultExceptionFactory(),
         );
 
-        self::assertSame($resourceIdentifier, $resourceIdentifierFromArray);
+        self::assertEquals($resourceIdentifier, $resourceIdentifierFromArray);
     }
 
     #[Test]
@@ -100,7 +100,7 @@ class ResourceIdentifierTest extends TestCase
             new DefaultExceptionFactory(),
         );
 
-        self::assertSame($resourceIdentifier, $resourceIdentifierFromArray);
+        self::assertEquals($resourceIdentifier, $resourceIdentifierFromArray);
     }
 
     #[Test]
@@ -111,7 +111,7 @@ class ResourceIdentifierTest extends TestCase
 
         $id = $link->getType();
 
-        self::assertSame('abc', $id);
+        self::assertEquals('abc', $id);
     }
 
     #[Test]
@@ -122,7 +122,7 @@ class ResourceIdentifierTest extends TestCase
 
         $id = $link->getId();
 
-        self::assertSame('123', $id);
+        self::assertEquals('123', $id);
     }
 
     private function createResourceIdentifier(): ResourceIdentifier
