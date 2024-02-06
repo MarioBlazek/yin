@@ -23,11 +23,11 @@ test: ## Run PHPUnit for the unit tests
 phpstan: ## Run PHPStan to perform static analysis
 	docker-compose run --rm --no-deps yin-php /bin/bash -c "cd /var/www && ./vendor/bin/phpstan"
 
-cs: ## Run PHP CodeSniffer to detect issues with coding style
-	docker-compose run --rm --no-deps yin-php /var/www/vendor/bin/phpcs --standard=/var/www/phpcs.xml
+cs: ## Run PHP CS Fixer to detect issues with coding style
+	docker-compose run --rm --no-deps yin-php /var/www/vendor/bin/php-cs-fixer fix --dry-run --show-progress=bar
 
-cs-fix: ## Run PHPCBF to automatically fix issues with coding style
-	docker-compose run --rm --no-deps yin-php /var/www/vendor/bin/phpcbf --standard=/var/www/phpcs.xml
+cs-fix: ## Run PHP CS Fixer to fix issues with coding style
+	docker-compose run --rm --no-deps yin-php /var/www/vendor/bin/php-cs-fixer fix --config .php-cs-fixer.php
 
 qa: test phpstan cs ## Test code quality
 

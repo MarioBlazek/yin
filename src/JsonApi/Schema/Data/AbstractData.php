@@ -28,7 +28,7 @@ abstract class AbstractData implements DataInterface
 
     public function getResource(string $type, string $id): ?array
     {
-        return $this->resources["$type.$id"] ?? null;
+        return $this->resources["{$type}.{$id}"] ?? null;
     }
 
     public function hasPrimaryResources(): bool
@@ -38,7 +38,7 @@ abstract class AbstractData implements DataInterface
 
     public function hasPrimaryResource(string $type, string $id): bool
     {
-        return isset($this->primaryKeys["$type.$id"]);
+        return isset($this->primaryKeys["{$type}.{$id}"]);
     }
 
     public function hasIncludedResources(): bool
@@ -48,7 +48,7 @@ abstract class AbstractData implements DataInterface
 
     public function hasIncludedResource(string $type, string $id): bool
     {
-        return isset($this->includedKeys["$type.$id"]);
+        return isset($this->includedKeys["{$type}.{$id}"]);
     }
 
     /**
@@ -69,10 +69,10 @@ abstract class AbstractData implements DataInterface
      */
     public function addPrimaryResource(array $transformedResource = [])
     {
-        $type = $transformedResource["type"];
-        $id = $transformedResource["id"];
+        $type = $transformedResource['type'];
+        $id = $transformedResource['id'];
         if ($this->hasIncludedResource($type, $id)) {
-            unset($this->includedKeys["$type.$id"]);
+            unset($this->includedKeys["{$type}.{$id}"]);
         }
 
         $this->addResourceToPrimaryData($transformedResource);
@@ -98,7 +98,7 @@ abstract class AbstractData implements DataInterface
      */
     public function addIncludedResource(array $transformedResource)
     {
-        if ($this->hasPrimaryResource($transformedResource["type"], $transformedResource["id"]) === false) {
+        if ($this->hasPrimaryResource($transformedResource['type'], $transformedResource['id']) === false) {
             $this->addResourceToIncludedData($transformedResource);
         }
 
@@ -112,9 +112,9 @@ abstract class AbstractData implements DataInterface
 
     protected function addResourceToPrimaryData(array $transformedResource): void
     {
-        $type = $transformedResource["type"];
-        $id = $transformedResource["id"];
-        $key = "$type.$id";
+        $type = $transformedResource['type'];
+        $id = $transformedResource['id'];
+        $key = "{$type}.{$id}";
 
         $this->resources[$key] = $transformedResource;
         $this->primaryKeys[$key] = &$this->resources[$key];
@@ -122,9 +122,9 @@ abstract class AbstractData implements DataInterface
 
     protected function addResourceToIncludedData(array $transformedResource): void
     {
-        $type = $transformedResource["type"];
-        $id = $transformedResource["id"];
-        $key = "$type.$id";
+        $type = $transformedResource['type'];
+        $id = $transformedResource['id'];
+        $key = "{$type}.{$id}";
 
         $this->resources[$key] = $transformedResource;
         $this->includedKeys[$key] = &$this->resources[$key];

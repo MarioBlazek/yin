@@ -11,33 +11,21 @@ use function http_build_query;
 class CursorBasedPagination
 {
     /**
-     * @var mixed|null
-     */
-    protected $cursor;
-
-    /**
      * @var int
      */
     protected $size;
 
-    /**
-     * @param mixed $defaultCursor
-     */
-    public static function fromPaginationQueryParams(array $paginationQueryParams, $defaultCursor = null, int $defaultSize = 0): CursorBasedPagination
+    public function __construct(protected mixed $cursor, int $size = 0)
     {
-        return new CursorBasedPagination(
-            $paginationQueryParams["cursor"] ?? $defaultCursor,
-            Utils::getIntegerFromQueryParam($paginationQueryParams, "size", $defaultSize)
-        );
+        $this->size = $size;
     }
 
-    /**
-     * @param mixed $cursor
-     */
-    public function __construct($cursor, int $size = 0)
+    public static function fromPaginationQueryParams(array $paginationQueryParams, mixed $defaultCursor = null, int $defaultSize = 0): self
     {
-        $this->cursor = $cursor;
-        $this->size = $size;
+        return new self(
+            $paginationQueryParams['cursor'] ?? $defaultCursor,
+            Utils::getIntegerFromQueryParam($paginationQueryParams, 'size', $defaultSize),
+        );
     }
 
     /**
@@ -53,23 +41,17 @@ class CursorBasedPagination
         return $this->size;
     }
 
-    /**
-     * @param mixed $cursor
-     */
-    public static function getPaginationQueryString($cursor, int $size): string
+    public static function getPaginationQueryString(mixed $cursor, int $size): string
     {
         return http_build_query(static::getPaginationQueryParams($cursor, $size));
     }
 
-    /**
-     * @param mixed $cursor
-     */
-    public static function getPaginationQueryParams($cursor, int $size): array
+    public static function getPaginationQueryParams(mixed $cursor, int $size): array
     {
         return [
-            "page" => [
-                "cursor" => $cursor,
-                "size" => $size,
+            'page' => [
+                'cursor' => $cursor,
+                'size' => $size,
             ],
         ];
     }

@@ -4,22 +4,21 @@ declare(strict_types=1);
 
 namespace WoohooLabs\Yin\Tests\JsonApi\Schema;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use WoohooLabs\Yin\JsonApi\Schema\MetaTrait;
 
 class MetaTraitTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function getMeta(): void
     {
         $metaTrait = $this->createMetaTrait()
-            ->setMeta(["abc" => "def"]);
+            ->setMeta(['abc' => 'def']);
 
         $meta = $metaTrait->getMeta();
 
-        $this->assertEquals(["abc" => "def"], $meta);
+        self::assertSame(['abc' => 'def'], $meta);
     }
 
     /**

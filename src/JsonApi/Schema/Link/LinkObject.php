@@ -18,14 +18,15 @@ class LinkObject extends Link
 
     /**
      * @internal
+     *
      * @return array|mixed
      */
     public function transform(string $baseUri)
     {
-        $link = ["href" => parent::transform($baseUri)];
+        $link = ['href' => parent::transform($baseUri)];
 
         if (empty($this->meta) === false) {
-            $link["meta"] = $this->meta;
+            $link['meta'] = $this->meta;
         }
 
         return $link;

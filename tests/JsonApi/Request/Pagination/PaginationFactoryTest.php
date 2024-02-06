@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace WoohooLabs\Yin\Tests\JsonApi\Request\Pagination;
 
 use Laminas\Diactoros\ServerRequest;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use WoohooLabs\Yin\JsonApi\Exception\DefaultExceptionFactory;
 use WoohooLabs\Yin\JsonApi\Request\JsonApiRequest;
@@ -18,84 +19,74 @@ use WoohooLabs\Yin\JsonApi\Serializer\JsonDeserializer;
 
 class PaginationFactoryTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function createFixedPageBasedPagination(): void
     {
         $paginationFactory = $this->createPaginationFactoryFromRequestQueryParams(
             [
-                "page" => ["number" => 1],
-            ]
+                'page' => ['number' => 1],
+            ],
         );
 
         $pagination = $paginationFactory->createFixedPageBasedPagination();
 
-        $this->assertEquals(new FixedPageBasedPagination(1), $pagination);
+        self::assertSame(new FixedPageBasedPagination(1), $pagination);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function createPageBasedPagination(): void
     {
         $paginationFactory = $this->createPaginationFactoryFromRequestQueryParams(
             [
-                "page" => ["number" => 1, "size" => 10],
-            ]
+                'page' => ['number' => 1, 'size' => 10],
+            ],
         );
 
         $pagination = $paginationFactory->createPageBasedPagination();
 
-        $this->assertEquals(new PageBasedPagination(1, 10), $pagination);
+        self::assertSame(new PageBasedPagination(1, 10), $pagination);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function createOffsetBasedPagination(): void
     {
         $paginationFactory = $this->createPaginationFactoryFromRequestQueryParams(
             [
-                "page" => ["offset" => 1, "limit" => 10],
-            ]
+                'page' => ['offset' => 1, 'limit' => 10],
+            ],
         );
 
         $pagination = $paginationFactory->createOffsetBasedPagination();
 
-        $this->assertEquals(new OffsetBasedPagination(1, 10), $pagination);
+        self::assertSame(new OffsetBasedPagination(1, 10), $pagination);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function createCursorBasedPagination(): void
     {
         $paginationFactory = $this->createPaginationFactoryFromRequestQueryParams(
             [
-                "page" => ["cursor" => "abc", "size" => 10],
-            ]
+                'page' => ['cursor' => 'abc', 'size' => 10],
+            ],
         );
 
         $pagination = $paginationFactory->createCursorBasedPagination();
 
-        $this->assertEquals(new CursorBasedPagination("abc", 10), $pagination);
+        self::assertSame(new CursorBasedPagination('abc', 10), $pagination);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function createFixedCursorBasedPagination(): void
     {
         $paginationFactory = $this->createPaginationFactoryFromRequestQueryParams(
             [
-                "page" => ["cursor" => "abc"],
-            ]
+                'page' => ['cursor' => 'abc'],
+            ],
         );
 
         $pagination = $paginationFactory->createFixedCursorBasedPagination();
 
-        $this->assertEquals(new FixedCursorBasedPagination("abc"), $pagination);
+        self::assertSame(new FixedCursorBasedPagination('abc'), $pagination);
     }
 
     private function createPaginationFactoryFromRequestQueryParams(array $queryParams): PaginationFactory

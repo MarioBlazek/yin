@@ -18,7 +18,7 @@ class RepresentativeResource extends AbstractResource
      */
     public function getType($representative): string
     {
-        return "representatives";
+        return 'representatives';
     }
 
     /**
@@ -30,7 +30,7 @@ class RepresentativeResource extends AbstractResource
      */
     public function getId($representative): string
     {
-        return (string) $representative["id"];
+        return (string) $representative['id'];
     }
 
     /**
@@ -67,17 +67,14 @@ class RepresentativeResource extends AbstractResource
      * and they should return the value of the corresponding attribute.
      *
      * @param array $representative
+     *
      * @return callable[]
      */
     public function getAttributes($representative): array
     {
         return [
-            "name" => function (array $representative) {
-                return $representative["name"];
-            },
-            "email" => function (array $representative) {
-                return $representative["email"];
-            },
+            'name' => static fn (array $representative) => $representative['name'],
+            'email' => static fn (array $representative) => $representative['email'],
         ];
     }
 
@@ -99,6 +96,7 @@ class RepresentativeResource extends AbstractResource
      * and they should return a new relationship instance (to-one or to-many).
      *
      * @param array $representative
+     *
      * @return callable[]
      */
     public function getRelationships($representative): array

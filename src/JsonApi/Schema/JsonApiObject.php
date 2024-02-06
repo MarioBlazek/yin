@@ -8,14 +8,8 @@ class JsonApiObject
 {
     use MetaTrait;
 
-    /**
-     * @var string
-     */
-    private $version;
-
-    public function __construct(string $version, array $meta = [])
+    public function __construct(private string $version, array $meta = [])
     {
-        $this->version = $version;
         $this->meta = $meta;
     }
 
@@ -31,12 +25,12 @@ class JsonApiObject
     {
         $result = [];
 
-        if ($this->version !== "") {
-            $result["version"] = $this->version;
+        if ($this->version !== '') {
+            $result['version'] = $this->version;
         }
 
         if (empty($this->meta) === false) {
-            $result["meta"] = $this->meta;
+            $result['meta'] = $this->meta;
         }
 
         return $result;

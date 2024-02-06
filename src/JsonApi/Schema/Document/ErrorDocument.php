@@ -28,14 +28,6 @@ class ErrorDocument extends AbstractErrorDocument
     /**
      * @param Error[] $errors
      */
-    public static function create(array $errors = []): ErrorDocument
-    {
-        return new ErrorDocument($errors);
-    }
-
-    /**
-     * @param Error[] $errors
-     */
     public function __construct(array $errors = [])
     {
         foreach ($errors as $error) {
@@ -43,12 +35,20 @@ class ErrorDocument extends AbstractErrorDocument
         }
     }
 
+    /**
+     * @param Error[] $errors
+     */
+    public static function create(array $errors = []): self
+    {
+        return new self($errors);
+    }
+
     public function getJsonApi(): ?JsonApiObject
     {
         return $this->jsonApi;
     }
 
-    public function setJsonApi(?JsonApiObject $jsonApi): ErrorDocument
+    public function setJsonApi(?JsonApiObject $jsonApi): self
     {
         $this->jsonApi = $jsonApi;
 
@@ -60,7 +60,7 @@ class ErrorDocument extends AbstractErrorDocument
         return $this->meta;
     }
 
-    public function setMeta(array $meta): ErrorDocument
+    public function setMeta(array $meta): self
     {
         $this->meta = $meta;
 
@@ -72,7 +72,7 @@ class ErrorDocument extends AbstractErrorDocument
         return $this->links;
     }
 
-    public function setLinks(?DocumentLinks $links): ErrorDocument
+    public function setLinks(?DocumentLinks $links): self
     {
         $this->links = $links;
 

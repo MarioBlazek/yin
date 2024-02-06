@@ -16,29 +16,29 @@ class ErrorLinks extends AbstractLinks
     /**
      * @param Link[] $types
      */
-    public static function createWithoutBaseUri(?Link $about = null, array $types = []): ErrorLinks
+    public function __construct(string $baseUri = '', ?Link $about = null, array $types = [])
     {
-        return new ErrorLinks("", $about, $types);
-    }
-
-    /**
-     * @param Link[] $types
-     */
-    public static function createWithBaseUri(string $baseUri, ?Link $about = null, array $types = []): ErrorLinks
-    {
-        return new ErrorLinks($baseUri, $about, $types);
-    }
-
-    /**
-     * @param Link[] $types
-     */
-    public function __construct(string $baseUri = "", ?Link $about = null, array $types = [])
-    {
-        parent::__construct($baseUri, ["about" => $about]);
+        parent::__construct($baseUri, ['about' => $about]);
         $this->types = $types;
     }
 
-    public function setBaseUri(string $baseUri): ErrorLinks
+    /**
+     * @param Link[] $types
+     */
+    public static function createWithoutBaseUri(?Link $about = null, array $types = []): self
+    {
+        return new self('', $about, $types);
+    }
+
+    /**
+     * @param Link[] $types
+     */
+    public static function createWithBaseUri(string $baseUri, ?Link $about = null, array $types = []): self
+    {
+        return new self($baseUri, $about, $types);
+    }
+
+    public function setBaseUri(string $baseUri): self
     {
         $this->baseUri = $baseUri;
 
@@ -47,12 +47,12 @@ class ErrorLinks extends AbstractLinks
 
     public function getAbout(): ?Link
     {
-        return $this->getLink("about");
+        return $this->getLink('about');
     }
 
-    public function setAbout(?Link $about): ErrorLinks
+    public function setAbout(?Link $about): self
     {
-        $this->addLink("about", $about);
+        $this->addLink('about', $about);
 
         return $this;
     }
@@ -68,7 +68,7 @@ class ErrorLinks extends AbstractLinks
     /**
      * @param Link[] $types
      */
-    public function setTypes(array $types): ErrorLinks
+    public function setTypes(array $types): self
     {
         foreach ($types as $type) {
             $this->addType($type);
@@ -77,7 +77,7 @@ class ErrorLinks extends AbstractLinks
         return $this;
     }
 
-    public function addType(Link $type): ErrorLinks
+    public function addType(Link $type): self
     {
         $this->types[$type->getHref()] = $type;
 
@@ -92,7 +92,7 @@ class ErrorLinks extends AbstractLinks
         $links = parent::transform();
 
         foreach ($this->types as $link) {
-            $links["type"][] = $link->transform($this->baseUri);
+            $links['type'][] = $link->transform($this->baseUri);
         }
 
         return $links;

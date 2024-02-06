@@ -11,10 +11,7 @@ use WoohooLabs\Yin\JsonApi\Schema\Data\SingleResourceData;
  */
 final class DocumentTransformer
 {
-    /**
-     * @var ResourceTransformer
-     */
-    private $resourceTransformer;
+    private ResourceTransformer $resourceTransformer;
 
     public function __construct()
     {
@@ -69,7 +66,7 @@ final class DocumentTransformer
     {
         $jsonApi = $transformation->document->getJsonApi();
         if ($jsonApi !== null) {
-            $transformation->result["jsonapi"] = $jsonApi->transform();
+            $transformation->result['jsonapi'] = $jsonApi->transform();
         }
 
         $meta = $transformation->document->getMeta();
@@ -78,12 +75,12 @@ final class DocumentTransformer
         }
 
         if (!empty($meta)) {
-            $transformation->result["meta"] = $meta;
+            $transformation->result['meta'] = $meta;
         }
 
         $links = $transformation->document->getLinks();
         if ($links !== null) {
-            $transformation->result["links"] = $links->transform();
+            $transformation->result['links'] = $links->transform();
         }
     }
 
@@ -91,10 +88,10 @@ final class DocumentTransformer
     {
         $data = $transformation->document->getData($transformation, $this->resourceTransformer);
 
-        $transformation->result["data"] = $data->transformPrimaryData();
+        $transformation->result['data'] = $data->transformPrimaryData();
 
         if ($data->hasIncludedResources() || $transformation->request->hasIncludedRelationships()) {
-            $transformation->result["included"] = $data->transformIncluded();
+            $transformation->result['included'] = $data->transformIncluded();
         }
     }
 
@@ -108,7 +105,7 @@ final class DocumentTransformer
         }
 
         if ($data->hasIncludedResources() || $transformation->request->hasIncludedRelationships()) {
-            $transformation->result["included"] = $data->transformIncluded();
+            $transformation->result['included'] = $data->transformIncluded();
         }
     }
 
@@ -119,7 +116,7 @@ final class DocumentTransformer
     private function transformErrors(ErrorDocumentTransformation $transformation): void
     {
         foreach ($transformation->document->getErrors() as $error) {
-            $transformation->result["errors"][] = $error->transform();
+            $transformation->result['errors'][] = $error->transform();
         }
     }
 }

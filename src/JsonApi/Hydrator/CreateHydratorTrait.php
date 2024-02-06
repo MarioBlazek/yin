@@ -15,6 +15,34 @@ use function is_string;
 trait CreateHydratorTrait
 {
     /**
+     * Hydrates the domain object from the creating request.
+     *
+     * The domain object's attributes and relationships are hydrated
+     * according to the JSON:API specification.
+     *
+     * @return mixed
+     *
+     * @throws JsonApiExceptionInterface
+     */
+    public function hydrateForCreate(
+        JsonApiRequestInterface $request,
+        ExceptionFactoryInterface $exceptionFactory,
+        mixed $domainObject
+    ) {
+        $data = $request->getResource();
+        if ($data === null) {
+            throw $exceptionFactory->createDataMemberMissingException($request);
+        }
+
+        $this->validateType($data, $exceptionFactory);
+        $domainObject = $this->hydrateIdForCreate($domainObject, $data, $request, $exceptionFactory);
+        $this->validateRequest($request);
+        $domainObject = $this->hydrateAttributes($domainObject, $data);
+
+        return $this->hydrateRelationships($domainObject, $data, $exceptionFactory);
+    }
+
+    /**
      * @throws ResourceTypeMissing|JsonApiExceptionInterface
      * @throws ResourceTypeUnacceptable|JsonApiExceptionInterface
      */
@@ -27,6 +55,7 @@ trait CreateHydratorTrait
      * the appropriate exception should be thrown: if it is not well-formed then
      * a ClientGeneratedIdNotSupported exception can be raised, if the ID already
      * exists then a ClientGeneratedIdAlreadyExists exception can be thrown.
+     *
      * @throws JsonApiExceptionInterface|JsonApiExceptionInterface
      */
     abstract protected function validateClientGeneratedId(
@@ -37,6 +66,7 @@ trait CreateHydratorTrait
 
     /**
      * You can validate the request.
+     *
      * @throws JsonApiExceptionInterface
      */
     abstract protected function validateRequest(JsonApiRequestInterface $request): void;
@@ -45,6 +75,7 @@ trait CreateHydratorTrait
      * Produces a new ID for the domain objects.
      *
      * UUID-s are preferred according to the JSON:API specification.
+     *
      * @return string
      */
     abstract protected function generateId(): string;
@@ -55,73 +86,42 @@ trait CreateHydratorTrait
      * The method mutates the domain object and sets the given ID for it.
      * If it is an immutable object or an array the whole, updated domain
      * object can be returned.
-     * @param mixed $domainObject
+     *
      * @return mixed|void
      */
-    abstract protected function setId($domainObject, string $id);
+    abstract protected function setId(mixed $domainObject, string $id);
 
     /**
-     * @param mixed $domainObject
      * @return mixed
      */
-    abstract protected function hydrateAttributes($domainObject, array $data);
+    abstract protected function hydrateAttributes(mixed $domainObject, array $data);
 
     /**
-     * @param mixed $domainObject
      * @return mixed
      */
     abstract protected function hydrateRelationships(
-        $domainObject,
+        mixed $domainObject,
         array $data,
         ExceptionFactoryInterface $exceptionFactory
     );
 
     /**
-     * Hydrates the domain object from the creating request.
-     *
-     * The domain object's attributes and relationships are hydrated
-     * according to the JSON:API specification.
-     * @param mixed $domainObject
-     * @return mixed
-     * @throws JsonApiExceptionInterface
-     */
-    public function hydrateForCreate(
-        JsonApiRequestInterface $request,
-        ExceptionFactoryInterface $exceptionFactory,
-        $domainObject
-    ) {
-        $data = $request->getResource();
-        if ($data === null) {
-            throw $exceptionFactory->createDataMemberMissingException($request);
-        }
-
-        $this->validateType($data, $exceptionFactory);
-        $domainObject = $this->hydrateIdForCreate($domainObject, $data, $request, $exceptionFactory);
-        $this->validateRequest($request);
-        $domainObject = $this->hydrateAttributes($domainObject, $data);
-        $domainObject = $this->hydrateRelationships($domainObject, $data, $exceptionFactory);
-
-        return $domainObject;
-    }
-
-    /**
-     * @param mixed $domainObject
      * @return mixed
      */
     protected function hydrateIdForCreate(
-        $domainObject,
+        mixed $domainObject,
         array $data,
         JsonApiRequestInterface $request,
         ExceptionFactoryInterface $exceptionFactory
     ) {
-        if (empty($data["id"]) === false && is_string($data["id"]) === false) {
-            throw $exceptionFactory->createResourceIdInvalidException($data["id"]);
+        if (empty($data['id']) === false && is_string($data['id']) === false) {
+            throw $exceptionFactory->createResourceIdInvalidException($data['id']);
         }
 
-        $id = empty($data["id"]) ? "" : $data["id"];
+        $id = empty($data['id']) ? '' : $data['id'];
         $this->validateClientGeneratedId($id, $request, $exceptionFactory);
 
-        if ($id === "") {
+        if ($id === '') {
             $id = $this->generateId();
         }
 

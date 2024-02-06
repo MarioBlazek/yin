@@ -6,22 +6,22 @@ namespace WoohooLabs\Yin\JsonApi\Schema\Link;
 
 class ResourceLinks extends AbstractLinks
 {
-    public static function createWithoutBaseUri(?Link $self = null): ResourceLinks
+    public function __construct(string $baseUri = '', ?Link $self = null)
     {
-        return new ResourceLinks("", $self);
+        parent::__construct($baseUri, ['self' => $self]);
     }
 
-    public static function createWithBaseUri(string $baseUri, ?Link $self = null): ResourceLinks
+    public static function createWithoutBaseUri(?Link $self = null): self
     {
-        return new ResourceLinks($baseUri, $self);
+        return new self('', $self);
     }
 
-    public function __construct(string $baseUri = "", ?Link $self = null)
+    public static function createWithBaseUri(string $baseUri, ?Link $self = null): self
     {
-        parent::__construct($baseUri, ["self" => $self]);
+        return new self($baseUri, $self);
     }
 
-    public function setBaseUri(string $baseUri): ResourceLinks
+    public function setBaseUri(string $baseUri): self
     {
         $this->baseUri = $baseUri;
 
@@ -30,12 +30,12 @@ class ResourceLinks extends AbstractLinks
 
     public function getSelf(): ?Link
     {
-        return $this->getLink("self");
+        return $this->getLink('self');
     }
 
-    public function setSelf(?Link $self): ResourceLinks
+    public function setSelf(?Link $self): self
     {
-        $this->addLink("self", $self);
+        $this->addLink('self', $self);
 
         return $this;
     }

@@ -4,34 +4,31 @@ declare(strict_types=1);
 
 namespace WoohooLabs\Yin\Tests\JsonApi\Exception;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use WoohooLabs\Yin\JsonApi\Exception\MediaTypeUnacceptable;
 
 class MediaTypeUnacceptableTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function getErrors(): void
     {
-        $exception = $this->createException("");
+        $exception = $this->createException('');
 
         $errors = $exception->getErrorDocument()->getErrors();
 
-        $this->assertCount(1, $errors);
-        $this->assertEquals("406", $errors[0]->getStatus());
+        self::assertCount(1, $errors);
+        self::assertSame('406', $errors[0]->getStatus());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getMediaTypeName(): void
     {
-        $exception = $this->createException("media-type");
+        $exception = $this->createException('media-type');
 
         $mediaType = $exception->getMediaTypeName();
 
-        $this->assertEquals("media-type", $mediaType);
+        self::assertSame('media-type', $mediaType);
     }
 
     private function createException(string $mediaType): MediaTypeUnacceptable

@@ -14,7 +14,7 @@ class Error
     /**
      * @var string
      */
-    protected $id = "";
+    protected $id = '';
 
     /**
      * @var ErrorLinks|null
@@ -24,31 +24,31 @@ class Error
     /**
      * @var string
      */
-    protected $status = "";
+    protected $status = '';
 
     /**
      * @var string
      */
-    protected $code = "";
+    protected $code = '';
 
     /**
      * @var string
      */
-    protected $title = "";
+    protected $title = '';
 
     /**
      * @var string
      */
-    protected $detail = "";
+    protected $detail = '';
 
     /**
      * @var ErrorSource|null
      */
     protected $source;
 
-    public static function create(): Error
+    public static function create(): self
     {
-        return new Error();
+        return new self();
     }
 
     public function getId(): string
@@ -56,7 +56,7 @@ class Error
         return $this->id;
     }
 
-    public function setId(string $id): Error
+    public function setId(string $id): self
     {
         $this->id = $id;
 
@@ -71,7 +71,7 @@ class Error
     /**
      * @return $this
      */
-    public function setLinks(ErrorLinks $links): Error
+    public function setLinks(ErrorLinks $links): self
     {
         $this->links = $links;
 
@@ -83,7 +83,7 @@ class Error
         return $this->status;
     }
 
-    public function setStatus(string $status): Error
+    public function setStatus(string $status): self
     {
         $this->status = $status;
 
@@ -95,7 +95,7 @@ class Error
         return $this->code;
     }
 
-    public function setCode(string $code): Error
+    public function setCode(string $code): self
     {
         $this->code = $code;
 
@@ -107,7 +107,7 @@ class Error
         return $this->title;
     }
 
-    public function setTitle(string $title): Error
+    public function setTitle(string $title): self
     {
         $this->title = $title;
 
@@ -119,7 +119,7 @@ class Error
         return $this->detail;
     }
 
-    public function setDetail(string $detail): Error
+    public function setDetail(string $detail): self
     {
         $this->detail = $detail;
 
@@ -131,9 +131,10 @@ class Error
         return $this->source;
     }
 
-    public function setSource(ErrorSource $source): Error
+    public function setSource(ErrorSource $source): self
     {
         $this->source = $source;
+
         return $this;
     }
 
@@ -158,57 +159,57 @@ class Error
 
     protected function transformId(array &$content): void
     {
-        if ($this->id !== "") {
-            $content["id"] = $this->id;
+        if ($this->id !== '') {
+            $content['id'] = $this->id;
         }
     }
 
     protected function transformMeta(array &$content): void
     {
         if (empty($this->meta) === false) {
-            $content["meta"] = $this->meta;
+            $content['meta'] = $this->meta;
         }
     }
 
     protected function transformLinks(array &$content): void
     {
         if ($this->links !== null) {
-            $content["links"] = $this->links->transform();
+            $content['links'] = $this->links->transform();
         }
     }
 
     protected function transformStatus(array &$content): void
     {
-        if ($this->status !== "") {
-            $content["status"] = $this->status;
+        if ($this->status !== '') {
+            $content['status'] = $this->status;
         }
     }
 
     protected function transformCode(array &$content): void
     {
-        if ($this->code !== "") {
-            $content["code"] = $this->code;
+        if ($this->code !== '') {
+            $content['code'] = $this->code;
         }
     }
 
     protected function transformTitle(array &$content): void
     {
-        if ($this->title !== "") {
-            $content["title"] = $this->title;
+        if ($this->title !== '') {
+            $content['title'] = $this->title;
         }
     }
 
     protected function transformDetail(array &$content): void
     {
-        if ($this->detail !== "") {
-            $content["detail"] = $this->detail;
+        if ($this->detail !== '') {
+            $content['detail'] = $this->detail;
         }
     }
 
     protected function transformSource(array &$content): void
     {
         if ($this->source !== null) {
-            $content["source"] = $this->source->transform();
+            $content['source'] = $this->source->transform();
         }
     }
 }

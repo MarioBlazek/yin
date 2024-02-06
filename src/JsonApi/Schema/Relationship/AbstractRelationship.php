@@ -23,35 +23,30 @@ abstract class AbstractRelationship
     protected $links;
 
     /**
-     * @var mixed
+     * @var bool
      */
-    private $data;
+    protected $isCallableData = false;
 
     /**
      * @var bool
      */
-    protected $isCallableData;
-
-    /**
-     * @var bool
-     */
-    protected $omitDataWhenNotIncluded;
+    protected $omitDataWhenNotIncluded = false;
 
     /**
      * @var ResourceInterface|null
      */
     protected $resource;
 
-    /**
-     * @internal
-     * @return array|false|null
-     */
-    abstract protected function transformData(
-        ResourceTransformation $transformation,
-        ResourceTransformer $resourceTransformer,
-        DataInterface $data,
-        array $defaultRelationships
-    );
+    final public function __construct(
+        array $meta = [],
+        ?RelationshipLinks $links = null,
+        private mixed $data = null,
+        ?ResourceInterface $resource = null
+    ) {
+        $this->meta = $meta;
+        $this->links = $links;
+        $this->resource = $resource;
+    }
 
     /**
      * @return static
@@ -85,23 +80,6 @@ abstract class AbstractRelationship
         return new static([], null, $data, $resource);
     }
 
-    /**
-     * @param mixed $data
-     */
-    final public function __construct(
-        array $meta = [],
-        ?RelationshipLinks $links = null,
-        $data = null,
-        ?ResourceInterface $resource = null
-    ) {
-        $this->meta = $meta;
-        $this->links = $links;
-        $this->data = $data;
-        $this->isCallableData = false;
-        $this->omitDataWhenNotIncluded = false;
-        $this->resource = $resource;
-    }
-
     public function getLinks(): ?RelationshipLinks
     {
         return $this->links;
@@ -118,10 +96,9 @@ abstract class AbstractRelationship
     }
 
     /**
-     * @param mixed $data
      * @return $this
      */
-    public function setData($data, ResourceInterface $resource)
+    public function setData(mixed $data, ResourceInterface $resource)
     {
         $this->data = $data;
         $this->isCallableData = false;
@@ -154,15 +131,6 @@ abstract class AbstractRelationship
 
     /**
      * @internal
-     * @return mixed
-     */
-    protected function getData()
-    {
-        return $this->isCallableData ? call_user_func($this->data, $this) : $this->data;
-    }
-
-    /**
-     * @internal
      */
     public function transform(
         ResourceTransformation $transformation,
@@ -174,7 +142,7 @@ abstract class AbstractRelationship
         $currentRelationshipName = $transformation->currentRelationshipName;
         $basePath = $transformation->basePath;
 
-        $isCurrentRelationship = $requestedRelationshipName !== "" && $currentRelationshipName === $requestedRelationshipName;
+        $isCurrentRelationship = $requestedRelationshipName !== '' && $currentRelationshipName === $requestedRelationshipName;
         $isIncludedField = $transformation->request->isIncludedField($transformation->resourceType, $currentRelationshipName);
         $isIncludedRelationship = $transformation->request->isIncludedRelationship($basePath, $currentRelationshipName, $defaultRelationships);
 
@@ -186,8 +154,8 @@ abstract class AbstractRelationship
         // Transform the relationship data
         $dataMember = false;
         if (
-            ($isCurrentRelationship === true || $isIncludedRelationship === true || $this->omitDataWhenNotIncluded === false) &&
-            ($isCurrentRelationship === true || $requestedRelationshipName === "")
+            ($isCurrentRelationship === true || $isIncludedRelationship === true || $this->omitDataWhenNotIncluded === false)
+            && ($isCurrentRelationship === true || $requestedRelationshipName === '')
         ) {
             $dataMember = $this->transformData($transformation, $resourceTransformer, $data, $defaultRelationships);
         }
@@ -201,15 +169,15 @@ abstract class AbstractRelationship
         $relationshipObject = [];
 
         if ($this->links !== null) {
-            $relationshipObject["links"] = $this->links->transform();
+            $relationshipObject['links'] = $this->links->transform();
         }
 
         if (empty($this->meta) === false) {
-            $relationshipObject["meta"] = $this->meta;
+            $relationshipObject['meta'] = $this->meta;
         }
 
         if ($dataMember !== false) {
-            $relationshipObject["data"] = $dataMember;
+            $relationshipObject['data'] = $dataMember;
         }
 
         return $relationshipObject;
@@ -217,29 +185,50 @@ abstract class AbstractRelationship
 
     /**
      * @internal
-     * @param mixed $object
+     *
+     * @return array|false|null
+     */
+    abstract protected function transformData(
+        ResourceTransformation $transformation,
+        ResourceTransformer $resourceTransformer,
+        DataInterface $data,
+        array $defaultRelationships
+    );
+
+    /**
+     * @internal
+     *
+     * @return mixed
+     */
+    protected function getData()
+    {
+        return $this->isCallableData ? call_user_func($this->data, $this) : $this->data;
+    }
+
+    /**
+     * @internal
      */
     protected function transformResourceIdentifier(
         ResourceTransformation $transformation,
         ResourceTransformer $resourceTransformer,
         DataInterface $data,
-        $object,
+        mixed $object,
         array $defaultRelationships
     ): ?array {
         $relationshipTransformation = clone $transformation;
-        $relationshipTransformation->resourceType = "";
+        $relationshipTransformation->resourceType = '';
         $relationshipTransformation->resource = $this->resource;
         $relationshipTransformation->object = $object;
 
         $basePath = $transformation->basePath;
-        $basePath .= ($basePath !== "" ? "." : "") . $relationshipTransformation->currentRelationshipName;
+        $basePath .= ($basePath !== '' ? '.' : '') . $relationshipTransformation->currentRelationshipName;
         $relationshipTransformation->basePath = $basePath;
 
         if (
             $transformation->request->isIncludedRelationship(
                 $transformation->basePath,
                 $transformation->currentRelationshipName,
-                $defaultRelationships
+                $defaultRelationships,
             )
         ) {
             $resource = $resourceTransformer->transformToResourceObject($relationshipTransformation, $data);

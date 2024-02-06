@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace WoohooLabs\Yin\Tests\JsonApi\Schema\Error;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use WoohooLabs\Yin\JsonApi\Schema\Error\Error;
 use WoohooLabs\Yin\JsonApi\Schema\Error\ErrorSource;
@@ -11,121 +12,103 @@ use WoohooLabs\Yin\JsonApi\Schema\Link\ErrorLinks;
 
 class ErrorTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function getId(): void
     {
-        $error = $this->createError()->setId("123456789");
+        $error = $this->createError()->setId('123456789');
 
         $id = $error->getId();
 
-        $this->assertEquals("123456789", $id);
+        self::assertSame('123456789', $id);
     }
 
     public function testGetStatus(): void
     {
-        $error = $this->createError()->setStatus("500");
+        $error = $this->createError()->setStatus('500');
 
         $status = $error->getStatus();
 
-        $this->assertEquals("500", $status);
+        self::assertSame('500', $status);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getCode(): void
     {
-        $error = $this->createError()->setCode("UNKNOWN_ERROR");
+        $error = $this->createError()->setCode('UNKNOWN_ERROR');
 
         $code = $error->getCode();
 
-        $this->assertEquals("UNKNOWN_ERROR", $code);
+        self::assertSame('UNKNOWN_ERROR', $code);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getLinksWhenNull(): void
     {
         $error = $this->createError();
 
         $links = $error->getLinks();
 
-        $this->assertNull($links);
+        self::assertNull($links);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getLinks(): void
     {
         $links = new ErrorLinks();
 
         $error = $this->createError()->setLinks($links);
 
-        $this->assertEquals($links, $error->getLinks());
+        self::assertSame($links, $error->getLinks());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getTitle(): void
     {
-        $error = $this->createError()->setTitle("Unknown error!");
+        $error = $this->createError()->setTitle('Unknown error!');
 
         $title = $error->getTitle();
 
-        $this->assertEquals("Unknown error!", $title);
+        self::assertSame('Unknown error!', $title);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDetail(): void
     {
-        $error = $this->createError()->setDetail("An unknown error has happened and no solution exists.");
+        $error = $this->createError()->setDetail('An unknown error has happened and no solution exists.');
 
         $detail = $error->getDetail();
 
-        $this->assertEquals("An unknown error has happened and no solution exists.", $detail);
+        self::assertSame('An unknown error has happened and no solution exists.', $detail);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getSource(): void
     {
-        $source = new ErrorSource("/data/attributes/name", "name");
+        $source = new ErrorSource('/data/attributes/name', 'name');
 
         $error = $this->createError()->setSource($source);
 
-        $this->assertEquals($source, $error->getSource());
+        self::assertSame($source, $error->getSource());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getSourceWhenEmpty(): void
     {
         $error = $this->createError();
 
         $source = $error->getSource();
 
-        $this->assertNull($source);
+        self::assertNull($source);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformWithEmptyFields(): void
     {
-        $id = "123456789";
-        $status = "500";
-        $code = "UNKNOWN_ERROR";
-        $title = "Unknown error!";
-        $detail = "An unknown error has happened and no solution exists.";
+        $id = '123456789';
+        $status = '500';
+        $code = 'UNKNOWN_ERROR';
+        $title = 'Unknown error!';
+        $detail = 'An unknown error has happened and no solution exists.';
 
         $error = $this->createError()
             ->setId($id)
@@ -134,45 +117,43 @@ class ErrorTest extends TestCase
             ->setTitle($title)
             ->setDetail($detail);
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "id" => $id,
-                "status" => $status,
-                "code" => $code,
-                "title" => $title,
-                "detail" => $detail,
+                'id' => $id,
+                'status' => $status,
+                'code' => $code,
+                'title' => $title,
+                'detail' => $detail,
             ],
-            $error->transform()
+            $error->transform(),
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transform(): void
     {
         $error = $this->createError()
-            ->setId("123456789")
-            ->setMeta(["abc" => "def"])
+            ->setId('123456789')
+            ->setMeta(['abc' => 'def'])
             ->setLinks(new ErrorLinks())
-            ->setStatus("500")
-            ->setCode("UNKNOWN_ERROR")
-            ->setTitle("Unknown error!")
-            ->setDetail("An unknown error has happened and no solution exists.")
-            ->setSource(new ErrorSource("", ""));
+            ->setStatus('500')
+            ->setCode('UNKNOWN_ERROR')
+            ->setTitle('Unknown error!')
+            ->setDetail('An unknown error has happened and no solution exists.')
+            ->setSource(new ErrorSource('', ''));
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "id" => "123456789",
-                "meta" => ["abc" => "def"],
-                "links" => [],
-                "status" => "500",
-                "code" => "UNKNOWN_ERROR",
-                "title" => "Unknown error!",
-                "detail" => "An unknown error has happened and no solution exists.",
-                "source" => [],
+                'id' => '123456789',
+                'meta' => ['abc' => 'def'],
+                'links' => [],
+                'status' => '500',
+                'code' => 'UNKNOWN_ERROR',
+                'title' => 'Unknown error!',
+                'detail' => 'An unknown error has happened and no solution exists.',
+                'source' => [],
             ],
-            $error->transform()
+            $error->transform(),
         );
     }
 

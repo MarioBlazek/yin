@@ -6,47 +6,42 @@ namespace WoohooLabs\Yin\Tests\JsonApi\Serializer;
 
 use InvalidArgumentException;
 use Laminas\Diactoros\ServerRequest;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use WoohooLabs\Yin\JsonApi\Serializer\JsonDeserializer;
 
 class JsonDeserializerTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function deserializeNullBody(): void
     {
         $request = $this->createRequestWithJsonBody(null);
 
         $deserializer = new JsonDeserializer();
 
-        $this->assertNull($deserializer->deserialize($request));
+        self::assertNull($deserializer->deserialize($request));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function deserializeEmptyBody(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->createRequestWithJsonBody("");
+        $this->createRequestWithJsonBody('');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function deserialize(): void
     {
         $parsedBody = [
-            "data" => [
-                "type" => "cat",
-                "id" => "tom",
+            'data' => [
+                'type' => 'cat',
+                'id' => 'tom',
             ],
         ];
 
         $request = $this->createRequestWithJsonBody($parsedBody);
 
-        $this->assertEquals($parsedBody, $request->getParsedBody());
+        self::assertSame($parsedBody, $request->getParsedBody());
     }
 
     /**

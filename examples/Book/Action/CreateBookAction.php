@@ -25,9 +25,9 @@ class CreateBookAction
             new BookResource(
                 new AuthorResource(),
                 new PublisherResource(
-                    new RepresentativeResource()
-                )
-            )
+                    new RepresentativeResource(),
+                ),
+            ),
         );
 
         // Responding with "201 Created" status code along with the book document

@@ -20,36 +20,18 @@ use WoohooLabs\Yin\JsonApi\Serializer\SerializerInterface;
 
 class JsonApi
 {
-    /**
-     * @var JsonApiRequestInterface
-     */
-    public $request;
+    public JsonApiRequestInterface $request;
 
-    /**
-     * @var ResponseInterface
-     */
-    public $response;
-
-    /**
-     * @var ExceptionFactoryInterface
-     */
-    protected $exceptionFactory;
-
-    /**
-     * @var SerializerInterface
-     */
-    protected $serializer;
+    public ResponseInterface $response;
 
     public function __construct(
         JsonApiRequestInterface $request,
         ResponseInterface $response,
-        ?ExceptionFactoryInterface $exceptionFactory = null,
-        ?SerializerInterface $serializer = null
+        protected ExceptionFactoryInterface $exceptionFactory = new DefaultExceptionFactory(),
+        protected SerializerInterface $serializer = new JsonSerializer()
     ) {
         $this->request = $request;
         $this->response = $response;
-        $this->exceptionFactory = $exceptionFactory ?? new DefaultExceptionFactory();
-        $this->serializer = $serializer ?? new JsonSerializer();
     }
 
     public function getRequest(): JsonApiRequestInterface
@@ -92,24 +74,16 @@ class JsonApi
         return new Responder($this->request, $this->response, $this->exceptionFactory, $this->serializer);
     }
 
-    /**
-     * @param mixed $object
-     * @return mixed
-     */
-    public function hydrate(HydratorInterface $hydrator, $object)
+    public function hydrate(HydratorInterface $hydrator, mixed $object): mixed
     {
         return $hydrator->hydrate($this->request, $this->exceptionFactory, $object);
     }
 
-    /**
-     * @param mixed $object
-     * @return mixed
-     */
     public function hydrateRelationship(
         string $relationship,
         UpdateRelationshipHydratorInterface $hydrator,
-        $object
-    ) {
+        mixed $object
+    ): mixed {
         return $hydrator->hydrateRelationship($relationship, $this->request, $this->exceptionFactory, $object);
     }
 
@@ -122,7 +96,7 @@ class JsonApi
      */
     public function disableIncludes(): void
     {
-        if ($this->request->getQueryParam("include") !== null) {
+        if ($this->request->getQueryParam('include') !== null) {
             throw $this->exceptionFactory->createInclusionUnsupportedException($this->request);
         }
     }
@@ -136,7 +110,7 @@ class JsonApi
      */
     public function disableSorting(): void
     {
-        if ($this->request->getQueryParam("sort") !== null) {
+        if ($this->request->getQueryParam('sort') !== null) {
             throw $this->exceptionFactory->createSortingUnsupportedException($this->request);
         }
     }

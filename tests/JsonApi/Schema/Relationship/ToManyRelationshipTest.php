@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace WoohooLabs\Yin\Tests\JsonApi\Schema\Relationship;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use WoohooLabs\Yin\JsonApi\Exception\DefaultExceptionFactory;
 use WoohooLabs\Yin\JsonApi\Schema\Link\RelationshipLinks;
@@ -17,20 +18,18 @@ use WoohooLabs\Yin\Tests\JsonApi\Double\StubResource;
 
 class ToManyRelationshipTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function transformEmpty(): void
     {
         $transformation = new ResourceTransformation(
             new StubResource(),
             [],
-            "",
+            '',
             new StubJsonApiRequest(),
-            "",
-            "",
-            "",
-            new DefaultExceptionFactory()
+            '',
+            '',
+            '',
+            new DefaultExceptionFactory(),
         );
         $relationship = $this->createRelationship([], null, [], $transformation->resource);
 
@@ -38,59 +37,57 @@ class ToManyRelationshipTest extends TestCase
             $transformation,
             new ResourceTransformer(),
             new DummyData(),
-            []
+            [],
         );
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "data" => [],
+                'data' => [],
             ],
-            $relationshipObject
+            $relationshipObject,
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transform(): void
     {
         $relationship = $this->createRelationship(
             [],
             null,
             [[], []],
-            new StubResource("abc", "1")
+            new StubResource('abc', '1'),
         );
 
         $relationshipObject = $relationship->transform(
             new ResourceTransformation(
                 new StubResource(),
                 [],
-                "",
+                '',
                 new StubJsonApiRequest(),
-                "",
-                "",
-                "",
-                new DefaultExceptionFactory()
+                '',
+                '',
+                '',
+                new DefaultExceptionFactory(),
             ),
             new ResourceTransformer(),
             new DummyData(),
-            []
+            [],
         );
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "data" => [
+                'data' => [
                     [
-                        "type" => "abc",
-                        "id" => "1",
+                        'type' => 'abc',
+                        'id' => '1',
                     ],
                     [
-                        "type" => "abc",
-                        "id" => "1",
+                        'type' => 'abc',
+                        'id' => '1',
                     ],
                 ],
             ],
-            $relationshipObject
+            $relationshipObject,
         );
     }
 

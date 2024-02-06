@@ -25,7 +25,7 @@ class UserDocument extends AbstractSingleResourceDocument
      */
     public function getJsonApi(): ?JsonApiObject
     {
-        return new JsonApiObject("1.1");
+        return new JsonApiObject('1.1');
     }
 
     /**
@@ -49,8 +49,8 @@ class UserDocument extends AbstractSingleResourceDocument
     {
         return DocumentLinks::createWithoutBaseUri(
             [
-                "self" => new Link("/users/" . $this->getResourceId()),
-            ]
+                'self' => new Link('/users/' . $this->getResourceId()),
+            ],
         );
     }
 }

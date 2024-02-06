@@ -31,7 +31,7 @@ class AuthorsDocument extends AbstractCollectionDocument
      */
     public function getJsonApi(): ?JsonApiObject
     {
-        return new JsonApiObject("1.1");
+        return new JsonApiObject('1.1');
     }
 
     /**
@@ -55,8 +55,8 @@ class AuthorsDocument extends AbstractCollectionDocument
     {
         return DocumentLinks::createWithoutBaseUri(
             [
-                "self" => new Link("/books/" . $this->bookId . "/authors"),
-            ]
+                'self' => new Link('/books/' . $this->bookId . '/authors'),
+            ],
         );
     }
 }

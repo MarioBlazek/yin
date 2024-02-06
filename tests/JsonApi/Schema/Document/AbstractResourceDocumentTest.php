@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace WoohooLabs\Yin\Tests\JsonApi\Schema\Document;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use WoohooLabs\Yin\JsonApi\Exception\DefaultExceptionFactory;
 use WoohooLabs\Yin\JsonApi\Schema\Data\DataInterface;
@@ -16,9 +17,7 @@ use WoohooLabs\Yin\Tests\JsonApi\Double\StubResourceDocument;
 
 class AbstractResourceDocumentTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function initializeTransformation(): void
     {
         $document = $this->createDocument();
@@ -26,14 +25,12 @@ class AbstractResourceDocumentTest extends TestCase
 
         $document->initializeTransformation($transformation);
 
-        $this->assertEquals($transformation->request, $document->getRequest());
-        $this->assertEquals($transformation->object, $document->getObject());
-        $this->assertEquals($transformation->exceptionFactory, $document->getExceptionFactory());
+        self::assertSame($transformation->request, $document->getRequest());
+        self::assertSame($transformation->object, $document->getObject());
+        self::assertSame($transformation->exceptionFactory, $document->getExceptionFactory());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function clearTransformation(): void
     {
         $document = $this->createDocument();
@@ -42,9 +39,9 @@ class AbstractResourceDocumentTest extends TestCase
         $document->initializeTransformation($transformation);
         $document->clearTransformation();
 
-        $this->assertNotNull($document->getRequest());
-        $this->assertNotNull($document->getObject());
-        $this->assertNotNull($document->getExceptionFactory());
+        self::assertNotNull($document->getRequest());
+        self::assertNotNull($document->getObject());
+        self::assertNotNull($document->getExceptionFactory());
     }
 
     private function createTransformation(ResourceDocumentInterface $document): ResourceDocumentTransformation
@@ -53,10 +50,10 @@ class AbstractResourceDocumentTest extends TestCase
             $document,
             [],
             new StubJsonApiRequest(),
-            "",
-            "",
+            '',
+            '',
             [],
-            new DefaultExceptionFactory()
+            new DefaultExceptionFactory(),
         );
     }
 
@@ -72,7 +69,7 @@ class AbstractResourceDocumentTest extends TestCase
             $meta,
             $links,
             $data,
-            $relationshipResponseContent
+            $relationshipResponseContent,
         );
     }
 }

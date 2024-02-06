@@ -4,58 +4,51 @@ declare(strict_types=1);
 
 namespace WoohooLabs\Yin\Tests\JsonApi\Exception;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use WoohooLabs\Yin\JsonApi\Exception\RelationshipTypeInappropriate;
 
 class RelationshipTypeInappropriateTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function getErrors(): void
     {
-        $exception = $this->createException("", "", "");
+        $exception = $this->createException('', '', '');
 
         $errors = $exception->getErrorDocument()->getErrors();
 
-        $this->assertCount(1, $errors);
-        $this->assertEquals("400", $errors[0]->getStatus());
+        self::assertCount(1, $errors);
+        self::assertSame('400', $errors[0]->getStatus());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getRelationshipName(): void
     {
-        $exception = $this->createException("rel", "", "");
+        $exception = $this->createException('rel', '', '');
 
         $relationshipName = $exception->getRelationshipName();
 
-        $this->assertEquals("rel", $relationshipName);
+        self::assertSame('rel', $relationshipName);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getCurrentRelationshipType(): void
     {
-        $exception = $this->createException("", "type", "");
+        $exception = $this->createException('', 'type', '');
 
         $relationshipType = $exception->getCurrentRelationshipType();
 
-        $this->assertEquals("type", $relationshipType);
+        self::assertSame('type', $relationshipType);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getExpectedRelationshipType(): void
     {
-        $exception = $this->createException("", "", "type");
+        $exception = $this->createException('', '', 'type');
 
         $relationshipType = $exception->getExpectedRelationshipType();
 
-        $this->assertEquals("type", $relationshipType);
+        self::assertSame('type', $relationshipType);
     }
 
     private function createException(string $name, string $type, string $expectedType): RelationshipTypeInappropriate

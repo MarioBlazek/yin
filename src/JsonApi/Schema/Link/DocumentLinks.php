@@ -19,25 +19,7 @@ class DocumentLinks extends AbstractLinks
      * @param Link[] $links
      * @param Link[] $profiles
      */
-    public static function createWithoutBaseUri(array $links = [], array $profiles = []): DocumentLinks
-    {
-        return new DocumentLinks("", $links, $profiles);
-    }
-
-    /**
-     * @param Link[] $links
-     * @param Link[] $profiles
-     */
-    public static function createWithBaseUri(string $baseUri, array $links = [], array $profiles = []): DocumentLinks
-    {
-        return new DocumentLinks($baseUri, $links, $profiles);
-    }
-
-    /**
-     * @param Link[] $links
-     * @param Link[] $profiles
-     */
-    public function __construct(string $baseUri = "", array $links = [], array $profiles = [])
+    public function __construct(string $baseUri = '', array $links = [], array $profiles = [])
     {
         parent::__construct($baseUri, $links);
         foreach ($profiles as $profile) {
@@ -45,7 +27,25 @@ class DocumentLinks extends AbstractLinks
         }
     }
 
-    public function setBaseUri(string $baseUri): DocumentLinks
+    /**
+     * @param Link[] $links
+     * @param Link[] $profiles
+     */
+    public static function createWithoutBaseUri(array $links = [], array $profiles = []): self
+    {
+        return new self('', $links, $profiles);
+    }
+
+    /**
+     * @param Link[] $links
+     * @param Link[] $profiles
+     */
+    public static function createWithBaseUri(string $baseUri, array $links = [], array $profiles = []): self
+    {
+        return new self($baseUri, $links, $profiles);
+    }
+
+    public function setBaseUri(string $baseUri): self
     {
         $this->baseUri = $baseUri;
 
@@ -54,72 +54,72 @@ class DocumentLinks extends AbstractLinks
 
     public function getSelf(): ?Link
     {
-        return $this->getLink("self");
+        return $this->getLink('self');
     }
 
-    public function setSelf(?Link $self): DocumentLinks
+    public function setSelf(?Link $self): self
     {
-        $this->addLink("self", $self);
+        $this->addLink('self', $self);
 
         return $this;
     }
 
     public function getRelated(): ?Link
     {
-        return $this->getLink("related");
+        return $this->getLink('related');
     }
 
-    public function setRelated(?Link $related): DocumentLinks
+    public function setRelated(?Link $related): self
     {
-        $this->addLink("related", $related);
+        $this->addLink('related', $related);
 
         return $this;
     }
 
     public function getFirst(): ?Link
     {
-        return $this->getLink("first");
+        return $this->getLink('first');
     }
 
-    public function setFirst(?Link $first): DocumentLinks
+    public function setFirst(?Link $first): self
     {
-        $this->addLink("first", $first);
+        $this->addLink('first', $first);
 
         return $this;
     }
 
     public function getLast(): ?Link
     {
-        return $this->getLink("last");
+        return $this->getLink('last');
     }
 
-    public function setLast(?Link $last): DocumentLinks
+    public function setLast(?Link $last): self
     {
-        $this->addLink("last", $last);
+        $this->addLink('last', $last);
 
         return $this;
     }
 
     public function getPrev(): ?Link
     {
-        return $this->getLink("prev");
+        return $this->getLink('prev');
     }
 
-    public function setPrev(?Link $prev): DocumentLinks
+    public function setPrev(?Link $prev): self
     {
-        $this->addLink("prev", $prev);
+        $this->addLink('prev', $prev);
 
         return $this;
     }
 
     public function getNext(): ?Link
     {
-        return $this->getLink("next");
+        return $this->getLink('next');
     }
 
-    public function setNext(?Link $next): DocumentLinks
+    public function setNext(?Link $next): self
     {
-        $this->addLink("next", $next);
+        $this->addLink('next', $next);
 
         return $this;
     }
@@ -132,14 +132,14 @@ class DocumentLinks extends AbstractLinks
         return array_values($this->profiles);
     }
 
-    public function addProfile(Link $profile): DocumentLinks
+    public function addProfile(Link $profile): self
     {
         $this->profiles[$profile->getHref()] = $profile;
 
         return $this;
     }
 
-    public function setPagination(string $uri, PaginationLinkProviderInterface $paginationProvider, string $queryString = ""): DocumentLinks
+    public function setPagination(string $uri, PaginationLinkProviderInterface $paginationProvider, string $queryString = ''): self
     {
         $this->setSelf($paginationProvider->getSelfLink($uri, $queryString));
         $this->setFirst($paginationProvider->getFirstLink($uri, $queryString));

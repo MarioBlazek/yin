@@ -12,14 +12,12 @@ use WoohooLabs\Yin\JsonApi\Request\JsonApiRequestInterface;
 interface UpdateRelationshipHydratorInterface
 {
     /**
-     * @param mixed $domainObject
-     * @return mixed
      * @throws RelationshipNotExists|JsonApiExceptionInterface
      */
     public function hydrateRelationship(
         string $relationship,
         JsonApiRequestInterface $request,
         ExceptionFactoryInterface $exceptionFactory,
-        $domainObject
-    );
+        object $domainObject
+    ): mixed;
 }

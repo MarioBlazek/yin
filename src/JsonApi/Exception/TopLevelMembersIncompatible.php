@@ -10,17 +10,17 @@ class TopLevelMembersIncompatible extends AbstractJsonApiException
 {
     public function __construct()
     {
-        parent::__construct("The members \"data\" and \"errors\" cannot coexist in the same document", 400);
+        parent::__construct('The members "data" and "errors" cannot coexist in the same document', 400);
     }
 
     protected function getErrors(): array
     {
         return [
             Error::create()
-                ->setStatus("400")
-                ->setCode("TOP_LEVEL_MEMBERS_INCOMPATIBLE")
-                ->setTitle("Top-level members are incompatible")
-                ->setDetail("The members \"data\" and \"errors\" cannot coexist in the same document"),
+                ->setStatus('400')
+                ->setCode('TOP_LEVEL_MEMBERS_INCOMPATIBLE')
+                ->setTitle('Top-level members are incompatible')
+                ->setDetail('The members "data" and "errors" cannot coexist in the same document'),
         ];
     }
 }

@@ -6,30 +6,16 @@ namespace WoohooLabs\Yin\JsonApi\Schema\Error;
 
 class ErrorSource
 {
-    /**
-     * @var string
-     */
-    private $pointer;
+    public function __construct(private readonly string $pointer, private readonly string $parameter) {}
 
-    /**
-     * @var string
-     */
-    private $parameter;
-
-    public static function fromPointer(string $pointer): ErrorSource
+    public static function fromPointer(string $pointer): self
     {
-        return new ErrorSource($pointer, "");
+        return new self($pointer, '');
     }
 
-    public static function fromParameter(string $parameter): ErrorSource
+    public static function fromParameter(string $parameter): self
     {
-        return new ErrorSource("", $parameter);
-    }
-
-    public function __construct(string $pointer, string $parameter)
-    {
-        $this->pointer = $pointer;
-        $this->parameter = $parameter;
+        return new self('', $parameter);
     }
 
     public function getPointer(): string
@@ -49,12 +35,12 @@ class ErrorSource
     {
         $content = [];
 
-        if ($this->getPointer() !== "") {
-            $content["pointer"] = $this->getPointer();
+        if ($this->getPointer() !== '') {
+            $content['pointer'] = $this->getPointer();
         }
 
-        if ($this->getParameter() !== "") {
-            $content["parameter"] = $this->getParameter();
+        if ($this->getParameter() !== '') {
+            $content['parameter'] = $this->getParameter();
         }
 
         return $content;

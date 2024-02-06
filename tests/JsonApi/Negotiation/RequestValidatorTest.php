@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace WoohooLabs\Yin\Tests\JsonApi\Negotiation;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
@@ -22,19 +24,17 @@ use WoohooLabs\Yin\JsonApi\Serializer\JsonDeserializer;
 class RequestValidatorTest extends TestCase
 {
     /**
-     * Test valid request without Request validation Exceptions
-     * @test
+     * Test valid request without Request validation Exceptions.
      */
+    #[Test]
     public function negotiateWhenValidRequest(): void
     {
         $request = $this->createRequestMock();
-        $request->expects($this->once())
-            ->method("validateContentTypeHeader")
-            ->will($this->returnValue(true));
+        $request->expects(self::once())
+            ->method('validateContentTypeHeader');
 
-        $request->expects($this->once())
-            ->method("validateAcceptHeader")
-            ->will($this->returnValue(true));
+        $request->expects(self::once())
+            ->method('validateAcceptHeader');
         $validator = $this->createRequestValidator();
 
         $validator->negotiate($request);
@@ -42,14 +42,12 @@ class RequestValidatorTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    /**
-     * @test
-     * @dataProvider getValidContentTypes
-     */
+    #[DataProvider('getValidContentTypes')]
+    #[Test]
     public function negotiateWhenContentTypeHeaderSupported(string $contentType): void
     {
         // Content-Type and Accept is valid
-        $serverRequest = $this->createServerRequest($contentType, "application/vnd.api+json");
+        $serverRequest = $this->createServerRequest($contentType, 'application/vnd.api+json');
         $request = $this->createRequest($serverRequest);
         $validator = $this->createRequestValidator();
 
@@ -58,14 +56,12 @@ class RequestValidatorTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    /**
-     * @test
-     * @dataProvider getInvalidContentTypes
-     */
+    #[DataProvider('getInvalidContentTypes')]
+    #[Test]
     public function negotiateWhenContentTypeHeaderUnsupported(string $contentType): void
     {
         // Content-Type is invalid, Accept is valid
-        $serverRequest = $this->createServerRequest($contentType, "application/vnd.api+json");
+        $serverRequest = $this->createServerRequest($contentType, 'application/vnd.api+json');
         $request = $this->createRequest($serverRequest);
         $validator = $this->createRequestValidator();
 
@@ -74,14 +70,12 @@ class RequestValidatorTest extends TestCase
         $validator->negotiate($request);
     }
 
-    /**
-     * @test
-     * @dataProvider getValidContentTypes
-     */
+    #[DataProvider('getValidContentTypes')]
+    #[Test]
     public function negotiateWhenAcceptHeaderAcceptable(string $accept): void
     {
         // Content-Type is valid, Accept is invalid
-        $serverRequest = $this->createServerRequest("application/vnd.api+json", $accept);
+        $serverRequest = $this->createServerRequest('application/vnd.api+json', $accept);
         $request = $this->createRequest($serverRequest);
         $validator = $this->createRequestValidator();
 
@@ -90,14 +84,12 @@ class RequestValidatorTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    /**
-     * @test
-     * @dataProvider getInvalidContentTypes
-     */
+    #[DataProvider('getInvalidContentTypes')]
+    #[Test]
     public function negotiateWhenAcceptHeaderUnacceptable(string $accept): void
     {
         // Content-Type is valid, Accept is invalid
-        $serverRequest = $this->createServerRequest("application/vnd.api+json", $accept);
+        $serverRequest = $this->createServerRequest('application/vnd.api+json', $accept);
         $request = $this->createRequest($serverRequest);
         $validator = $this->createRequestValidator();
 
@@ -106,25 +98,21 @@ class RequestValidatorTest extends TestCase
         $validator->negotiate($request);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validateQueryParamsWhenValid(): void
     {
-        $serverRequest = $this->createServerRequest("application/vnd.api+json");
-        $serverRequest->expects($this->once())
-            ->method("getQueryParams")
-            ->will(
-                $this->returnValue(
-                    [
-                        "fields" => ["foo" => "bar"],
-                        "include" => "baz",
-                        "sort" => "asc",
-                        "page" => "1",
-                        "filter" => "search",
-                        "profile" => "https://example.com/profiles/last-modified",
-                    ]
-                )
+        $serverRequest = $this->createServerRequest('application/vnd.api+json');
+        $serverRequest->expects(self::once())
+            ->method('getQueryParams')
+            ->willReturn(
+                [
+                    'fields' => ['foo' => 'bar'],
+                    'include' => 'baz',
+                    'sort' => 'asc',
+                    'page' => '1',
+                    'filter' => 'search',
+                    'profile' => 'https://example.com/profiles/last-modified',
+                ],
             );
 
         $request = $this->createRequest($serverRequest);
@@ -135,15 +123,13 @@ class RequestValidatorTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validateQueryParamsWhenInvalid(): void
     {
-        $serverRequest = $this->createServerRequest("application/vnd.api+json");
-        $serverRequest->expects($this->once())
-            ->method("getQueryParams")
-            ->will($this->returnValue(["foo" => "bar"]));
+        $serverRequest = $this->createServerRequest('application/vnd.api+json');
+        $serverRequest->expects(self::once())
+            ->method('getQueryParams')
+            ->willReturn(['foo' => 'bar']);
         $request = $this->createRequest($serverRequest);
         $validator = $this->createRequestValidator();
 
@@ -153,13 +139,11 @@ class RequestValidatorTest extends TestCase
         $validator->validateQueryParams($request);
     }
 
-    /**
-     * @test
-     * @dataProvider getEmptyMessages
-     */
+    #[DataProvider('getEmptyMessages')]
+    #[Test]
     public function validateJsonBodyWhenEmpty(string $message): void
     {
-        $serverRequest = $this->createServerRequest("application/vnd.api+json");
+        $serverRequest = $this->createServerRequest('application/vnd.api+json');
         $this->setFakeBody($serverRequest, $message);
         $request = $this->createRequest($serverRequest);
         $validator = $this->createRequestValidator();
@@ -169,13 +153,11 @@ class RequestValidatorTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    /**
-     * @test
-     * @dataProvider getValidJsonMessages
-     */
+    #[DataProvider('getValidJsonMessages')]
+    #[Test]
     public function validateJsonBodyWhenValid(string $message): void
     {
-        $serverRequest = $this->createServerRequest("application/vnd.api+json");
+        $serverRequest = $this->createServerRequest('application/vnd.api+json');
         $this->setFakeBody($serverRequest, $message);
         $request = $this->createRequest($serverRequest);
         $validator = $this->createRequestValidator();
@@ -185,13 +167,11 @@ class RequestValidatorTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    /**
-     * @test
-     * @dataProvider getInvalidJsonMessages
-     */
+    #[DataProvider('getInvalidJsonMessages')]
+    #[Test]
     public function validateJsonBodyWhenInvalid(string $message): void
     {
-        $server = $this->createServerRequest("application/vnd.api+json");
+        $server = $this->createServerRequest('application/vnd.api+json');
         $this->setFakeBody($server, $message);
         $request = $this->createRequest($server);
         $validator = $this->createRequestValidator();
@@ -201,20 +181,67 @@ class RequestValidatorTest extends TestCase
         $validator->validateJsonBody($request);
     }
 
+    public static function getInvalidContentTypes(): array
+    {
+        return [
+            ['application/vnd.api+json; charset=utf-8'],
+            ['application/vnd.api+json; ext="ext1,ext2"'],
+        ];
+    }
+
+    public static function getValidContentTypes(): array
+    {
+        return [
+            ['application/vnd.api+json'],
+            ['application/vnd.api+json;profile="https://example.com/profiles/last-modified"'],
+            ['application/vnd.api+json;profile="https://example.com/profiles/last-modified", application/vnd.api+json'],
+            ['application/vnd.api+json; PROFILE="https://example.com/profiles/last-modified", application/vnd.api+json'],
+            ['text/html; charset=utf-8'],
+        ];
+    }
+
+    public static function getEmptyMessages(): array
+    {
+        return [
+            [''],
+        ];
+    }
+
+    public static function getValidJsonMessages(): array
+    {
+        return [
+            ['{}'],
+            ['{"employees":[
+                {"firstName":"John", "lastName":"Doe"},
+                {"firstName":"Anna", "lastName":"Smith"},
+                {"firstName":"Peter", "lastName":"Jones"}
+            ]}',
+            ],
+        ];
+    }
+
+    public static function getInvalidJsonMessages(): array
+    {
+        return [
+            ['{abc'],
+            ["{\xEF\xBB\xBF}"],
+        ];
+    }
+
     /**
      * @return MockObject|ServerRequestInterface
      */
-    private function createServerRequest(string $contentType, string $accept = "")
+    private function createServerRequest(string $contentType, string $accept = '')
     {
         $server = $this->getMockForAbstractClass(ServerRequestInterface::class);
 
         $map = [
-            ["content-type", $contentType],
-            ["accept", $accept],
+            ['content-type', $contentType],
+            ['accept', $accept],
         ];
-        $server->expects($this->any())
-            ->method("getHeaderLine")
-            ->will($this->returnValueMap($map));
+        $server->expects(self::any())
+            ->method('getHeaderLine')
+            ->willReturnMap($map);
 
         return $server;
     }
@@ -231,8 +258,8 @@ class RequestValidatorTest extends TestCase
     {
         $request = $this->getMockForAbstractClass(JsonApiRequestInterface::class);
 
-        $request->expects($this->once())
-            ->method("getParsedBody")
+        $request->expects(self::once())
+            ->method('getParsedBody')
             ->willReturn($parsedBody);
 
         return $request;
@@ -242,14 +269,14 @@ class RequestValidatorTest extends TestCase
     {
         $stream = $this->getMockForAbstractClass(StreamInterface::class);
 
-        $stream->expects($this->once())
-            ->method("__toString")
-            ->will($this->returnValue($body));
+        $stream->expects(self::once())
+            ->method('__toString')
+            ->willReturn($body);
 
-        /** @var MockObject $request */
-        $request->expects($this->once())
-            ->method("getBody")
-            ->will($this->returnValue($stream));
+        /* @var MockObject $request */
+        $request->expects(self::once())
+            ->method('getBody')
+            ->willReturn($stream);
     }
 
     /**
@@ -263,62 +290,13 @@ class RequestValidatorTest extends TestCase
         /** @var ExceptionFactoryInterface $exceptionFactory */
         $exceptionFactory = $this->getMockForAbstractClass(ExceptionFactoryInterface::class);
 
-        $mock = $this->getMockBuilder(JsonApiRequest::class)
+        return $this->getMockBuilder(JsonApiRequest::class)
             ->setConstructorArgs([$serverRequest, $exceptionFactory])
             ->getMock();
-
-        return $mock;
     }
 
     private function createRequestValidator(bool $includeOriginalMessageResponse = true): RequestValidator
     {
         return new RequestValidator(new DefaultExceptionFactory(), $includeOriginalMessageResponse);
-    }
-
-    public function getInvalidContentTypes(): array
-    {
-        return [
-            ["application/vnd.api+json; charset=utf-8"],
-            ['application/vnd.api+json; ext="ext1,ext2"'],
-        ];
-    }
-
-    public function getValidContentTypes(): array
-    {
-        return [
-            ["application/vnd.api+json"],
-            ["application/vnd.api+json;profile=\"https://example.com/profiles/last-modified\""],
-            ["application/vnd.api+json;profile=\"https://example.com/profiles/last-modified\", application/vnd.api+json"],
-            ["application/vnd.api+json; PROFILE=\"https://example.com/profiles/last-modified\", application/vnd.api+json"],
-            ["text/html; charset=utf-8"],
-        ];
-    }
-
-    public function getEmptyMessages(): array
-    {
-        return [
-            [""],
-        ];
-    }
-
-    public function getValidJsonMessages(): array
-    {
-        return [
-            ["{}"],
-            ['{"employees":[
-                {"firstName":"John", "lastName":"Doe"},
-                {"firstName":"Anna", "lastName":"Smith"},
-                {"firstName":"Peter", "lastName":"Jones"}
-            ]}',
-            ],
-        ];
-    }
-
-    public function getInvalidJsonMessages(): array
-    {
-        return [
-            ["{abc"],
-            ["{\xEF\xBB\xBF}"],
-        ];
     }
 }

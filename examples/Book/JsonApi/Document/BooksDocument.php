@@ -24,7 +24,7 @@ class BooksDocument extends AbstractCollectionDocument
      */
     public function getJsonApi(): ?JsonApiObject
     {
-        return new JsonApiObject("1.1");
+        return new JsonApiObject('1.1');
     }
 
     /**
@@ -47,6 +47,6 @@ class BooksDocument extends AbstractCollectionDocument
     public function getLinks(): ?DocumentLinks
     {
         return DocumentLinks::createWithoutBaseUri()
-            ->setPagination("/books", $this->object, $this->request->getUri()->getQuery());
+            ->setPagination('/books', $this->object, $this->request->getUri()->getQuery());
     }
 }

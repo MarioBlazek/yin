@@ -8,15 +8,7 @@ use WoohooLabs\Yin\JsonApi\Request\JsonApiRequestInterface;
 
 class PaginationFactory
 {
-    /**
-     * @var JsonApiRequestInterface
-     */
-    private $request;
-
-    public function __construct(JsonApiRequestInterface $request)
-    {
-        $this->request = $request;
-    }
+    public function __construct(private readonly JsonApiRequestInterface $request) {}
 
     /**
      * Returns a FixedPageBasedPagination class in order to be used for fixed page-based pagination.
@@ -56,9 +48,8 @@ class PaginationFactory
      *
      * The FixedCursorBasedPagination class stores the value of the "page[cursor]" query parameter if present
      * or the $defaultCursor otherwise.
-     * @param mixed $defaultCursor
      */
-    public function createFixedCursorBasedPagination($defaultCursor = null): FixedCursorBasedPagination
+    public function createFixedCursorBasedPagination(mixed $defaultCursor = null): FixedCursorBasedPagination
     {
         return FixedCursorBasedPagination::fromPaginationQueryParams($this->request->getPagination(), $defaultCursor);
     }
@@ -68,9 +59,8 @@ class PaginationFactory
      *
      * The CursorBasedPagination class stores the value of the "page[cursor]" and "page[size]" query parameters if present
      * or the $defaultCursor and $defaultSize otherwise.
-     * @param mixed $defaultCursor
      */
-    public function createCursorBasedPagination($defaultCursor = null, int $defaultSize = 0): CursorBasedPagination
+    public function createCursorBasedPagination(mixed $defaultCursor = null, int $defaultSize = 0): CursorBasedPagination
     {
         return CursorBasedPagination::fromPaginationQueryParams($this->request->getPagination(), $defaultCursor, $defaultSize);
     }

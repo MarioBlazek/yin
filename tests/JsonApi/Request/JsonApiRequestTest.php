@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace WoohooLabs\Yin\Tests\JsonApi\Request;
 
 use Laminas\Diactoros\ServerRequest;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use WoohooLabs\Yin\JsonApi\Exception\DefaultExceptionFactory;
 use WoohooLabs\Yin\JsonApi\Exception\MediaTypeUnacceptable;
@@ -21,110 +22,92 @@ use function implode;
 
 class JsonApiRequestTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function validateJsonApiContentTypeHeader(): void
     {
-        $request = $this->createRequestWithHeader("content-type", "application/vnd.api+json");
+        $request = $this->createRequestWithHeader('content-type', 'application/vnd.api+json');
 
         $request->validateContentTypeHeader();
 
         $this->addToAssertionCount(1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validateJsonApiContentTypeHeaderWithSemicolon(): void
     {
-        $request = $this->createRequestWithHeader("content-type", "application/vnd.api+json;");
+        $request = $this->createRequestWithHeader('content-type', 'application/vnd.api+json;');
 
         $request->validateContentTypeHeader();
 
         $this->addToAssertionCount(1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validateEmptyContentTypeHeader(): void
     {
-        $request = $this->createRequestWithHeader("content-type", "");
+        $request = $this->createRequestWithHeader('content-type', '');
 
         $request->validateContentTypeHeader();
 
         $this->addToAssertionCount(1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validateHtmlContentTypeHeader(): void
     {
-        $request = $this->createRequestWithHeader("content-type", "text/html; charset=utf-8");
+        $request = $this->createRequestWithHeader('content-type', 'text/html; charset=utf-8');
 
         $request->validateContentTypeHeader();
 
         $this->addToAssertionCount(1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validateMultipleMediaTypeContentTypeHeader(): void
     {
-        $request = $this->createRequestWithHeader("content-type", "application/vnd.api+json, text/*;q=0.3, text/html;q=0.7");
+        $request = $this->createRequestWithHeader('content-type', 'application/vnd.api+json, text/*;q=0.3, text/html;q=0.7');
 
         $request->validateContentTypeHeader();
 
         $this->addToAssertionCount(1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validateCaseInsensitiveContentTypeHeader(): void
     {
-        $request = $this->createRequestWithHeader("content-type", "Application/vnd.Api+JSON, text/*;q=0.3, text/html;Q=0.7");
+        $request = $this->createRequestWithHeader('content-type', 'Application/vnd.Api+JSON, text/*;q=0.3, text/html;Q=0.7');
 
         $request->validateContentTypeHeader();
 
         $this->addToAssertionCount(1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validateInvalidContentTypeHeaderWithExtMediaType(): void
     {
-        $request = $this->createRequestWithHeader("content-type", 'application/vnd.api+json; ext="ext1,ext2"');
+        $request = $this->createRequestWithHeader('content-type', 'application/vnd.api+json; ext="ext1,ext2"');
 
         $this->expectException(MediaTypeUnsupported::class);
 
         $request->validateContentTypeHeader();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validateInvalidContentTypeHeaderWithWhitespaceBeforeParameter(): void
     {
-        $request = $this->createRequestWithHeader("content-type", 'application/vnd.api+json ; ext="ext1,ext2"');
+        $request = $this->createRequestWithHeader('content-type', 'application/vnd.api+json ; ext="ext1,ext2"');
 
         $this->expectException(MediaTypeUnsupported::class);
 
         $request->validateContentTypeHeader();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validateContentTypeHeaderWithJsonApiProfileMediaTypeParameter(): void
     {
         $request = $this->createRequestWithHeader(
-            "content-type",
-            "application/vnd.api+json;profile=https://example.com/profiles/last-modified"
+            'content-type',
+            'application/vnd.api+json;profile=https://example.com/profiles/last-modified',
         );
 
         $request->validateContentTypeHeader();
@@ -132,38 +115,32 @@ class JsonApiRequestTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validateContentTypeHeaderWithInvalidMediaTypeParameter(): void
     {
-        $request = $this->createRequestWithHeader("content-type", "application/vnd.api+json; Charset=utf-8");
+        $request = $this->createRequestWithHeader('content-type', 'application/vnd.api+json; Charset=utf-8');
 
         $this->expectException(MediaTypeUnsupported::class);
 
         $request->validateContentTypeHeader();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validateAcceptHeaderWithJsonApiMediaType(): void
     {
-        $request = $this->createRequestWithHeader("accept", "application/vnd.api+json");
+        $request = $this->createRequestWithHeader('accept', 'application/vnd.api+json');
 
         $request->validateAcceptHeader();
 
         $this->addToAssertionCount(1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validateAcceptHeaderWithJsonApiProfileMediaTypeParameter(): void
     {
         $request = $this->createRequestWithHeader(
-            "content-type",
-            "application/vnd.api+json; Profile = https://example.com/profiles/last-modified"
+            'content-type',
+            'application/vnd.api+json; Profile = https://example.com/profiles/last-modified',
         );
 
         $request->validateContentTypeHeader();
@@ -171,21 +148,17 @@ class JsonApiRequestTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validateAcceptHeaderWithInvalidMediaTypeParameters(): void
     {
-        $request = $this->createRequestWithHeader("accept", 'application/vnd.api+json; ext="ext1,ext2"; charset=utf-8; lang=en');
+        $request = $this->createRequestWithHeader('accept', 'application/vnd.api+json; ext="ext1,ext2"; charset=utf-8; lang=en');
 
         $this->expectException(MediaTypeUnacceptable::class);
 
         $request->validateAcceptHeader();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validateEmptyQueryParams(): void
     {
         $request = $this->createRequestWithQueryParams([]);
@@ -195,20 +168,18 @@ class JsonApiRequestTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validateBasicQueryParams(): void
     {
         $request = $this->createRequestWithQueryParams(
             [
-                "fields" => ["user" => "name, address"],
-                "include" => ["contacts"],
-                "sort" => ["-name"],
-                "page" => ["number" => "1"],
-                "filter" => ["age" => "21"],
-                "profile" => "",
-            ]
+                'fields' => ['user' => 'name, address'],
+                'include' => ['contacts'],
+                'sort' => ['-name'],
+                'page' => ['number' => '1'],
+                'filter' => ['age' => '21'],
+                'profile' => '',
+            ],
         );
 
         $request->validateQueryParams();
@@ -216,16 +187,14 @@ class JsonApiRequestTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validateInvalidQueryParams(): void
     {
         $request = $this->createRequestWithQueryParams(
             [
-                "fields" => ["user" => "name, address"],
-                "paginate" => ["-name"],
-            ]
+                'fields' => ['user' => 'name, address'],
+                'paginate' => ['-name'],
+            ],
         );
 
         $this->expectException(QueryParamUnrecognized::class);
@@ -233,9 +202,7 @@ class JsonApiRequestTest extends TestCase
         $request->validateQueryParams();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validateTopLevelMembersWithoutBody(): void
     {
         $request = $this->createRequest();
@@ -245,13 +212,11 @@ class JsonApiRequestTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validateTopLevelMembersWhenEmpty(): void
     {
         $request = $this->createRequestWithJsonBody(
-            []
+            [],
         );
 
         // FIXME https://github.com/woohoolabs/yin/issues/101
@@ -262,16 +227,14 @@ class JsonApiRequestTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validateTopLevelMembersWhenDataAndErrors(): void
     {
         $request = $this->createRequestWithJsonBody(
             [
-                "data" => [],
-                "errors" => [],
-            ]
+                'data' => [],
+                'errors' => [],
+            ],
         );
 
         $this->expectException(TopLevelMembersIncompatible::class);
@@ -279,16 +242,14 @@ class JsonApiRequestTest extends TestCase
         $request->validateTopLevelMembers();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validateTopLevelMembersWhenIncludedWithoutData(): void
     {
         $request = $this->createRequestWithJsonBody(
             [
-                "errors" => [],
-                "included" => [],
-            ]
+                'errors' => [],
+                'included' => [],
+            ],
         );
 
         $this->expectException(TopLevelMemberNotAllowed::class);
@@ -296,15 +257,13 @@ class JsonApiRequestTest extends TestCase
         $request->validateTopLevelMembers();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validateTopLevelMembersWhenData(): void
     {
         $request = $this->createRequestWithJsonBody(
             [
-                "data" => [],
-            ]
+                'data' => [],
+            ],
         );
 
         $request->validateTopLevelMembers();
@@ -312,16 +271,14 @@ class JsonApiRequestTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validateTopLevelMembersWhenDataAndIncluded(): void
     {
         $request = $this->createRequestWithJsonBody(
             [
-                "data" => [],
-                "included" => [],
-            ]
+                'data' => [],
+                'included' => [],
+            ],
         );
 
         $request->validateTopLevelMembers();
@@ -329,15 +286,13 @@ class JsonApiRequestTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validateTopLevelMembersWhenErrors(): void
     {
         $request = $this->createRequestWithJsonBody(
             [
-                "errors" => [],
-            ]
+                'errors' => [],
+            ],
         );
 
         $request->validateTopLevelMembers();
@@ -345,341 +300,295 @@ class JsonApiRequestTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getIncludedFieldsWhenEmpty(): void
     {
         $request = $this->createRequestWithQueryParams([]);
 
-        $includedFields = $request->getIncludedFields("");
+        $includedFields = $request->getIncludedFields('');
 
-        $this->assertEquals([], $includedFields);
+        self::assertSame([], $includedFields);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getIncludedFieldsForResource(): void
     {
         $request = $this->createRequestWithQueryParams(
             [
-                "fields" => [
-                    "book" => "title,pages",
+                'fields' => [
+                    'book' => 'title,pages',
                 ],
-            ]
+            ],
         );
 
-        $includedFields = $request->getIncludedFields("book");
+        $includedFields = $request->getIncludedFields('book');
 
-        $this->assertEquals(["title", "pages"], $includedFields);
+        self::assertSame(['title', 'pages'], $includedFields);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getIncludedFieldsForUnspecifiedResource(): void
     {
         $request = $this->createRequestWithQueryParams(
             [
-                "fields" => [
-                    "book" => "title,pages",
+                'fields' => [
+                    'book' => 'title,pages',
                 ],
-            ]
+            ],
         );
 
-        $includedFields = $request->getIncludedFields("newspaper");
+        $includedFields = $request->getIncludedFields('newspaper');
 
-        $this->assertEquals([], $includedFields);
+        self::assertSame([], $includedFields);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getIncludedFieldWhenMalformed(): void
     {
         $request = $this->createRequestWithQueryParams(
             [
-                "fields" => "",
-            ]
+                'fields' => '',
+            ],
         );
 
         $this->expectException(QueryParamMalformed::class);
 
-        $request->getIncludedFields("");
+        $request->getIncludedFields('');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getIncludedFieldWhenFieldMalformed(): void
     {
         $request = $this->createRequestWithQueryParams(
             [
-                "fields" => [
-                    "book" => [],
+                'fields' => [
+                    'book' => [],
                 ],
-            ]
+            ],
         );
 
         $this->expectException(QueryParamMalformed::class);
 
-        $request->getIncludedFields("");
+        $request->getIncludedFields('');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function isIncludedFieldWhenAllFieldsRequested(): void
     {
-        $request = $this->createRequestWithQueryParams(["fields" => []]);
-        $this->assertTrue($request->isIncludedField("book", "title"));
+        $request = $this->createRequestWithQueryParams(['fields' => []]);
+        self::assertTrue($request->isIncludedField('book', 'title'));
 
         $request = $this->createRequestWithQueryParams([]);
-        $this->assertTrue($request->isIncludedField("book", "title"));
+        self::assertTrue($request->isIncludedField('book', 'title'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function isIncludedFieldWhenNoFieldRequested(): void
     {
-        $request = $this->createRequestWithQueryParams(["fields" => ["book1" => ""]]);
+        $request = $this->createRequestWithQueryParams(['fields' => ['book1' => '']]);
 
-        $isIncludedField = $request->isIncludedField("book1", "title");
+        $isIncludedField = $request->isIncludedField('book1', 'title');
 
-        $this->assertFalse($isIncludedField);
+        self::assertFalse($isIncludedField);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function isIncludedFieldWhenGivenFieldIsSpecified(): void
     {
-        $request = $this->createRequestWithQueryParams(["fields" => ["book" => "title,pages"]]);
+        $request = $this->createRequestWithQueryParams(['fields' => ['book' => 'title,pages']]);
 
-        $isIncludedField = $request->isIncludedField("book", "title");
+        $isIncludedField = $request->isIncludedField('book', 'title');
 
-        $this->assertTrue($isIncludedField);
+        self::assertTrue($isIncludedField);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function hasIncludedRelationshipsWhenTrue(): void
     {
-        $request = $this->createRequestWithQueryParams(["include" => "authors"]);
+        $request = $this->createRequestWithQueryParams(['include' => 'authors']);
 
         $hasIncludedRelationships = $request->hasIncludedRelationships();
 
-        $this->assertTrue($hasIncludedRelationships);
+        self::assertTrue($hasIncludedRelationships);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function hasIncludedRelationshipsWhenFalse(): void
     {
-        $queryParams = ["include" => ""];
+        $queryParams = ['include' => ''];
 
         $request = $this->createRequestWithQueryParams($queryParams);
-        $this->assertFalse($request->hasIncludedRelationships());
+        self::assertFalse($request->hasIncludedRelationships());
 
         $queryParams = [];
 
         $request = $this->createRequestWithQueryParams($queryParams);
-        $this->assertFalse($request->hasIncludedRelationships());
+        self::assertFalse($request->hasIncludedRelationships());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getIncludedEmptyRelationshipsWhenEmpty(): void
     {
-        $baseRelationshipPath = "book";
+        $baseRelationshipPath = 'book';
         $includedRelationships = [];
-        $queryParams = ["include" => ""];
+        $queryParams = ['include' => ''];
 
         $request = $this->createRequestWithQueryParams($queryParams);
-        $this->assertEquals($includedRelationships, $request->getIncludedRelationships($baseRelationshipPath));
+        self::assertSame($includedRelationships, $request->getIncludedRelationships($baseRelationshipPath));
 
-        $baseRelationshipPath = "book";
+        $baseRelationshipPath = 'book';
         $includedRelationships = [];
         $queryParams = [];
 
         $request = $this->createRequestWithQueryParams($queryParams);
-        $this->assertEquals($includedRelationships, $request->getIncludedRelationships($baseRelationshipPath));
+        self::assertSame($includedRelationships, $request->getIncludedRelationships($baseRelationshipPath));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getIncludedRelationshipsForPrimaryResource(): void
     {
-        $baseRelationshipPath = "";
-        $includedRelationships = ["authors"];
-        $queryParams = ["include" => implode(",", $includedRelationships)];
+        $baseRelationshipPath = '';
+        $includedRelationships = ['authors'];
+        $queryParams = ['include' => implode(',', $includedRelationships)];
 
         $request = $this->createRequestWithQueryParams($queryParams);
-        $this->assertEquals($includedRelationships, $request->getIncludedRelationships($baseRelationshipPath));
+        self::assertSame($includedRelationships, $request->getIncludedRelationships($baseRelationshipPath));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getIncludedRelationshipsForEmbeddedResource(): void
     {
-        $baseRelationshipPath = "book";
-        $includedRelationships = ["authors"];
-        $queryParams = ["include" => "book,book.authors"];
+        $baseRelationshipPath = 'book';
+        $includedRelationships = ['authors'];
+        $queryParams = ['include' => 'book,book.authors'];
 
         $request = $this->createRequestWithQueryParams($queryParams);
-        $this->assertEquals($includedRelationships, $request->getIncludedRelationships($baseRelationshipPath));
+        self::assertSame($includedRelationships, $request->getIncludedRelationships($baseRelationshipPath));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getIncludedRelationshipsForMultipleEmbeddedResource(): void
     {
-        $baseRelationshipPath = "book.authors";
-        $includedRelationships = ["contacts", "address"];
-        $queryParams = ["include" => "book,book.authors,book.authors.contacts,book.authors.address"];
+        $baseRelationshipPath = 'book.authors';
+        $includedRelationships = ['contacts', 'address'];
+        $queryParams = ['include' => 'book,book.authors,book.authors.contacts,book.authors.address'];
 
         $request = $this->createRequestWithQueryParams($queryParams);
-        $this->assertEquals($includedRelationships, $request->getIncludedRelationships($baseRelationshipPath));
+        self::assertSame($includedRelationships, $request->getIncludedRelationships($baseRelationshipPath));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getIncludedRelationshipsWhenMalformed(): void
     {
         $this->expectException(QueryParamMalformed::class);
 
-        $queryParams = ["include" => []];
+        $queryParams = ['include' => []];
 
         $request = $this->createRequestWithQueryParams($queryParams);
-        $request->getIncludedRelationships("");
+        $request->getIncludedRelationships('');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function isIncludedRelationshipForPrimaryResourceWhenEmpty(): void
     {
-        $baseRelationshipPath = "";
-        $requiredRelationship = "authors";
+        $baseRelationshipPath = '';
+        $requiredRelationship = 'authors';
         $defaultRelationships = [];
-        $queryParams = ["include" => ""];
+        $queryParams = ['include' => ''];
 
         $request = $this->createRequestWithQueryParams($queryParams);
-        $this->assertFalse(
-            $request->isIncludedRelationship($baseRelationshipPath, $requiredRelationship, $defaultRelationships)
+        self::assertFalse(
+            $request->isIncludedRelationship($baseRelationshipPath, $requiredRelationship, $defaultRelationships),
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function isIncludedRelationshipForPrimaryResourceWhenEmptyWithDefault(): void
     {
-        $baseRelationshipPath = "";
-        $requiredRelationship = "authors";
-        $defaultRelationships = ["publisher" => true];
+        $baseRelationshipPath = '';
+        $requiredRelationship = 'authors';
+        $defaultRelationships = ['publisher' => true];
         $queryParams = [];
 
         $request = $this->createRequestWithQueryParams($queryParams);
-        $this->assertFalse(
-            $request->isIncludedRelationship($baseRelationshipPath, $requiredRelationship, $defaultRelationships)
+        self::assertFalse(
+            $request->isIncludedRelationship($baseRelationshipPath, $requiredRelationship, $defaultRelationships),
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function isIncludedRelationshipForPrimaryResourceWithDefault(): void
     {
-        $baseRelationshipPath = "";
-        $requiredRelationship = "authors";
-        $defaultRelationships = ["publisher" => true];
-        $queryParams = ["include" => "editors"];
+        $baseRelationshipPath = '';
+        $requiredRelationship = 'authors';
+        $defaultRelationships = ['publisher' => true];
+        $queryParams = ['include' => 'editors'];
 
         $request = $this->createRequestWithQueryParams($queryParams);
-        $this->assertFalse(
-            $request->isIncludedRelationship($baseRelationshipPath, $requiredRelationship, $defaultRelationships)
+        self::assertFalse(
+            $request->isIncludedRelationship($baseRelationshipPath, $requiredRelationship, $defaultRelationships),
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function isIncludedRelationshipForEmbeddedResource(): void
     {
-        $baseRelationshipPath = "authors";
-        $requiredRelationship = "contacts";
+        $baseRelationshipPath = 'authors';
+        $requiredRelationship = 'contacts';
         $defaultRelationships = [];
-        $queryParams = ["include" => "authors,authors.contacts"];
+        $queryParams = ['include' => 'authors,authors.contacts'];
 
         $request = $this->createRequestWithQueryParams($queryParams);
-        $this->assertTrue(
-            $request->isIncludedRelationship($baseRelationshipPath, $requiredRelationship, $defaultRelationships)
+        self::assertTrue(
+            $request->isIncludedRelationship($baseRelationshipPath, $requiredRelationship, $defaultRelationships),
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function isIncludedRelationshipForEmbeddedResourceWhenDefaulted(): void
     {
-        $baseRelationshipPath = "authors";
-        $requiredRelationship = "contacts";
-        $defaultRelationships = ["contacts" => true];
-        $queryParams = ["include" => ""];
+        $baseRelationshipPath = 'authors';
+        $requiredRelationship = 'contacts';
+        $defaultRelationships = ['contacts' => true];
+        $queryParams = ['include' => ''];
 
         $request = $this->createRequestWithQueryParams($queryParams);
-        $this->assertFalse(
-            $request->isIncludedRelationship($baseRelationshipPath, $requiredRelationship, $defaultRelationships)
+        self::assertFalse(
+            $request->isIncludedRelationship($baseRelationshipPath, $requiredRelationship, $defaultRelationships),
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getSortingWhenEmpty(): void
     {
         $sorting = [];
-        $queryParams = ["sort" => ""];
+        $queryParams = ['sort' => ''];
 
         $request = $this->createRequestWithQueryParams($queryParams);
-        $this->assertEquals($sorting, $request->getSorting());
+        self::assertSame($sorting, $request->getSorting());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getSortingWhenNotEmpty(): void
     {
         $request = $this->createRequestWithQueryParams(
             [
-                "sort" => "name,age,sex",
-            ]
+                'sort' => 'name,age,sex',
+            ],
         );
 
         $sorting = $request->getSorting();
 
-        $this->assertEquals(["name", "age", "sex"], $sorting);
+        self::assertSame(['name', 'age', 'sex'], $sorting);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getSortingWhenMalformed(): void
     {
         $request = $this->createRequestWithQueryParams(
             [
-                "sort" => ["name" => "asc"],
-            ]
+                'sort' => ['name' => 'asc'],
+            ],
         );
 
         $this->expectException(QueryParamMalformed::class);
@@ -687,43 +596,37 @@ class JsonApiRequestTest extends TestCase
         $request->getSorting();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getPaginationWhenEmpty(): void
     {
         $pagination = [];
-        $queryParams = ["page" => []];
+        $queryParams = ['page' => []];
 
         $request = $this->createRequestWithQueryParams($queryParams);
-        $this->assertEquals($pagination, $request->getPagination());
+        self::assertSame($pagination, $request->getPagination());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getPaginationWhenNotEmpty(): void
     {
         $request = $this->createRequestWithQueryParams(
             [
-                "page" => ["number" => "1", "size" => "10"],
-            ]
+                'page' => ['number' => '1', 'size' => '10'],
+            ],
         );
 
         $pagination = $request->getPagination();
 
-        $this->assertEquals(["number" => "1", "size" => "10"], $pagination);
+        self::assertSame(['number' => '1', 'size' => '10'], $pagination);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getPaginationWhenMalformed(): void
     {
         $request = $this->createRequestWithQueryParams(
             [
-                "page" => "",
-            ]
+                'page' => '',
+            ],
         );
 
         $this->expectException(QueryParamMalformed::class);
@@ -731,47 +634,41 @@ class JsonApiRequestTest extends TestCase
         $request->getPagination();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getFilteringWhenEmpty(): void
     {
         $request = $this->createRequestWithQueryParams(
             [
-                "filter" => [],
-            ]
+                'filter' => [],
+            ],
         );
 
         $filtering = $request->getFiltering();
 
-        $this->assertEmpty($filtering);
+        self::assertEmpty($filtering);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getFilteringWhenNotEmpty(): void
     {
         $request = $this->createRequestWithQueryParams(
             [
-                "filter" => ["name" => "John"],
-            ]
+                'filter' => ['name' => 'John'],
+            ],
         );
 
         $filtering = $request->getFiltering();
 
-        $this->assertEquals(["name" => "John"], $filtering);
+        self::assertSame(['name' => 'John'], $filtering);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getFilteringWhenMalformed(): void
     {
         $request = $this->createRequestWithQueryParams(
             [
-                "filter" => "",
-            ]
+                'filter' => '',
+            ],
         );
 
         $this->expectException(QueryParamMalformed::class);
@@ -779,215 +676,189 @@ class JsonApiRequestTest extends TestCase
         $request->getFiltering();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getFilteringParam(): void
     {
         $request = $this->createRequestWithQueryParams(
             [
-                "filter" => ["name" => "John"],
-            ]
+                'filter' => ['name' => 'John'],
+            ],
         );
 
-        $filteringParam = $request->getFilteringParam("name");
+        $filteringParam = $request->getFilteringParam('name');
 
-        $this->assertEquals("John", $filteringParam);
+        self::assertSame('John', $filteringParam);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDefaultFilteringParamWhenNotFound(): void
     {
         $request = $this->createRequestWithQueryParams(
             [
-                "filter" => ["name" => "John"],
-            ]
+                'filter' => ['name' => 'John'],
+            ],
         );
 
-        $filteringParam = $request->getFilteringParam("age", false);
+        $filteringParam = $request->getFilteringParam('age', false);
 
-        $this->assertFalse($filteringParam);
+        self::assertFalse($filteringParam);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getAppliedProfilesWhenEmpty(): void
     {
-        $request = $this->createRequestWithHeader("content-type", "application/vnd.api+json");
+        $request = $this->createRequestWithHeader('content-type', 'application/vnd.api+json');
 
         $profiles = $request->getAppliedProfiles();
 
-        $this->assertEmpty($profiles);
+        self::assertEmpty($profiles);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getAppliedProfilesWhenOneProfile(): void
     {
         $request = $this->createRequestWithHeader(
-            "content-type",
-            "application/vnd.api+json;profile=https://example.com/profiles/last-modified"
+            'content-type',
+            'application/vnd.api+json;profile=https://example.com/profiles/last-modified',
         );
 
         $profiles = $request->getAppliedProfiles();
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "https://example.com/profiles/last-modified",
+                'https://example.com/profiles/last-modified',
             ],
-            $profiles
+            $profiles,
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getAppliedProfilesWhenTwoProfiles(): void
     {
         $request = $this->createRequestWithHeader(
-            "content-type",
-            'application/vnd.api+json;profile="https://example.com/profiles/last-modified https://example.com/profiles/created"'
+            'content-type',
+            'application/vnd.api+json;profile="https://example.com/profiles/last-modified https://example.com/profiles/created"',
         );
 
         $profiles = $request->getAppliedProfiles();
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "https://example.com/profiles/last-modified",
-                "https://example.com/profiles/created",
+                'https://example.com/profiles/last-modified',
+                'https://example.com/profiles/created',
             ],
-            $profiles
+            $profiles,
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getAppliedProfilesWhenMultipleJsonApiContentTypes(): void
     {
         $request = $this->createRequestWithHeader(
-            "content-type",
+            'content-type',
             'application/vnd.api+json;profile = https://example.com/profiles/last-modified, ' .
-            'application/vnd.api+json;profile="https://example.com/profiles/last-modified https://example.com/profiles/created"'
+            'application/vnd.api+json;profile="https://example.com/profiles/last-modified https://example.com/profiles/created"',
         );
 
         $profiles = $request->getAppliedProfiles();
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "https://example.com/profiles/last-modified",
-                "https://example.com/profiles/created",
+                'https://example.com/profiles/last-modified',
+                'https://example.com/profiles/created',
             ],
-            $profiles
+            $profiles,
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function isProfileAppliedWhenTrue(): void
     {
         $request = $this->createRequestWithHeader(
-            "content-type",
-            'application/vnd.api+json;profile="https://example.com/profiles/last-modified https://example.com/profiles/created"'
+            'content-type',
+            'application/vnd.api+json;profile="https://example.com/profiles/last-modified https://example.com/profiles/created"',
         );
 
-        $isProfileApplied = $request->isProfileApplied("https://example.com/profiles/created");
+        $isProfileApplied = $request->isProfileApplied('https://example.com/profiles/created');
 
-        $this->assertTrue($isProfileApplied);
+        self::assertTrue($isProfileApplied);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function isProfileAppliedWhenFalse(): void
     {
         $request = $this->createRequestWithHeader(
-            "content-type",
-            'application/vnd.api+json;profile="https://example.com/profiles/last-modified https://example.com/profiles/created"'
+            'content-type',
+            'application/vnd.api+json;profile="https://example.com/profiles/last-modified https://example.com/profiles/created"',
         );
 
-        $isProfileApplied = $request->isProfileApplied("https://example.com/profiles/inexistent-profile");
+        $isProfileApplied = $request->isProfileApplied('https://example.com/profiles/inexistent-profile');
 
-        $this->assertFalse($isProfileApplied);
+        self::assertFalse($isProfileApplied);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getRequestedProfilesWhenEmpty(): void
     {
-        $request = $this->createRequestWithHeader("accept", "application/vnd.api+json");
+        $request = $this->createRequestWithHeader('accept', 'application/vnd.api+json');
 
         $profiles = $request->getRequestedProfiles();
 
-        $this->assertEmpty($profiles);
+        self::assertEmpty($profiles);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getRequestedProfilesWhenTwoProfiles(): void
     {
         $request = $this->createRequestWithHeader(
-            "accept",
-            'application/vnd.api+json;profile="https://example.com/profiles/last-modified https://example.com/profiles/created"'
+            'accept',
+            'application/vnd.api+json;profile="https://example.com/profiles/last-modified https://example.com/profiles/created"',
         );
 
         $profiles = $request->getRequestedProfiles();
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "https://example.com/profiles/last-modified",
-                "https://example.com/profiles/created",
+                'https://example.com/profiles/last-modified',
+                'https://example.com/profiles/created',
             ],
-            $profiles
+            $profiles,
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function isProfileRequestedWhenTrue(): void
     {
         $request = $this->createRequestWithHeader(
-            "accept",
-            'application/vnd.api+json;profile="https://example.com/profiles/last-modified https://example.com/profiles/created"'
+            'accept',
+            'application/vnd.api+json;profile="https://example.com/profiles/last-modified https://example.com/profiles/created"',
         );
 
-        $isProfileRequested = $request->isProfileRequested("https://example.com/profiles/created");
+        $isProfileRequested = $request->isProfileRequested('https://example.com/profiles/created');
 
-        $this->assertTrue($isProfileRequested);
+        self::assertTrue($isProfileRequested);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function isProfileRequestedWhenFalse(): void
     {
         $request = $this->createRequestWithHeader(
-            "accept",
-            'application/vnd.api+json;profile="https://example.com/profiles/last-modified https://example.com/profiles/created"'
+            'accept',
+            'application/vnd.api+json;profile="https://example.com/profiles/last-modified https://example.com/profiles/created"',
         );
 
-        $isProfileRequested = $request->isProfileRequested("https://example.com/profiles/inexistent-profile");
+        $isProfileRequested = $request->isProfileRequested('https://example.com/profiles/inexistent-profile');
 
-        $this->assertFalse($isProfileRequested);
+        self::assertFalse($isProfileRequested);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getRequiredProfilesWhenMalformed(): void
     {
         $request = $this->createRequestWithQueryParams(
             [
-                "profile" => [],
-            ]
+                'profile' => [],
+            ],
         );
 
         $this->expectException(QueryParamMalformed::class);
@@ -995,89 +866,79 @@ class JsonApiRequestTest extends TestCase
         $request->getRequiredProfiles();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getRequiredProfilesWhenEmpty(): void
     {
         $request = $this->createRequestWithQueryParams(
             [
-                "profile" => "",
-            ]
+                'profile' => '',
+            ],
         );
 
         $profiles = $request->getRequiredProfiles();
 
-        $this->assertEmpty($profiles);
+        self::assertEmpty($profiles);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getRequiredProfilesWhenTwoProfiles(): void
     {
         $request = $this->createRequestWithQueryParams(
             [
-                "profile" => "https://example.com/profiles/last-modified https://example.com/profiles/created",
-            ]
+                'profile' => 'https://example.com/profiles/last-modified https://example.com/profiles/created',
+            ],
         );
 
         $profiles = $request->getRequiredProfiles();
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "https://example.com/profiles/last-modified",
-                "https://example.com/profiles/created",
+                'https://example.com/profiles/last-modified',
+                'https://example.com/profiles/created',
             ],
-            $profiles
+            $profiles,
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function isProfileRequiredWhenTrue(): void
     {
         $request = $this->createRequestWithQueryParams(
             [
-                "profile" => "https://example.com/profiles/last-modified https://example.com/profiles/created",
-            ]
+                'profile' => 'https://example.com/profiles/last-modified https://example.com/profiles/created',
+            ],
         );
 
-        $isProfileRequired = $request->isProfileRequired("https://example.com/profiles/created");
+        $isProfileRequired = $request->isProfileRequired('https://example.com/profiles/created');
 
-        $this->assertTrue($isProfileRequired);
+        self::assertTrue($isProfileRequired);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function isProfileRequiredWhenFalse(): void
     {
         $request = $this->createRequestWithQueryParams(
             [
-                "profile" => "https://example.com/profiles/last-modified https://example.com/profiles/created",
-            ]
+                'profile' => 'https://example.com/profiles/last-modified https://example.com/profiles/created',
+            ],
         );
 
-        $isProfileRequired = $request->isProfileRequired("https://example.com/profiles/inexistent-profile");
+        $isProfileRequired = $request->isProfileRequired('https://example.com/profiles/inexistent-profile');
 
-        $this->assertFalse($isProfileRequired);
+        self::assertFalse($isProfileRequired);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function withHeaderInvalidatesParsedJsonApiHeaders(): void
     {
         $request = $this->createRequest()
             ->withHeader(
-                "content-type",
-                "application/vnd.api+json;profile=https://example.com/profiles/last-modified"
+                'content-type',
+                'application/vnd.api+json;profile=https://example.com/profiles/last-modified',
             )
             ->withHeader(
-                "accept",
-                "application/vnd.api+json;profile=https://example.com/profiles/last-modified"
+                'accept',
+                'application/vnd.api+json;profile=https://example.com/profiles/last-modified',
             );
 
         $request->getAppliedProfiles();
@@ -1085,392 +946,356 @@ class JsonApiRequestTest extends TestCase
 
         $request = $request
             ->withHeader(
-                "content-type",
-                "application/vnd.api+json;profile=https://example.com/profiles/created"
+                'content-type',
+                'application/vnd.api+json;profile=https://example.com/profiles/created',
             )
             ->withHeader(
-                "accept",
-                "application/vnd.api+json;profile=https://example.com/profiles/created"
+                'accept',
+                'application/vnd.api+json;profile=https://example.com/profiles/created',
             );
 
-        $this->assertEquals(["https://example.com/profiles/created"], $request->getAppliedProfiles());
-        $this->assertEquals(["https://example.com/profiles/created"], $request->getRequestedProfiles());
+        self::assertSame(['https://example.com/profiles/created'], $request->getAppliedProfiles());
+        self::assertSame(['https://example.com/profiles/created'], $request->getRequestedProfiles());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getResourceWhenEmpty(): void
     {
         $request = $this->createRequestWithJsonBody([]);
 
         $resource = $request->getResource();
 
-        $this->assertNull($resource);
+        self::assertNull($resource);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getResource(): void
     {
         $request = $this->createRequestWithJsonBody(
             [
-                "data" => [],
-            ]
+                'data' => [],
+            ],
         );
 
         $resource = $request->getResource();
 
-        $this->assertEquals([], $resource);
+        self::assertSame([], $resource);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getResourceTypeWhenEmpty(): void
     {
         $request = $this->createRequestWithJsonBody([]);
 
         $type = $request->getResourceType();
 
-        $this->assertNull($type);
+        self::assertNull($type);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getResourceType(): void
     {
         $request = $this->createRequestWithJsonBody(
             [
-                "data" => [
-                    "type" => "user",
+                'data' => [
+                    'type' => 'user',
                 ],
-            ]
+            ],
         );
 
         $type = $request->getResourceType();
 
-        $this->assertEquals("user", $type);
+        self::assertSame('user', $type);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getResourceIdWhenEmpty(): void
     {
         $request = $this->createRequestWithJsonBody(
             [
-                "data" => [],
-            ]
+                'data' => [],
+            ],
         );
 
         $id = $request->getResourceId();
 
-        $this->assertNull($id);
+        self::assertNull($id);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getResourceId(): void
     {
         $request = $this->createRequestWithJsonBody(
             [
-                "data" => [
-                    "id" => "1",
+                'data' => [
+                    'id' => '1',
                 ],
-            ]
+            ],
         );
 
         $id = $request->getResourceId();
 
-        $this->assertEquals("1", $id);
+        self::assertSame('1', $id);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getResourceAttributes(): void
     {
         $request = $this->createRequestWithJsonBody(
             [
-                "data" => [
-                    "type" => "dog",
-                    "id" => "1",
-                    "attributes" => [
-                        "name" => "Hot dog",
+                'data' => [
+                    'type' => 'dog',
+                    'id' => '1',
+                    'attributes' => [
+                        'name' => 'Hot dog',
                     ],
                 ],
-            ]
+            ],
         );
 
         $attributes = $request->getResourceAttributes();
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "name" => "Hot dog",
+                'name' => 'Hot dog',
             ],
-            $attributes
+            $attributes,
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getResourceAttribute(): void
     {
         $request = $this->createRequestWithJsonBody(
             [
-                "data" => [
-                    "type" => "dog",
-                    "id" => "1",
-                    "attributes" => [
-                        "name" => "Hot dog",
+                'data' => [
+                    'type' => 'dog',
+                    'id' => '1',
+                    'attributes' => [
+                        'name' => 'Hot dog',
                     ],
                 ],
-            ]
+            ],
         );
 
-        $name = $request->getResourceAttribute("name");
+        $name = $request->getResourceAttribute('name');
 
-        $this->assertEquals("Hot dog", $name);
+        self::assertSame('Hot dog', $name);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function hasToOneRelationshipWhenTrue(): void
     {
         $request = $this->createRequestWithJsonBody(
             [
-                "data" => [
-                    "type" => "dog",
-                    "id" => "1",
-                    "relationships" => [
-                        "owner" => [
-                            "data" => ["type" => "human", "id" => "1"],
+                'data' => [
+                    'type' => 'dog',
+                    'id' => '1',
+                    'relationships' => [
+                        'owner' => [
+                            'data' => ['type' => 'human', 'id' => '1'],
                         ],
                     ],
                 ],
-            ]
+            ],
         );
 
-        $hasToOneRelationship = $request->hasToOneRelationship("owner");
+        $hasToOneRelationship = $request->hasToOneRelationship('owner');
 
-        $this->assertTrue($hasToOneRelationship);
+        self::assertTrue($hasToOneRelationship);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function hasToOneRelationshipWhenFalse(): void
     {
         $request = $this->createRequestWithJsonBody(
             [
-                "data" => [
-                    "type" => "dog",
-                    "id" => "1",
-                    "relationships" => [],
+                'data' => [
+                    'type' => 'dog',
+                    'id' => '1',
+                    'relationships' => [],
                 ],
-            ]
+            ],
         );
 
-        $hasToOneRelationship = $request->hasToOneRelationship("owner");
+        $hasToOneRelationship = $request->hasToOneRelationship('owner');
 
-        $this->assertFalse($hasToOneRelationship);
+        self::assertFalse($hasToOneRelationship);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getToOneRelationship(): void
     {
         $request = $this->createRequestWithJsonBody(
             [
-                "data" => [
-                    "type" => "dog",
-                    "id" => "1",
-                    "relationships" => [
-                        "owner" => [
-                            "data" => ["type" => "human", "id" => "1"],
+                'data' => [
+                    'type' => 'dog',
+                    'id' => '1',
+                    'relationships' => [
+                        'owner' => [
+                            'data' => ['type' => 'human', 'id' => '1'],
                         ],
                     ],
                 ],
-            ]
+            ],
         );
 
-        $resourceIdentifier = $request->getToOneRelationship("owner")->getResourceIdentifier();
-        $type = $resourceIdentifier !== null ? $resourceIdentifier->getType() : "";
-        $id = $resourceIdentifier !== null ? $resourceIdentifier->getId() : "";
+        $resourceIdentifier = $request->getToOneRelationship('owner')->getResourceIdentifier();
+        $type = $resourceIdentifier !== null ? $resourceIdentifier->getType() : '';
+        $id = $resourceIdentifier !== null ? $resourceIdentifier->getId() : '';
 
-        $this->assertEquals("human", $type);
-        $this->assertEquals("1", $id);
+        self::assertSame('human', $type);
+        self::assertSame('1', $id);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDeletingToOneRelationship(): void
     {
         $request = $this->createRequestWithJsonBody(
             [
-                "data" => [
-                    "type" => "dog",
-                    "id" => "1",
-                    "relationships" => [
-                        "owner" => [
-                            "data" => null,
+                'data' => [
+                    'type' => 'dog',
+                    'id' => '1',
+                    'relationships' => [
+                        'owner' => [
+                            'data' => null,
                         ],
                     ],
                 ],
-            ]
+            ],
         );
 
-        $isEmpty = $request->getToOneRelationship("owner")->isEmpty();
+        $isEmpty = $request->getToOneRelationship('owner')->isEmpty();
 
-        $this->assertTrue($isEmpty);
+        self::assertTrue($isEmpty);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getToOneRelationshiWhenNotExists(): void
     {
         $request = $this->createRequestWithJsonBody(
             [
-                "data" => [
-                    "type" => "dog",
-                    "id" => "1",
-                    "relationships" => [
+                'data' => [
+                    'type' => 'dog',
+                    'id' => '1',
+                    'relationships' => [
                     ],
                 ],
-            ]
+            ],
         );
 
         $this->expectException(RelationshipNotExists::class);
 
-        $request->getToOneRelationship("owner");
+        $request->getToOneRelationship('owner');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function hasToManyRelationshipWhenTrue(): void
     {
         $request = $this->createRequestWithJsonBody(
             [
-                "data" => [
-                    "type" => "dog",
-                    "id" => "1",
-                    "relationships" => [
-                        "friends" => [
-                            "data" => [
-                                ["type" => "dog", "id" => "2"],
-                                ["type" => "dog", "id" => "3"],
+                'data' => [
+                    'type' => 'dog',
+                    'id' => '1',
+                    'relationships' => [
+                        'friends' => [
+                            'data' => [
+                                ['type' => 'dog', 'id' => '2'],
+                                ['type' => 'dog', 'id' => '3'],
                             ],
                         ],
                     ],
                 ],
-            ]
+            ],
         );
 
-        $hasRelationship = $request->hasToManyRelationship("friends");
+        $hasRelationship = $request->hasToManyRelationship('friends');
 
-        $this->assertTrue($hasRelationship);
+        self::assertTrue($hasRelationship);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function hasToManyRelationshipWhenFalse(): void
     {
         $request = $this->createRequestWithJsonBody(
             [
-                "data" => [
-                    "type" => "dog",
-                    "id" => "1",
-                    "relationships" => [
+                'data' => [
+                    'type' => 'dog',
+                    'id' => '1',
+                    'relationships' => [
                     ],
                 ],
-            ]
+            ],
         );
 
-        $hasRelationship = $request->hasToManyRelationship("friends");
+        $hasRelationship = $request->hasToManyRelationship('friends');
 
-        $this->assertFalse($hasRelationship);
+        self::assertFalse($hasRelationship);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getToManyRelationship(): void
     {
         $request = $this->createRequestWithJsonBody(
             [
-                "data" => [
-                    "type" => "dog",
-                    "id" => "1",
-                    "relationships" => [
-                        "friends" => [
-                            "data" => [
-                                ["type" => "dog", "id" => "2"],
-                                ["type" => "dog", "id" => "3"],
+                'data' => [
+                    'type' => 'dog',
+                    'id' => '1',
+                    'relationships' => [
+                        'friends' => [
+                            'data' => [
+                                ['type' => 'dog', 'id' => '2'],
+                                ['type' => 'dog', 'id' => '3'],
                             ],
                         ],
                     ],
                 ],
-            ]
+            ],
         );
 
-        $resourceIdentifiers = $request->getToManyRelationship("friends")->getResourceIdentifiers();
+        $resourceIdentifiers = $request->getToManyRelationship('friends')->getResourceIdentifiers();
 
-        $this->assertEquals("dog", $resourceIdentifiers[0]->getType());
-        $this->assertEquals("2", $resourceIdentifiers[0]->getId());
-        $this->assertEquals("dog", $resourceIdentifiers[1]->getType());
-        $this->assertEquals("3", $resourceIdentifiers[1]->getId());
+        self::assertSame('dog', $resourceIdentifiers[0]->getType());
+        self::assertSame('2', $resourceIdentifiers[0]->getId());
+        self::assertSame('dog', $resourceIdentifiers[1]->getType());
+        self::assertSame('3', $resourceIdentifiers[1]->getId());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getToManyRelationshipWhenNotExists(): void
     {
         $request = $this->createRequestWithJsonBody(
             [
-                "data" => [
-                    "type" => "dog",
-                    "id" => "1",
-                    "relationships" => [
+                'data' => [
+                    'type' => 'dog',
+                    'id' => '1',
+                    'relationships' => [
                     ],
                 ],
-            ]
+            ],
         );
 
         $this->expectException(RelationshipNotExists::class);
 
-        $request->getToManyRelationship("friends");
+        $request->getToManyRelationship('friends');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function withQueryParamsInvalidatesParsedJsonApiQueryParams(): void
     {
         $request = $this->createRequestWithQueryParams(
             [
-                "fields" => ["book" => "title,pages"],
-                "include" => "authors",
-                "page" => ["offset" => 0, "limit" => 10],
-                "filter" => ["title" => "Working Effectively with Unit Tests"],
-                "sort" => "title",
-                "profile" => "https://example.com/profiles/last-modified",
-            ]
+                'fields' => ['book' => 'title,pages'],
+                'include' => 'authors',
+                'page' => ['offset' => 0, 'limit' => 10],
+                'filter' => ['title' => 'Working Effectively with Unit Tests'],
+                'sort' => 'title',
+                'profile' => 'https://example.com/profiles/last-modified',
+            ],
         );
 
-        $request->getIncludedFields("");
-        $request->getIncludedRelationships("");
+        $request->getIncludedFields('');
+        $request->getIncludedRelationships('');
         $request->getPagination();
         $request->getFiltering();
         $request->getSorting();
@@ -1478,21 +1303,21 @@ class JsonApiRequestTest extends TestCase
 
         $request = $request->withQueryParams(
             [
-                "fields" => ["book" => "isbn"],
-                "include" => "publisher",
-                "page" => ["number" => 1, "size" => 10],
-                "filter" => ["title" => "Building Microservices"],
-                "sort" => "isbn",
-                "profile" => "https://example.com/profiles/created",
-            ]
+                'fields' => ['book' => 'isbn'],
+                'include' => 'publisher',
+                'page' => ['number' => 1, 'size' => 10],
+                'filter' => ['title' => 'Building Microservices'],
+                'sort' => 'isbn',
+                'profile' => 'https://example.com/profiles/created',
+            ],
         );
 
-        $this->assertEquals(["isbn"], $request->getIncludedFields("book"));
-        $this->assertEquals(["publisher"], $request->getIncludedRelationships(""));
-        $this->assertEquals(["number" => 1, "size" => 10], $request->getPagination());
-        $this->assertEquals(["title" => "Building Microservices"], $request->getFiltering());
-        $this->assertEquals(["isbn"], $request->getSorting());
-        $this->assertEquals(["https://example.com/profiles/created"], $request->getRequiredProfiles());
+        self::assertSame(['isbn'], $request->getIncludedFields('book'));
+        self::assertSame(['publisher'], $request->getIncludedRelationships(''));
+        self::assertSame(['number' => 1, 'size' => 10], $request->getPagination());
+        self::assertSame(['title' => 'Building Microservices'], $request->getFiltering());
+        self::assertSame(['isbn'], $request->getSorting());
+        self::assertSame(['https://example.com/profiles/created'], $request->getRequiredProfiles());
     }
 
     private function createRequest(): JsonApiRequest
@@ -1510,7 +1335,7 @@ class JsonApiRequestTest extends TestCase
 
     private function createRequestWithHeader(string $headerName, string $headerValue): JsonApiRequest
     {
-        $psrRequest = new ServerRequest([], [], null, null, "php://temp", [$headerName => $headerValue]);
+        $psrRequest = new ServerRequest([], [], null, null, 'php://temp', [$headerName => $headerValue]);
 
         return new JsonApiRequest($psrRequest, new DefaultExceptionFactory(), new JsonDeserializer());
     }

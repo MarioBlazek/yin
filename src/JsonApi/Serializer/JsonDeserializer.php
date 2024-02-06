@@ -11,28 +11,14 @@ use function json_decode;
 class JsonDeserializer implements DeserializerInterface
 {
     /**
-     * @var int
-     */
-    private $options;
-
-    /**
-     * @var positive-int
-     */
-    private $depth;
-
-    /**
      * @param positive-int $depth
      */
-    public function __construct(int $options = 0, int $depth = 512)
-    {
-        $this->options = $options;
-        $this->depth = $depth;
-    }
+    public function __construct(private readonly int $options = 0, private readonly int $depth = 512) {}
 
     /**
      * @return array|mixed|null
      */
-    public function deserialize(ServerRequestInterface $request)
+    public function deserialize(ServerRequestInterface $request): mixed
     {
         return json_decode($request->getBody()->__toString(), true, $this->depth, $this->options);
     }

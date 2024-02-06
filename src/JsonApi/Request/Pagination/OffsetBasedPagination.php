@@ -20,21 +20,21 @@ class OffsetBasedPagination
      */
     protected $limit;
 
-    public static function fromPaginationQueryParams(
-        array $paginationQueryParams,
-        int $defaultOffset = 0,
-        int $defaultLimit = 0
-    ): OffsetBasedPagination {
-        return new OffsetBasedPagination(
-            Utils::getIntegerFromQueryParam($paginationQueryParams, "offset", $defaultOffset),
-            Utils::getIntegerFromQueryParam($paginationQueryParams, "limit", $defaultLimit)
-        );
-    }
-
     public function __construct(int $offset, int $limit)
     {
         $this->offset = $offset;
         $this->limit = $limit;
+    }
+
+    public static function fromPaginationQueryParams(
+        array $paginationQueryParams,
+        int $defaultOffset = 0,
+        int $defaultLimit = 0
+    ): self {
+        return new self(
+            Utils::getIntegerFromQueryParam($paginationQueryParams, 'offset', $defaultOffset),
+            Utils::getIntegerFromQueryParam($paginationQueryParams, 'limit', $defaultLimit),
+        );
     }
 
     public function getOffset(): int
@@ -55,9 +55,9 @@ class OffsetBasedPagination
     public static function getPaginationQueryParams(int $offset, int $limit): array
     {
         return [
-            "page" => [
-                "offset" => $offset,
-                "limit" => $limit,
+            'page' => [
+                'offset' => $offset,
+                'limit' => $limit,
             ],
         ];
     }

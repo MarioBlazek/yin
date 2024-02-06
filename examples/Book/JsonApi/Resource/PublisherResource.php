@@ -29,7 +29,7 @@ class PublisherResource extends AbstractResource
      */
     public function getType($publisher): string
     {
-        return "publishers";
+        return 'publishers';
     }
 
     /**
@@ -41,7 +41,7 @@ class PublisherResource extends AbstractResource
      */
     public function getId($publisher): string
     {
-        return (string) $publisher["id"];
+        return (string) $publisher['id'];
     }
 
     /**
@@ -78,14 +78,13 @@ class PublisherResource extends AbstractResource
      * and they should return the value of the corresponding attribute.
      *
      * @param array $publisher
+     *
      * @return callable[]
      */
     public function getAttributes($publisher): array
     {
         return [
-            "name" => function (array $publisher) {
-                return $publisher["name"];
-            },
+            'name' => static fn (array $publisher) => $publisher['name'],
         ];
     }
 
@@ -107,14 +106,15 @@ class PublisherResource extends AbstractResource
      * and they should return a new relationship instance (to-one or to-many).
      *
      * @param array $publisher
+     *
      * @return callable[]
      */
     public function getRelationships($publisher): array
     {
         return [
-            "representative" => function ($publisher) {
+            'representative' => function ($publisher) {
                 return ToOneRelationship::create()
-                        ->setData($publisher["representative"], $this->representativeTransformer);
+                        ->setData($publisher['representative'], $this->representativeTransformer);
             },
         ];
     }

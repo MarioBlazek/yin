@@ -4,81 +4,70 @@ declare(strict_types=1);
 
 namespace WoohooLabs\Yin\Tests\JsonApi\Schema\Link;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use WoohooLabs\Yin\JsonApi\Schema\Link\ProfileLinkObject;
 
 class ProfileLinkObjectTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function getAliases(): void
     {
-        $link = $this->createProfileLinkObject(["keyword" => "alias"]);
+        $link = $this->createProfileLinkObject(['keyword' => 'alias']);
 
-        $this->assertEquals(["keyword" => "alias"], $link->getAliases());
+        self::assertSame(['keyword' => 'alias'], $link->getAliases());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getAliasWhenPresent(): void
     {
-        $link = $this->createProfileLinkObject(["keyword" => "alias"]);
+        $link = $this->createProfileLinkObject(['keyword' => 'alias']);
 
-        $this->assertEquals("alias", $link->getAlias("keyword"));
+        self::assertSame('alias', $link->getAlias('keyword'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getAliasWhenNotPresent(): void
     {
-        $link = $this->createProfileLinkObject(["keyword" => "alias"]);
+        $link = $this->createProfileLinkObject(['keyword' => 'alias']);
 
-        $this->assertEquals("", $link->getAlias("key"));
+        self::assertSame('', $link->getAlias('key'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addAliases(): void
     {
         $link = $this->createProfileLinkObject();
 
-        $link->addAlias("keyword1", "alias1");
-        $link->addAlias("keyword2", "alias2");
+        $link->addAlias('keyword1', 'alias1');
+        $link->addAlias('keyword2', 'alias2');
 
-        $this->assertEquals(["keyword1" => "alias1", "keyword2" => "alias2"], $link->getAliases());
+        self::assertSame(['keyword1' => 'alias1', 'keyword2' => 'alias2'], $link->getAliases());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformLinkWithAlias(): void
     {
-        $link = $this->createProfileLinkObject(["keyword" => "alias"]);
+        $link = $this->createProfileLinkObject(['keyword' => 'alias']);
 
-        $transformedLink = $link->transform("");
+        $transformedLink = $link->transform('');
 
-        $this->assertArrayHasKey("aliases", $transformedLink);
-        $this->assertEquals(["keyword" => "alias"], $transformedLink["aliases"]);
+        self::assertArrayHasKey('aliases', $transformedLink);
+        self::assertSame(['keyword' => 'alias'], $transformedLink['aliases']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformLinkWithoutAlias(): void
     {
         $link = $this->createProfileLinkObject([]);
 
-        $transformedLink = $link->transform("");
+        $transformedLink = $link->transform('');
 
-        $this->assertArrayNotHasKey("aliases", $transformedLink);
+        self::assertArrayNotHasKey('aliases', $transformedLink);
     }
 
     private function createProfileLinkObject(array $aliases = []): ProfileLinkObject
     {
-        return new ProfileLinkObject("", [], $aliases);
+        return new ProfileLinkObject('', [], $aliases);
     }
 }

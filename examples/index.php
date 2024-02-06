@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require_once "../vendor/autoload.php";
+require_once '../vendor/autoload.php';
 
 use Laminas\Diactoros\Response;
 use Laminas\Diactoros\ServerRequestFactory;
@@ -26,56 +26,56 @@ use WoohooLabs\Yin\JsonApi\Serializer\JsonDeserializer;
 
 // Defining routes
 $routes = [
-    "GET /books" => function (JsonApiRequest $request): JsonApiRequest {
+    'GET /books' => static function (JsonApiRequest $request): JsonApiRequest {
         return $request
-            ->withAttribute("action", GetBooksAction::class);
+            ->withAttribute('action', GetBooksAction::class);
     },
-    "GET /books/{id}" => function (JsonApiRequest $request, array $matches): JsonApiRequest {
+    'GET /books/{id}' => static function (JsonApiRequest $request, array $matches): JsonApiRequest {
         return $request
-            ->withAttribute("action", GetBookAction::class)
-            ->withAttribute("id", $matches[1]);
+            ->withAttribute('action', GetBookAction::class)
+            ->withAttribute('id', $matches[1]);
     },
-    "GET /books/{id}/relationships/{rel}" => function (JsonApiRequest $request, array $matches): JsonApiRequest {
+    'GET /books/{id}/relationships/{rel}' => static function (JsonApiRequest $request, array $matches): JsonApiRequest {
         return $request
-            ->withAttribute("action", GetBookRelationshipsAction::class)
-            ->withAttribute("id", $matches[1])
-            ->withAttribute("rel", $matches[2]);
+            ->withAttribute('action', GetBookRelationshipsAction::class)
+            ->withAttribute('id', $matches[1])
+            ->withAttribute('rel', $matches[2]);
     },
-    "GET /books/{id}/authors" => function (JsonApiRequest $request, array $matches): JsonApiRequest {
+    'GET /books/{id}/authors' => static function (JsonApiRequest $request, array $matches): JsonApiRequest {
         return $request
-            ->withAttribute("action", GetAuthorsOfBookAction::class)
-            ->withAttribute("id", $matches[1]);
+            ->withAttribute('action', GetAuthorsOfBookAction::class)
+            ->withAttribute('id', $matches[1]);
     },
-    "POST /books" => function (JsonApiRequest $request) {
+    'POST /books' => static function (JsonApiRequest $request) {
         return $request
-            ->withAttribute("action", CreateBookAction::class);
+            ->withAttribute('action', CreateBookAction::class);
     },
-    "PATCH /books/{id}" => function (JsonApiRequest $request, array $matches): JsonApiRequest {
+    'PATCH /books/{id}' => static function (JsonApiRequest $request, array $matches): JsonApiRequest {
         return $request
-            ->withAttribute("action", UpdateBookAction::class)
-            ->withAttribute("id", $matches[1]);
+            ->withAttribute('action', UpdateBookAction::class)
+            ->withAttribute('id', $matches[1]);
     },
-    "PATCH /books/{id}/relationships/{rel}" => function (JsonApiRequest $request, array $matches): JsonApiRequest {
+    'PATCH /books/{id}/relationships/{rel}' => static function (JsonApiRequest $request, array $matches): JsonApiRequest {
         return $request
-            ->withAttribute("action", UpdateBookRelationshipAction::class)
-            ->withAttribute("id", $matches[1])
-            ->withAttribute("rel", $matches[2]);
+            ->withAttribute('action', UpdateBookRelationshipAction::class)
+            ->withAttribute('id', $matches[1])
+            ->withAttribute('rel', $matches[2]);
     },
 
-    "GET /users" => function (JsonApiRequest $request): JsonApiRequest {
+    'GET /users' => static function (JsonApiRequest $request): JsonApiRequest {
         return $request
-            ->withAttribute("action", GetUsersAction::class);
+            ->withAttribute('action', GetUsersAction::class);
     },
-    "GET /users/{id}" => function (JsonApiRequest $request, array $matches): JsonApiRequest {
+    'GET /users/{id}' => static function (JsonApiRequest $request, array $matches): JsonApiRequest {
         return $request
-            ->withAttribute("action", GetUserAction::class)
-            ->withAttribute("id", $matches[1]);
+            ->withAttribute('action', GetUserAction::class)
+            ->withAttribute('id', $matches[1]);
     },
-    "GET /users/{id}/relationships/{rel}" => function (JsonApiRequest $request, array $matches): JsonApiRequest {
+    'GET /users/{id}/relationships/{rel}' => static function (JsonApiRequest $request, array $matches): JsonApiRequest {
         return $request
-            ->withAttribute("action", GetUserRelationshipsAction::class)
-            ->withAttribute("id", $matches[1])
-            ->withAttribute("rel", $matches[2]);
+            ->withAttribute('action', GetUserRelationshipsAction::class)
+            ->withAttribute('id', $matches[1])
+            ->withAttribute('rel', $matches[2]);
     },
 ];
 
@@ -87,17 +87,17 @@ $jsonApi = new JsonApi($request, new Response(), $exceptionFactory);
 
 // Invoking the current action
 try {
-    $request = findRoute($request, $routes, $exceptionFactory);
+    $request = \findRoute($request, $routes, $exceptionFactory);
     $jsonApi->request = $request;
-    $action = $request->getAttribute("action");
-    $response = call_user_func(new $action(), $jsonApi);
+    $action = $request->getAttribute('action');
+    $response = \call_user_func(new $action(), $jsonApi);
 } catch (JsonApiExceptionInterface $exception) {
     $response = $jsonApi->respond()->genericError($exception->getErrorDocument());
 } catch (Throwable $throwable) {
     $response = $jsonApi->respond()->genericError($exceptionFactory->createApplicationErrorException($request)->getErrorDocument());
 }
 
-$response = $response->withHeader("Access-Control-Allow-Origin", "*");
+$response = $response->withHeader('Access-Control-Allow-Origin', '*');
 
 // Emitting the response
 $emitter = new SapiEmitter();
@@ -107,16 +107,16 @@ function findRoute(JsonApiRequest $request, array $routes, ExceptionFactoryInter
 {
     $path = $request->getUri()->getPath();
     $method = $request->getMethod();
-    $requestLine = "$method $path";
+    $requestLine = "{$method} {$path}";
 
     foreach ($routes as $pattern => $route) {
         $matches = [];
-        $pattern = str_replace(
-            ["{id}", "{rel}"],
-            ["([A-Za-z0-9-]+)", "([A-Za-z0-9-]+)"],
-            $pattern
+        $pattern = \str_replace(
+            ['{id}', '{rel}'],
+            ['([A-Za-z0-9-]+)', '([A-Za-z0-9-]+)'],
+            $pattern,
         );
-        if (preg_match("#^$pattern/{0,1}$#", $requestLine, $matches) === 1) {
+        if (\preg_match("#^{$pattern}/{0,1}$#", $requestLine, $matches) === 1) {
             return $route($request, $matches);
         }
     }

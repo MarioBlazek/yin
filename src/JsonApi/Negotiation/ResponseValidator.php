@@ -13,19 +13,13 @@ use WoohooLabs\Yin\JsonApi\Serializer\SerializerInterface;
 
 class ResponseValidator extends AbstractMessageValidator
 {
-    /**
-     * @var SerializerInterface
-     */
-    private $deserializer;
-
     public function __construct(
-        SerializerInterface $deserializer,
+        private readonly SerializerInterface $deserializer,
         ExceptionFactoryInterface $exceptionFactory,
         bool $includeOriginalMessageInResponse = true,
         ?string $customSchemaPath = null
     ) {
         parent::__construct($exceptionFactory, $includeOriginalMessageInResponse, $customSchemaPath);
-        $this->deserializer = $deserializer;
     }
 
     /**
@@ -39,7 +33,7 @@ class ResponseValidator extends AbstractMessageValidator
             throw $this->exceptionFactory->createResponseBodyInvalidJsonException(
                 $response,
                 $errorMessage,
-                $this->includeOriginalMessage
+                $this->includeOriginalMessage,
             );
         }
     }
@@ -55,7 +49,7 @@ class ResponseValidator extends AbstractMessageValidator
             throw $this->exceptionFactory->createResponseBodyInvalidJsonApiException(
                 $response,
                 $errors,
-                $this->includeOriginalMessage
+                $this->includeOriginalMessage,
             );
         }
     }

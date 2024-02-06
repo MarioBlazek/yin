@@ -11,18 +11,18 @@ class InclusionUnsupported extends AbstractJsonApiException
 {
     public function __construct()
     {
-        parent::__construct("Inclusion is not supported!", 400);
+        parent::__construct('Inclusion is not supported!', 400);
     }
 
     protected function getErrors(): array
     {
         return [
             Error::create()
-                ->setStatus("400")
-                ->setCode("INCLUSION_UNSUPPORTED")
-                ->setTitle("Inclusion is unsupported")
-                ->setDetail("Inclusion is not supported by the endpoint!")
-                ->setSource(ErrorSource::fromParameter("include")),
+                ->setStatus('400')
+                ->setCode('INCLUSION_UNSUPPORTED')
+                ->setTitle('Inclusion is unsupported')
+                ->setDetail('Inclusion is not supported by the endpoint!')
+                ->setSource(ErrorSource::fromParameter('include')),
         ];
     }
 }

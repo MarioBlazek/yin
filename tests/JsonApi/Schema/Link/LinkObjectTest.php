@@ -4,75 +4,66 @@ declare(strict_types=1);
 
 namespace WoohooLabs\Yin\Tests\JsonApi\Schema\Link;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use WoohooLabs\Yin\JsonApi\Schema\Link\LinkObject;
 
 class LinkObjectTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function getHref(): void
     {
-        $href = "https://example.com/api/users";
+        $href = 'https://example.com/api/users';
 
         $link = $this->createLinkObject($href);
-        $this->assertEquals($href, $link->getHref());
+        self::assertSame($href, $link->getHref());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getEmptyMeta(): void
     {
-        $href = "https://example.com/api/users";
+        $href = 'https://example.com/api/users';
 
         $link = $this->createLinkObject($href);
-        $this->assertEquals([], $link->getMeta());
+        self::assertSame([], $link->getMeta());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getMeta(): void
     {
-        $meta = ["abc" => "def"];
+        $meta = ['abc' => 'def'];
 
-        $link = $this->createLinkWithMeta("", $meta);
-        $this->assertEquals($meta, $link->getMeta());
+        $link = $this->createLinkWithMeta('', $meta);
+        self::assertSame($meta, $link->getMeta());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformAbsoluteLinkWithMeta(): void
     {
-        $href = "https://example.com/api/users";
-        $meta = ["abc" => "def"];
+        $href = 'https://example.com/api/users';
+        $meta = ['abc' => 'def'];
 
         $link = $this->createLinkWithMeta($href, $meta);
 
         $transformedLink = [
-            "href" => $href,
-            "meta" => $meta,
+            'href' => $href,
+            'meta' => $meta,
         ];
-        $this->assertEquals($transformedLink, $link->transform(""));
+        self::assertSame($transformedLink, $link->transform(''));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformRelativeLinkWithoutMeta(): void
     {
-        $baseUri = "https://example.com/api";
-        $href = "/users";
+        $baseUri = 'https://example.com/api';
+        $href = '/users';
 
         $link = $this->createLinkObject($href);
 
         $transformedLink = [
-            "href" => $baseUri . $href,
+            'href' => $baseUri . $href,
         ];
-        $this->assertEquals($transformedLink, $link->transform($baseUri));
+        self::assertSame($transformedLink, $link->transform($baseUri));
     }
 
     private function createLinkObject(string $href): LinkObject

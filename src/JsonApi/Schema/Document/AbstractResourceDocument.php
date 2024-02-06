@@ -44,7 +44,5 @@ abstract class AbstractResourceDocument implements ResourceDocumentInterface
     /**
      * @internal
      */
-    public function clearTransformation(): void
-    {
-    }
+    public function clearTransformation(): void {}
 }

@@ -14,31 +14,10 @@ class QueryParamMalformed extends AbstractJsonApiException
      */
     protected $malformedQueryParam;
 
-    /**
-     * @var mixed
-     */
-    protected $malformedQueryParamValue;
-
-    /**
-     * @param mixed $malformedQueryParamValue
-     */
-    public function __construct(string $malformedQueryParam, $malformedQueryParamValue)
+    public function __construct(string $malformedQueryParam, protected mixed $malformedQueryParamValue)
     {
-        parent::__construct("Query parameter '$malformedQueryParam' is malformed!", 400);
+        parent::__construct("Query parameter '{$malformedQueryParam}' is malformed!", 400);
         $this->malformedQueryParam = $malformedQueryParam;
-        $this->malformedQueryParamValue = $malformedQueryParamValue;
-    }
-
-    protected function getErrors(): array
-    {
-        return [
-            Error::create()
-                ->setStatus("400")
-                ->setCode("QUERY_PARAM_MALFORMED")
-                ->setTitle("Query parameter is malformed")
-                ->setDetail("Query parameter '$this->malformedQueryParam' is malformed!")
-                ->setSource(ErrorSource::fromParameter($this->malformedQueryParam)),
-        ];
     }
 
     public function getMalformedQueryParam(): string
@@ -52,5 +31,17 @@ class QueryParamMalformed extends AbstractJsonApiException
     public function getMalformedQueryParamValue()
     {
         return $this->malformedQueryParamValue;
+    }
+
+    protected function getErrors(): array
+    {
+        return [
+            Error::create()
+                ->setStatus('400')
+                ->setCode('QUERY_PARAM_MALFORMED')
+                ->setTitle('Query parameter is malformed')
+                ->setDetail("Query parameter '{$this->malformedQueryParam}' is malformed!")
+                ->setSource(ErrorSource::fromParameter($this->malformedQueryParam)),
+        ];
     }
 }

@@ -28,16 +28,6 @@ abstract class AbstractCollectionDocument extends AbstractResourceDocument
         return $this->resource;
     }
 
-    protected function hasItems(): bool
-    {
-        return empty($this->getItems()) === false;
-    }
-
-    protected function getItems(): iterable
-    {
-        return $this->object;
-    }
-
     /**
      * @internal
      */
@@ -46,12 +36,12 @@ abstract class AbstractCollectionDocument extends AbstractResourceDocument
         $resourceTransformation = new ResourceTransformation(
             $this->getResource(),
             null,
-            "",
+            '',
             $transformation->request,
             $transformation->basePath,
             $transformation->requestedRelationshipName,
-            "",
-            $transformation->exceptionFactory
+            '',
+            $transformation->exceptionFactory,
         );
         $data = new CollectionData();
 
@@ -73,5 +63,15 @@ abstract class AbstractCollectionDocument extends AbstractResourceDocument
         DataInterface $data
     ): ?array {
         return null;
+    }
+
+    protected function hasItems(): bool
+    {
+        return empty($this->getItems()) === false;
+    }
+
+    protected function getItems(): iterable
+    {
+        return $this->object;
     }
 }

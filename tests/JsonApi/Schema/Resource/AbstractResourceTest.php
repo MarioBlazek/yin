@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace WoohooLabs\Yin\Tests\JsonApi\Schema\Resource;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use WoohooLabs\Yin\JsonApi\Exception\DefaultExceptionFactory;
 use WoohooLabs\Yin\JsonApi\Schema\Resource\ResourceInterface;
@@ -13,9 +14,7 @@ use WoohooLabs\Yin\Tests\JsonApi\Double\StubResource;
 
 class AbstractResourceTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function initializeTransformation(): void
     {
         $resource = $this->createResource();
@@ -24,17 +23,15 @@ class AbstractResourceTest extends TestCase
         $resource->initializeTransformation(
             $transformation->request,
             $transformation->object,
-            $transformation->exceptionFactory
+            $transformation->exceptionFactory,
         );
 
-        $this->assertEquals($transformation->request, $resource->getRequest());
-        $this->assertEquals($transformation->object, $resource->getObject());
-        $this->assertEquals($transformation->exceptionFactory, $resource->getExceptionFactory());
+        self::assertSame($transformation->request, $resource->getRequest());
+        self::assertSame($transformation->object, $resource->getObject());
+        self::assertSame($transformation->exceptionFactory, $resource->getExceptionFactory());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function clearTransformation(): void
     {
         $resource = $this->createResource();
@@ -43,13 +40,13 @@ class AbstractResourceTest extends TestCase
         $resource->initializeTransformation(
             $transformation->request,
             $transformation->object,
-            $transformation->exceptionFactory
+            $transformation->exceptionFactory,
         );
         $resource->clearTransformation();
 
-        $this->assertNull($resource->getRequest());
-        $this->assertNull($resource->getObject());
-        $this->assertNull($resource->getExceptionFactory());
+        self::assertNull($resource->getRequest());
+        self::assertNull($resource->getObject());
+        self::assertNull($resource->getExceptionFactory());
     }
 
     protected function createResource(): StubResource
@@ -62,12 +59,12 @@ class AbstractResourceTest extends TestCase
         return new ResourceTransformation(
             $resource,
             [],
-            "",
+            '',
             new StubJsonApiRequest(),
-            "",
-            "",
-            "",
-            new DefaultExceptionFactory()
+            '',
+            '',
+            '',
+            new DefaultExceptionFactory(),
         );
     }
 }

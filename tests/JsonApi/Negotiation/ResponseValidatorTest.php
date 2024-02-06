@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace WoohooLabs\Yin\Tests\JsonApi\Negotiation;
 
 use Laminas\Diactoros\Response;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use WoohooLabs\Yin\JsonApi\Exception\DefaultExceptionFactory;
 use WoohooLabs\Yin\JsonApi\Exception\ResponseBodyInvalidJson;
@@ -14,9 +15,7 @@ use WoohooLabs\Yin\JsonApi\Serializer\JsonSerializer;
 
 class ResponseValidatorTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function validateJsonBodySuccessfully(): void
     {
         $response = new Response();
@@ -28,9 +27,7 @@ class ResponseValidatorTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validateJsonBodyUnsuccessfully(): void
     {
         $response = new Response();
@@ -42,24 +39,22 @@ class ResponseValidatorTest extends TestCase
         $validator->validateJsonBody($response);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validateJsonApiBodySuccessfully(): void
     {
         $response = new Response();
         $response->getBody()->write(
-            <<<EOF
-{
-  "data": {
-    "type": "articles",
-    "id": "1",
-    "attributes": {
-      "title": "JSON API paints my bikeshed!"
-    }
-  }
-}
-EOF
+            <<<'EOF'
+            {
+              "data": {
+                "type": "articles",
+                "id": "1",
+                "attributes": {
+                  "title": "JSON API paints my bikeshed!"
+                }
+              }
+            }
+            EOF
         );
         $validator = new ResponseValidator(new JsonSerializer(), new DefaultExceptionFactory());
 
@@ -68,9 +63,7 @@ EOF
         $this->addToAssertionCount(1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validateJsonApiSuccessfullyWhenEmptyBody(): void
     {
         $response = new Response();
@@ -81,9 +74,7 @@ EOF
         $this->addToAssertionCount(1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validateJsonApiBodyUnsuccessfully(): void
     {
         $response = new Response();

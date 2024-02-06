@@ -29,7 +29,7 @@ class BookHydator extends AbstractHydrator
      */
     protected function getAcceptedTypes(): array
     {
-        return ["book"];
+        return ['book'];
     }
 
     /**
@@ -71,11 +71,12 @@ class BookHydator extends AbstractHydrator
      * object can be returned.
      *
      * @param array $book
+     *
      * @return mixed|void
      */
     protected function setId($book, string $id)
     {
-        $book["id"] = $id;
+        $book['id'] = $id;
 
         return $book;
     }
@@ -88,7 +89,7 @@ class BookHydator extends AbstractHydrator
     protected function validateRequest(JsonApiRequestInterface $request): void
     {
         // WARNING! THIS CONDITION CONTRADICTS TO THE SPEC
-        if ($request->getAttribute("title") === null) {
+        if ($request->getAttribute('title') === null) {
             throw new LogicException("The 'title' attribute is required!");
         }
     }
@@ -106,17 +107,19 @@ class BookHydator extends AbstractHydrator
      * the callable should return the domain object.
      *
      * @param array $book
+     *
      * @return array<string, callable>
      */
     protected function getAttributeHydrator($book): array
     {
         return [
-            "title" => function (array $book, $attribute, $data) {
-                $book["title"] = $attribute;
+            'title' => static function (array $book, $attribute, $data) {
+                $book['title'] = $attribute;
+
                 return $book;
             },
-            "pages" => function (array &$book, $attribute, $data) {
-                $book["pages"] = $attribute;
+            'pages' => static function (array &$book, $attribute, $data) {
+                $book['pages'] = $attribute;
             },
         ];
     }
@@ -135,25 +138,26 @@ class BookHydator extends AbstractHydrator
      * the callable should return the domain object.
      *
      * @param array $book
+     *
      * @return array<string, callable>
      */
     protected function getRelationshipHydrator($book): array
     {
         return [
-            "authors" => function (array $book, ToManyRelationship $authors, $data, $relationshipName) {
+            'authors' => static function (array $book, ToManyRelationship $authors, $data, $relationshipName) {
                 if ($authors->isEmpty()) {
-                    $book["authors"] = [];
+                    $book['authors'] = [];
                 } else {
-                    $book["authors"] = BookRepository::getAuthors($authors->getResourceIdentifierIds());
+                    $book['authors'] = BookRepository::getAuthors($authors->getResourceIdentifierIds());
                 }
 
                 return $book;
             },
-            "publisher" => function (array &$book, ToOneRelationship $publisher, $data, $relationshipName) {
+            'publisher' => static function (array &$book, ToOneRelationship $publisher, $data, $relationshipName) {
                 if ($publisher->isEmpty()) {
-                    $book["publisher"] = null;
+                    $book['publisher'] = null;
                 } else {
-                    $book["publisher"] = BookRepository::getPublisher((int) $publisher->getResourceIdentifier()->getId());
+                    $book['publisher'] = BookRepository::getPublisher((int) $publisher->getResourceIdentifier()->getId());
                 }
             },
         ];

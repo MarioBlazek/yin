@@ -12,12 +12,6 @@ use function max;
 
 trait OffsetBasedPaginationLinkProviderTrait
 {
-    abstract protected function getTotalItems(): int;
-
-    abstract protected function getOffset(): int;
-
-    abstract protected function getLimit(): int;
-
     public function getSelfLink(string $uri, string $queryString): ?Link
     {
         $offset = $this->getOffset();
@@ -63,6 +57,12 @@ trait OffsetBasedPaginationLinkProviderTrait
         return $this->createPaginatedLink($uri, $queryString, $this->getOffset() + $this->getLimit(), $this->getLimit());
     }
 
+    abstract protected function getTotalItems(): int;
+
+    abstract protected function getOffset(): int;
+
+    abstract protected function getLimit(): int;
+
     protected function createPaginatedLink(string $uri, string $queryString, int $offset, int $limit): ?Link
     {
         if ($this->getTotalItems() <= 0 || $this->getLimit() <= 0) {
@@ -70,7 +70,7 @@ trait OffsetBasedPaginationLinkProviderTrait
         }
 
         return new Link(
-            Utils::getUri($uri, $queryString, OffsetBasedPagination::getPaginationQueryParams($offset, $limit))
+            Utils::getUri($uri, $queryString, OffsetBasedPagination::getPaginationQueryParams($offset, $limit)),
         );
     }
 }

@@ -11,18 +11,18 @@ class ClientGeneratedIdRequired extends AbstractJsonApiException
 {
     public function __construct()
     {
-        parent::__construct("A client generated ID must be used!", 403);
+        parent::__construct('A client generated ID must be used!', 403);
     }
 
     protected function getErrors(): array
     {
         return [
             Error::create()
-                ->setStatus("403")
-                ->setCode("CLIENT_GENERATED_ID_REQUIRED")
-                ->setTitle("Required client generated ID")
+                ->setStatus('403')
+                ->setCode('CLIENT_GENERATED_ID_REQUIRED')
+                ->setTitle('Required client generated ID')
                 ->setDetail($this->getMessage())
-                ->setSource(ErrorSource::fromPointer("/data/id")),
+                ->setSource(ErrorSource::fromPointer('/data/id')),
         ];
     }
 }

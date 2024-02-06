@@ -33,7 +33,7 @@ class ResponseBodyInvalidJsonApi extends AbstractJsonApiException
 
     public function __construct(ResponseInterface $response, array $validationErrors, bool $includeOriginalBody)
     {
-        parent::__construct("Response body is an invalid JSON:API document: " . print_r($validationErrors, true), 500);
+        parent::__construct('Response body is an invalid JSON:API document: ' . print_r($validationErrors, true), 500);
         $this->response = $response;
         $this->validationErrors = $validationErrors;
         $this->includeOriginalBody = $includeOriginalBody;
@@ -44,10 +44,15 @@ class ResponseBodyInvalidJsonApi extends AbstractJsonApiException
         $errorDocument = new ErrorDocument($this->getErrors());
 
         if ($this->includeOriginalBody) {
-            $errorDocument->setMeta(["original" => json_decode($this->response->getBody()->__toString(), true)]);
+            $errorDocument->setMeta(['original' => json_decode($this->response->getBody()->__toString(), true)]);
         }
 
         return $errorDocument;
+    }
+
+    public function getValidationErrors(): array
+    {
+        return $this->validationErrors;
     }
 
     protected function getErrors(): array
@@ -55,23 +60,18 @@ class ResponseBodyInvalidJsonApi extends AbstractJsonApiException
         $errors = [];
         foreach ($this->validationErrors as $validationError) {
             $error = Error::create()
-                ->setStatus("500")
-                ->setCode("RESPONSE_BODY_INVALID_JSON_API")
-                ->setTitle("Response body is an invalid JSON:API document")
-                ->setDetail(ucfirst($validationError["message"]));
+                ->setStatus('500')
+                ->setCode('RESPONSE_BODY_INVALID_JSON_API')
+                ->setTitle('Response body is an invalid JSON:API document')
+                ->setDetail(ucfirst((string) $validationError['message']));
 
-            if (isset($validationError["property"]) && $validationError["property"] !== "") {
-                $error->setSource(ErrorSource::fromPointer($validationError["property"]));
+            if (isset($validationError['property']) && $validationError['property'] !== '') {
+                $error->setSource(ErrorSource::fromPointer($validationError['property']));
             }
 
             $errors[] = $error;
         }
 
         return $errors;
-    }
-
-    public function getValidationErrors(): array
-    {
-        return $this->validationErrors;
     }
 }

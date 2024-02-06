@@ -18,15 +18,15 @@ class GetBookRelationshipsAction
     public function __invoke(JsonApi $jsonApi): ResponseInterface
     {
         // Checking the "id" of the currently requested book
-        $id = (int) $jsonApi->getRequest()->getAttribute("id");
+        $id = (int) $jsonApi->getRequest()->getAttribute('id');
 
         // Checking the name of the currently requested relationship
-        $relationshipName = $jsonApi->getRequest()->getAttribute("rel");
+        $relationshipName = $jsonApi->getRequest()->getAttribute('rel');
 
         // Retrieving a book domain object with an ID of $id
         $book = BookRepository::getBook($id);
         if ($book === null) {
-            die("A book with an ID of '$id' can't be found!");
+            exit("A book with an ID of '{$id}' can't be found!");
         }
 
         // Instantiating a book document
@@ -34,9 +34,9 @@ class GetBookRelationshipsAction
             new BookResource(
                 new AuthorResource(),
                 new PublisherResource(
-                    new RepresentativeResource()
-                )
-            )
+                    new RepresentativeResource(),
+                ),
+            ),
         );
 
         // Responding with "200 Ok" status code along with the requested relationship document

@@ -5,61 +5,54 @@ declare(strict_types=1);
 namespace WoohooLabs\Yin\Tests\JsonApi\Exception;
 
 use Laminas\Diactoros\Response;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use WoohooLabs\Yin\JsonApi\Exception\ResponseBodyInvalidJson;
 
 class ResponseBodyInvalidJsonTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function getErrors(): void
     {
         $exception = $this->createException();
 
         $errors = $exception->getErrorDocument()->getErrors();
 
-        $this->assertCount(1, $errors);
-        $this->assertEquals("500", $errors[0]->getStatus());
+        self::assertCount(1, $errors);
+        self::assertSame('500', $errors[0]->getStatus());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getErrorDocumentWhenNotIncludeOriginal(): void
     {
-        $exception = $this->createException("abc", "", false);
+        $exception = $this->createException('abc', '', false);
 
         $meta = $exception->getErrorDocument()->getMeta();
 
-        $this->assertEmpty($meta);
+        self::assertEmpty($meta);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getErrorDocumentWhenIncludeOriginal(): void
     {
-        $exception = $this->createException("abc", "", true);
+        $exception = $this->createException('abc', '', true);
 
         $meta = $exception->getErrorDocument()->getMeta();
 
-        $this->assertEquals(["original" => "abc"], $meta);
+        self::assertSame(['original' => 'abc'], $meta);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getLintMessage(): void
     {
-        $exception = $this->createException("", "abc");
+        $exception = $this->createException('', 'abc');
 
         $lintMessage = $exception->getLintMessage();
 
-        $this->assertEquals("abc", $lintMessage);
+        self::assertSame('abc', $lintMessage);
     }
 
-    private function createException(string $body = "", string $lintMessage = "", bool $includeOriginal = false): ResponseBodyInvalidJson
+    private function createException(string $body = '', string $lintMessage = '', bool $includeOriginal = false): ResponseBodyInvalidJson
     {
         $response = new Response();
         $response->getBody()->write($body);

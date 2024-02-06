@@ -48,12 +48,12 @@ abstract class AbstractSingleResourceDocument extends AbstractResourceDocument
         $resourceTransformation = new ResourceTransformation(
             $this->getResource(),
             $transformation->object,
-            "",
+            '',
             $transformation->request,
             $transformation->basePath,
             $transformation->requestedRelationshipName,
-            "",
-            $transformation->exceptionFactory
+            '',
+            $transformation->exceptionFactory,
         );
         $data = new SingleResourceData();
 
@@ -76,12 +76,12 @@ abstract class AbstractSingleResourceDocument extends AbstractResourceDocument
         $resourceTransformation = new ResourceTransformation(
             $this->getResource(),
             $transformation->object,
-            "",
+            '',
             $transformation->request,
             $transformation->basePath,
             $transformation->requestedRelationshipName,
             $transformation->requestedRelationshipName,
-            $transformation->exceptionFactory
+            $transformation->exceptionFactory,
         );
 
         return $transformer->transformToRelationshipObject($resourceTransformation, $data);

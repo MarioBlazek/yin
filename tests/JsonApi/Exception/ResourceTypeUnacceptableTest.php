@@ -4,46 +4,41 @@ declare(strict_types=1);
 
 namespace WoohooLabs\Yin\Tests\JsonApi\Exception;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use WoohooLabs\Yin\JsonApi\Exception\ResourceTypeUnacceptable;
 
 class ResourceTypeUnacceptableTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function getErrors(): void
     {
-        $exception = $this->createException("", []);
+        $exception = $this->createException('', []);
 
         $errors = $exception->getErrorDocument()->getErrors();
 
-        $this->assertCount(1, $errors);
-        $this->assertEquals("409", $errors[0]->getStatus());
+        self::assertCount(1, $errors);
+        self::assertSame('409', $errors[0]->getStatus());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getCurrentType(): void
     {
-        $exception = $this->createException("book", []);
+        $exception = $this->createException('book', []);
 
         $type = $exception->getCurrentType();
 
-        $this->assertEquals("book", $type);
+        self::assertSame('book', $type);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getAcceptedTypes(): void
     {
-        $exception = $this->createException("", ["book"]);
+        $exception = $this->createException('', ['book']);
 
         $types = $exception->getAcceptedTypes();
 
-        $this->assertEquals(["book"], $types);
+        self::assertSame(['book'], $types);
     }
 
     private function createException(string $type, array $acceptedTypes): ResourceTypeUnacceptable

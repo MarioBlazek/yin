@@ -5,79 +5,72 @@ declare(strict_types=1);
 namespace WoohooLabs\Yin\Tests\JsonApi\Exception;
 
 use Laminas\Diactoros\Response;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use WoohooLabs\Yin\JsonApi\Exception\ResponseBodyInvalidJsonApi;
 
 class ResponseBodyInvalidJsonApiTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function getErrorsWithTwoErrors(): void
     {
         $exception = $this->createException(
-            "",
+            '',
             [
                 [
-                    "message" => "abc",
-                    "property" => "property1",
+                    'message' => 'abc',
+                    'property' => 'property1',
                 ],
                 [
-                    "message" => "cde",
-                    "property" => "",
+                    'message' => 'cde',
+                    'property' => '',
                 ],
-            ]
+            ],
         );
 
         $errors = $exception->getErrorDocument()->getErrors();
         $source = $errors[0]->getSource();
 
-        $this->assertCount(2, $errors);
-        $this->assertEquals("500", $errors[0]->getStatus());
-        $this->assertEquals("Abc", $errors[0]->getDetail());
-        $this->assertEquals("property1", $source !== null ? $source->getPointer() : null);
-        $this->assertEquals("500", $errors[1]->getStatus());
-        $this->assertEquals("Cde", $errors[1]->getDetail());
-        $this->assertNull($errors[1]->getSource());
+        self::assertCount(2, $errors);
+        self::assertSame('500', $errors[0]->getStatus());
+        self::assertSame('Abc', $errors[0]->getDetail());
+        self::assertSame('property1', $source !== null ? $source->getPointer() : null);
+        self::assertSame('500', $errors[1]->getStatus());
+        self::assertSame('Cde', $errors[1]->getDetail());
+        self::assertNull($errors[1]->getSource());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getErrorDocumentWhenNotIncludeOriginal(): void
     {
-        $exception = $this->createException("abc", [], false);
+        $exception = $this->createException('abc', [], false);
 
         $meta = $exception->getErrorDocument()->getMeta();
 
-        $this->assertEmpty($meta);
+        self::assertEmpty($meta);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getErrorDocumentWhenIncludeOriginal(): void
     {
-        $exception = $this->createException("\"abc\"", [], true);
+        $exception = $this->createException('"abc"', [], true);
 
         $meta = $exception->getErrorDocument()->getMeta();
 
-        $this->assertEquals(["original" => "abc"], $meta);
+        self::assertSame(['original' => 'abc'], $meta);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getValidationErrors(): void
     {
-        $exception = $this->createException("", ["abc", "def"]);
+        $exception = $this->createException('', ['abc', 'def']);
 
         $validationErrors = $exception->getValidationErrors();
 
-        $this->assertEquals(["abc", "def"], $validationErrors);
+        self::assertSame(['abc', 'def'], $validationErrors);
     }
 
-    private function createException(string $body = "", array $validationErrors = [], bool $includeOriginal = false): ResponseBodyInvalidJsonApi
+    private function createException(string $body = '', array $validationErrors = [], bool $includeOriginal = false): ResponseBodyInvalidJsonApi
     {
         $response = new Response();
         $response->getBody()->write($body);

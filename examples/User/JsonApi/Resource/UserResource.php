@@ -31,7 +31,7 @@ class UserResource extends AbstractResource
      */
     public function getType($user): string
     {
-        return "users";
+        return 'users';
     }
 
     /**
@@ -43,7 +43,7 @@ class UserResource extends AbstractResource
      */
     public function getId($user): string
     {
-        return (string) $user["id"];
+        return (string) $user['id'];
     }
 
     /**
@@ -80,17 +80,14 @@ class UserResource extends AbstractResource
      * and they should return the value of the corresponding attribute.
      *
      * @param array $user
+     *
      * @return callable[]
      */
     public function getAttributes($user): array
     {
         return [
-            "firstname" => function (array $user) {
-                return $user["firstname"];
-            },
-            "surname" => function (array $user) {
-                return $user["lastname"];
-            },
+            'firstname' => static fn (array $user) => $user['firstname'],
+            'surname' => static fn (array $user) => $user['lastname'],
         ];
     }
 
@@ -112,22 +109,21 @@ class UserResource extends AbstractResource
      * and they should return a new relationship instance (to-one or to-many).
      *
      * @param array $user
+     *
      * @return callable[]
      */
     public function getRelationships($user): array
     {
         return [
-            "contacts" => function (array $user) {
+            'contacts' => function (array $user) {
                 return ToManyRelationship::create()
                         ->setLinks(
                             RelationshipLinks::createWithoutBaseUri(
-                                new Link("/users/" . $user["id"] . "/contacts"),
-                                new Link("/users/" . $user["id"] . "/relationships/contacts")
-                            )
+                                new Link('/users/' . $user['id'] . '/contacts'),
+                                new Link('/users/' . $user['id'] . '/relationships/contacts'),
+                            ),
                         )
-                        ->setDataAsCallable(function () use ($user) {
-                            return $user["contacts"];
-                        }, $this->contactTransformer)
+                        ->setDataAsCallable(static fn () => $user['contacts'], $this->contactTransformer)
                         ->omitDataWhenNotIncluded();
             },
         ];

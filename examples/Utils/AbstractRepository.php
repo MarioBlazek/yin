@@ -9,7 +9,7 @@ abstract class AbstractRepository
     public static function getItemById($id, array $items): ?array
     {
         foreach ($items as $item) {
-            if (isset($item["id"]) && $item["id"] === $id) {
+            if (isset($item['id']) && $item['id'] === $id) {
                 return $item;
             }
         }
@@ -23,7 +23,7 @@ abstract class AbstractRepository
 
         foreach ($ids as $id) {
             foreach ($items as $item) {
-                if (isset($item["id"]) && $item["id"] === $id) {
+                if (isset($item['id']) && $item['id'] === $id) {
                     $result[] = $item;
                 }
             }

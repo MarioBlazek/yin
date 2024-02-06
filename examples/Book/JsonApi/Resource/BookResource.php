@@ -40,7 +40,7 @@ class BookResource extends AbstractResource
      */
     public function getType($book): string
     {
-        return "books";
+        return 'books';
     }
 
     /**
@@ -52,7 +52,7 @@ class BookResource extends AbstractResource
      */
     public function getId($book): string
     {
-        return (string) $book["id"];
+        return (string) $book['id'];
     }
 
     /**
@@ -83,7 +83,7 @@ class BookResource extends AbstractResource
 
     public function getSelfLinkHref(array $book): string
     {
-        return "/books/" . $this->getId($book);
+        return '/books/' . $this->getId($book);
     }
 
     /**
@@ -96,26 +96,17 @@ class BookResource extends AbstractResource
      * attribute.
      *
      * @param array $book
+     *
      * @return callable[]
      */
     public function getAttributes($book): array
     {
         return [
-            "title" => function (array $book) {
-                return $book["title"];
-            },
-            "isbn13" => function (array $book) {
-                return $book["isbn13"];
-            },
-            "releaseDate" => function (array $book) {
-                return $book["release_date"];
-            },
-            "hardCover" => function (array $book) {
-                return $book["hard_cover"];
-            },
-            "pages" => function (array $book) {
-                return (int) $book["pages"];
-            },
+            'title' => static fn (array $book) => $book['title'],
+            'isbn13' => static fn (array $book) => $book['isbn13'],
+            'releaseDate' => static fn (array $book) => $book['release_date'],
+            'hardCover' => static fn (array $book) => $book['hard_cover'],
+            'pages' => static fn (array $book) => (int) $book['pages'],
         ];
     }
 
@@ -126,7 +117,7 @@ class BookResource extends AbstractResource
      */
     public function getDefaultIncludedRelationships($book): array
     {
-        return ["authors"];
+        return ['authors'];
     }
 
     /**
@@ -137,26 +128,27 @@ class BookResource extends AbstractResource
      * and they should return a new relationship instance (to-one or to-many).
      *
      * @param array $book
+     *
      * @return callable[]
      */
     public function getRelationships($book): array
     {
         return [
-            "authors" => function (array $book) {
+            'authors' => function (array $book) {
                 return ToManyRelationship::create()
                         ->setLinks(
-                            new RelationshipLinks($this->getSelfLinkHref($book), new Link("/relationships/authors"))
+                            new RelationshipLinks($this->getSelfLinkHref($book), new Link('/relationships/authors')),
                         )
-                        ->setData($book["authors"], $this->authorResource);
+                        ->setData($book['authors'], $this->authorResource);
             },
-            "publisher" => function ($book) {
+            'publisher' => function ($book) {
                 return ToOneRelationship::create()
                         ->setLinks(
                             RelationshipLinks::createWithoutBaseUri()
                                 ->setBaseUri($this->getSelfLinkHref($book))
-                                ->setSelf(new Link("/relationships/publisher"))
+                                ->setSelf(new Link('/relationships/publisher')),
                         )
-                        ->setData($book["publisher"], $this->publisherResource)
+                        ->setData($book['publisher'], $this->publisherResource)
                         ->omitDataWhenNotIncluded();
             },
         ];

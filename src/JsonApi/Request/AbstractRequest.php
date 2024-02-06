@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace WoohooLabs\Yin\JsonApi\Request;
 
+use Psr\Http\Message\MessageInterface;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
@@ -11,24 +13,9 @@ use WoohooLabs\Yin\JsonApi\Serializer\DeserializerInterface;
 
 abstract class AbstractRequest
 {
-    /**
-     * @var ServerRequestInterface
-     */
-    protected $serverRequest;
-
-    /**
-     * @var DeserializerInterface
-     */
-    protected $deserializer;
-
-    /**
-     * @var bool
-     */
-    protected $isParsed = false;
-
-    abstract protected function headerChanged(string $name): void;
-
-    abstract protected function queryParamChanged(string $name): void;
+    protected ServerRequestInterface $serverRequest;
+    protected DeserializerInterface $deserializer;
+    protected bool $isParsed = false;
 
     public function __construct(ServerRequestInterface $request, DeserializerInterface $deserializer)
     {
@@ -43,9 +30,10 @@ abstract class AbstractRequest
 
     /**
      * @param string $version HTTP protocol version
+     *
      * @return static
      */
-    public function withProtocolVersion($version)
+    public function withProtocolVersion(string $version): MessageInterface
     {
         $self = clone $this;
         $self->serverRequest = $this->serverRequest->withProtocolVersion($version);
@@ -64,36 +52,33 @@ abstract class AbstractRequest
     /**
      * Checks if a header exists by the given case-insensitive name.
      *
-     * @param string $name Case-insensitive header field name.
+     * @param string $name case-insensitive header field name
      */
-    public function hasHeader($name): bool
+    public function hasHeader(string $name): bool
     {
         return $this->serverRequest->hasHeader($name);
     }
 
     /**
-     * @param string $name
      * @return string[]
      */
-    public function getHeader($name): array
+    public function getHeader(string $name): array
     {
         return $this->serverRequest->getHeader($name);
     }
 
-    /**
-     * @param string $name
-     */
-    public function getHeaderLine($name): string
+    public function getHeaderLine(string $name): string
     {
         return $this->serverRequest->getHeaderLine($name);
     }
 
     /**
-     * @param string $name Case-insensitive header field name.
-     * @param string|string[] $value Header value(s).
+     * @param string $name case-insensitive header field name
+     * @param string|string[] $value header value(s)
+     *
      * @return static
      */
-    public function withHeader($name, $value)
+    public function withHeader(string $name, $value): MessageInterface
     {
         $self = clone $this;
         $self->serverRequest = $this->serverRequest->withHeader($name, $value);
@@ -103,11 +88,12 @@ abstract class AbstractRequest
     }
 
     /**
-     * @param string $name Case-insensitive header field name to add.
-     * @param string|string[] $value Header value(s).
+     * @param string $name case-insensitive header field name to add
+     * @param string|string[] $value header value(s)
+     *
      * @return static
      */
-    public function withAddedHeader($name, $value)
+    public function withAddedHeader(string $name, $value): MessageInterface
     {
         $self = clone $this;
         $self->serverRequest = $this->serverRequest->withAddedHeader($name, $value);
@@ -116,11 +102,7 @@ abstract class AbstractRequest
         return $self;
     }
 
-    /**
-     * @param string $name
-     * @return static
-     */
-    public function withoutHeader($name)
+    public function withoutHeader(string $name): MessageInterface
     {
         $self = clone $this;
         $self->serverRequest = $this->serverRequest->withoutHeader($name);
@@ -134,10 +116,7 @@ abstract class AbstractRequest
         return $this->serverRequest->getBody();
     }
 
-    /**
-     * @return static
-     */
-    public function withBody(StreamInterface $body)
+    public function withBody(StreamInterface $body): MessageInterface
     {
         $self = clone $this;
         $self->serverRequest = $this->serverRequest->withBody($body);
@@ -150,11 +129,7 @@ abstract class AbstractRequest
         return $this->serverRequest->getRequestTarget();
     }
 
-    /**
-     * @param mixed $requestTarget
-     * @return static
-     */
-    public function withRequestTarget($requestTarget)
+    public function withRequestTarget(string $requestTarget): RequestInterface
     {
         $self = clone $this;
         $self->serverRequest = $this->serverRequest->withRequestTarget($requestTarget);
@@ -167,11 +142,7 @@ abstract class AbstractRequest
         return $this->serverRequest->getMethod();
     }
 
-    /**
-     * @param string $method Case-sensitive method.
-     * @return static
-     */
-    public function withMethod($method)
+    public function withMethod(string $method): RequestInterface
     {
         $self = clone $this;
         $self->serverRequest = $this->serverRequest->withMethod($method);
@@ -184,11 +155,7 @@ abstract class AbstractRequest
         return $this->serverRequest->getUri();
     }
 
-    /**
-     * @param bool $preserveHost Preserve the original state of the Host header.
-     * @return static
-     */
-    public function withUri(UriInterface $uri, $preserveHost = false)
+    public function withUri(UriInterface $uri, bool $preserveHost = false): RequestInterface
     {
         $self = clone $this;
         $self->serverRequest = $this->serverRequest->withUri($uri, $preserveHost);
@@ -206,10 +173,7 @@ abstract class AbstractRequest
         return $this->serverRequest->getCookieParams();
     }
 
-    /**
-     * @return static
-     */
-    public function withCookieParams(array $cookies)
+    public function withCookieParams(array $cookies): ServerRequestInterface
     {
         $self = clone $this;
         $self->serverRequest = $this->serverRequest->withCookieParams($cookies);
@@ -217,18 +181,12 @@ abstract class AbstractRequest
         return $self;
     }
 
-    /**
-     * @return array<string, mixed>
-     */
     public function getQueryParams(): array
     {
         return $this->serverRequest->getQueryParams();
     }
 
-    /**
-     * @return static
-     */
-    public function withQueryParams(array $query)
+    public function withQueryParams(array $query): ServerRequestInterface
     {
         $self = clone $this;
         $self->serverRequest = $this->serverRequest->withQueryParams($query);
@@ -240,22 +198,14 @@ abstract class AbstractRequest
         return $self;
     }
 
-    /**
-     * @param mixed $default
-     * @return array|string|mixed
-     */
-    public function getQueryParam(string $name, $default = null)
+    public function getQueryParam(string $name, mixed $default = null): mixed
     {
         $queryParams = $this->serverRequest->getQueryParams();
 
         return $queryParams[$name] ?? $default;
     }
 
-    /**
-     * @param mixed $value
-     * @return $this
-     */
-    public function withQueryParam(string $name, $value)
+    public function withQueryParam(string $name, mixed $value): self|static
     {
         $self = clone $this;
         $queryParams = $this->serverRequest->getQueryParams();
@@ -271,10 +221,7 @@ abstract class AbstractRequest
         return $this->serverRequest->getUploadedFiles();
     }
 
-    /**
-     * @return static
-     */
-    public function withUploadedFiles(array $uploadedFiles)
+    public function withUploadedFiles(array $uploadedFiles): ServerRequestInterface
     {
         $self = clone $this;
         $self->serverRequest = $this->serverRequest->withUploadedFiles($uploadedFiles);
@@ -282,10 +229,7 @@ abstract class AbstractRequest
         return $self;
     }
 
-    /**
-     * @return array|object|null
-     */
-    public function getParsedBody()
+    public function getParsedBody(): null|array|object
     {
         if ($this->isParsed === false) {
             $parsedBody = $this->serverRequest->getParsedBody();
@@ -299,11 +243,7 @@ abstract class AbstractRequest
         return $this->serverRequest->getParsedBody();
     }
 
-    /**
-     * @param array|object|null $data
-     * @return static
-     */
-    public function withParsedBody($data)
+    public function withParsedBody($data): ServerRequestInterface
     {
         $self = clone $this;
         $self->serverRequest = $this->serverRequest->withParsedBody($data);
@@ -317,22 +257,12 @@ abstract class AbstractRequest
         return $this->serverRequest->getAttributes();
     }
 
-    /**
-     * @param string $name
-     * @param mixed $default
-     * @return mixed
-     */
-    public function getAttribute($name, $default = null)
+    public function getAttribute(string $name, mixed $default = null): mixed
     {
         return $this->serverRequest->getAttribute($name, $default);
     }
 
-    /**
-     * @param string $name
-     * @param mixed $value
-     * @return static
-     */
-    public function withAttribute($name, $value)
+    public function withAttribute(string $name, $value): ServerRequestInterface
     {
         $self = clone $this;
         $self->serverRequest = $this->serverRequest->withAttribute($name, $value);
@@ -340,15 +270,15 @@ abstract class AbstractRequest
         return $self;
     }
 
-    /**
-     * @param string $name The attribute name.
-     * @return static
-     */
-    public function withoutAttribute($name)
+    public function withoutAttribute(string $name): ServerRequestInterface
     {
         $self = clone $this;
         $self->serverRequest = $this->serverRequest->withoutAttribute($name);
 
         return $self;
     }
+
+    abstract protected function headerChanged(string $name): void;
+
+    abstract protected function queryParamChanged(string $name): void;
 }

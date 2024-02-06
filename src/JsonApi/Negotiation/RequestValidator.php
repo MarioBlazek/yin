@@ -38,7 +38,7 @@ class RequestValidator extends AbstractMessageValidator
         } catch (QueryParamUnrecognized $e) {
             throw $this->exceptionFactory->createQueryParamUnrecognizedException(
                 $request,
-                $e->getUnrecognizedQueryParam()
+                $e->getUnrecognizedQueryParam(),
             );
         }
     }
@@ -55,11 +55,11 @@ class RequestValidator extends AbstractMessageValidator
             $body->rewind();
         }
 
-        if ($errorMessage !== "") {
+        if ($errorMessage !== '') {
             throw $this->exceptionFactory->createRequestBodyInvalidJsonException(
                 $request,
                 $errorMessage,
-                $this->includeOriginalMessage
+                $this->includeOriginalMessage,
             );
         }
     }

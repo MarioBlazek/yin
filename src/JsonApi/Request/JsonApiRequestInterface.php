@@ -19,12 +19,14 @@ interface JsonApiRequestInterface extends ServerRequestInterface
 {
     /**
      * Validates if the current request's "Content-Type" header conforms to the JSON:API schema.
+     *
      * @throws MediaTypeUnsupported|JsonApiExceptionInterface
      */
     public function validateContentTypeHeader(): void;
 
     /**
      * Validates if the current request's "Accept" header conforms to the JSON:API schema.
+     *
      * @throws MediaTypeUnacceptable|JsonApiExceptionInterface
      */
     public function validateAcceptHeader(): void;
@@ -35,6 +37,7 @@ interface JsonApiRequestInterface extends ServerRequestInterface
      * According to the JSON:API specification "Implementation specific query parameters MUST
      * adhere to the same constraints as member names with the additional requirement that they
      * MUST contain at least one non a-z character (U+0061 to U+007A)".
+     *
      * @throws QueryParamUnrecognized|JsonApiExceptionInterface
      */
     public function validateQueryParams(): void;
@@ -47,6 +50,7 @@ interface JsonApiRequestInterface extends ServerRequestInterface
      * - The members "data" and "errors" MUST NOT coexist in the same document.
      * - The document MAY contain any of these top-level members: "jsonapi", "links", "included"
      * - If a document does not contain a top-level "data" key, the "included" member MUST NOT be present either.
+     *
      * @throws RequiredTopLevelMembersMissing|TopLevelMembersIncompatible|TopLevelMemberNotAllowed|JsonApiExceptionInterface
      */
     public function validateTopLevelMembers(): void;
@@ -93,25 +97,27 @@ interface JsonApiRequestInterface extends ServerRequestInterface
     public function getFiltering(): array;
 
     /**
-     * Returns the value of the "filter[$param]" query parameter if present or $default value otherwise
+     * Returns the value of the "filter[$param]" query parameter if present or $default value otherwise.
+     *
      * @param mixed|null $default
+     *
      * @return string|mixed
      */
     public function getFilteringParam(string $param, $default = null);
 
     /**
      * Returns the value of the "$name" query parameter if present or the $default value otherwise.
-     * @param mixed $default
+     *
      * @return array|string|mixed
      */
-    public function getQueryParam(string $name, $default = null);
+    public function getQueryParam(string $name, mixed $default = null);
 
     /**
      * Returns a new request with the "$name" query parameter.
-     * @param mixed $value
+     *
      * @return $this
      */
-    public function withQueryParam(string $name, $value);
+    public function withQueryParam(string $name, mixed $value);
 
     /**
      * @return string[]
@@ -136,21 +142,27 @@ interface JsonApiRequestInterface extends ServerRequestInterface
 
     /**
      * Returns the primary resource if it is present in the request body, or the $default value otherwise.
+     *
      * @param mixed $default
+     *
      * @return array|mixed
      */
     public function getResource($default = null);
 
     /**
      * Returns the "type" of the primary resource if it is present, or the $default value otherwise.
+     *
      * @param mixed $default
+     *
      * @return string|mixed
      */
     public function getResourceType($default = null);
 
     /**
      * Returns the "id" of the primary resource if it is present, or the $default value otherwise.
+     *
      * @param mixed $default
+     *
      * @return string|mixed
      */
     public function getResourceId($default = null);
@@ -162,7 +174,9 @@ interface JsonApiRequestInterface extends ServerRequestInterface
 
     /**
      * Returns the $attribute attribute of the primary resource if it is present, or the $default value otherwise.
+     *
      * @param mixed $default
+     *
      * @return mixed
      */
     public function getResourceAttribute(string $attribute, $default = null);

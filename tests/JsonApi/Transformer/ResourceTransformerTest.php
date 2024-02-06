@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace WoohooLabs\Yin\Tests\JsonApi\Transformer;
 
 use Laminas\Diactoros\ServerRequest as DiactorosServerRequest;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use WoohooLabs\Yin\JsonApi\Exception\DefaultExceptionFactory;
 use WoohooLabs\Yin\JsonApi\Exception\InclusionUnrecognized;
@@ -23,391 +24,356 @@ use WoohooLabs\Yin\Tests\JsonApi\Double\StubResource;
 
 class ResourceTransformerTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function transformToResourceIdentifierWhenObjectIsNull(): void
     {
         $resource = $this->createResource();
 
         $resourceIdentifier = $this->toResourceIdentifier($resource, null);
 
-        $this->assertNull($resourceIdentifier);
+        self::assertNull($resourceIdentifier);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformToResourceIdentifierWhenObjectIsNotNull(): void
     {
-        $resource = $this->createResource("user", "1");
+        $resource = $this->createResource('user', '1');
 
         $resourceIdentifier = $this->toResourceIdentifier($resource, []);
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "type" => "user",
-                "id" => "1",
+                'type' => 'user',
+                'id' => '1',
             ],
-            $resourceIdentifier
+            $resourceIdentifier,
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformToResourceIdentifierWithMeta(): void
     {
-        $resource = $this->createResource("user", "1", ["abc" => "def"]);
+        $resource = $this->createResource('user', '1', ['abc' => 'def']);
 
         $resourceIdentifier = $this->toResourceIdentifier($resource, []);
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "type" => "user",
-                "id" => "1",
-                "meta" => ["abc" => "def"],
+                'type' => 'user',
+                'id' => '1',
+                'meta' => ['abc' => 'def'],
             ],
-            $resourceIdentifier
+            $resourceIdentifier,
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformToResourceObjectWhenNull(): void
     {
-        $resource = $this->createResource("user", "1");
+        $resource = $this->createResource('user', '1');
 
         $resourceObject = $this->toResourceObject($resource, null);
 
-        $this->assertNull($resourceObject);
+        self::assertNull($resourceObject);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformToResourceObjectWhenAlmostEmpty(): void
     {
-        $resource = $this->createResource("user", "1");
+        $resource = $this->createResource('user', '1');
 
         $resourceObject = $this->toResourceObject($resource, []);
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "type" => "user",
-                "id" => "1",
+                'type' => 'user',
+                'id' => '1',
             ],
-            $resourceObject
+            $resourceObject,
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformToResourceObjectWithMeta(): void
     {
-        $resource = $this->createResource("", "", ["abc" => "def"]);
+        $resource = $this->createResource('', '', ['abc' => 'def']);
 
         $resourceObject = $this->toResourceObject($resource, []);
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "type" => "",
-                "id" => "",
-                "meta" => ["abc" => "def"],
+                'type' => '',
+                'id' => '',
+                'meta' => ['abc' => 'def'],
             ],
-            $resourceObject
+            $resourceObject,
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformToResourceObjectWithLinks(): void
     {
-        $resource = $this->createResource("", "", [], new ResourceLinks());
+        $resource = $this->createResource('', '', [], new ResourceLinks());
 
         $resourceObject = $this->toResourceObject($resource, []);
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "type" => "",
-                "id" => "",
-                "links" => [],
+                'type' => '',
+                'id' => '',
+                'links' => [],
             ],
-            $resourceObject
+            $resourceObject,
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformToResourceObjectWithMetaAndLinks(): void
     {
-        $resource = $this->createResource("user", "1", ["abc" => "def"], new ResourceLinks());
+        $resource = $this->createResource('user', '1', ['abc' => 'def'], new ResourceLinks());
 
         $resourceObject = $this->toResourceObject($resource, []);
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "type" => "user",
-                "id" => "1",
-                "meta" => ["abc" => "def"],
-                "links" => [],
+                'type' => 'user',
+                'id' => '1',
+                'meta' => ['abc' => 'def'],
+                'links' => [],
             ],
-            $resourceObject
+            $resourceObject,
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformToResourceObjectWithAttributes(): void
     {
         $resource = $this->createResource(
-            "user",
-            "1",
-            ["abc" => "def"],
+            'user',
+            '1',
+            ['abc' => 'def'],
             new ResourceLinks(),
             [
-                "full_name" => function (array $object, JsonApiRequestInterface $request) {
-                    return $object["name"];
-                },
-                "birth" => function (array $object) {
-                    return 2015 - $object["age"];
-                },
-            ]
+                'full_name' => static fn (array $object, JsonApiRequestInterface $request) => $object['name'],
+                'birth' => static fn (array $object) => 2015 - $object['age'],
+            ],
         );
 
         $resourceObject = $this->toResourceObject(
             $resource,
             [
-                "name" => "John Doe",
-                "age" => "30",
-            ]
+                'name' => 'John Doe',
+                'age' => '30',
+            ],
         );
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "type" => "user",
-                "id" => "1",
-                "meta" => ["abc" => "def"],
-                "links" => [],
-                "attributes" => [
-                    "full_name" => "John Doe",
-                    "birth" => 1985,
+                'type' => 'user',
+                'id' => '1',
+                'meta' => ['abc' => 'def'],
+                'links' => [],
+                'attributes' => [
+                    'full_name' => 'John Doe',
+                    'birth' => 1985,
                 ],
             ],
-            $resourceObject
+            $resourceObject,
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformToResourceObjectWithDefaultRelationship(): void
     {
         $resource = $this->createResource(
-            "user",
-            "1",
+            'user',
+            '1',
             [],
             null,
             [],
-            ["father"],
+            ['father'],
             [
-                "father" => function (array $object, JsonApiRequestInterface $request): ToOneRelationship {
+                'father' => static function (array $object, JsonApiRequestInterface $request): ToOneRelationship {
                     return ToOneRelationship::create()
-                        ->setData([""], new StubResource("user", "2"));
+                        ->setData([''], new StubResource('user', '2'));
                 },
-            ]
+            ],
         );
 
         $resourceObject = $this->toResourceObject($resource, []);
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "type" => "user",
-                "id" => "1",
-                "relationships" => [
-                    "father" => [
-                        "data" => [
-                            "type" => "user",
-                            "id" => "2",
+                'type' => 'user',
+                'id' => '1',
+                'relationships' => [
+                    'father' => [
+                        'data' => [
+                            'type' => 'user',
+                            'id' => '2',
                         ],
                     ],
                 ],
             ],
-            $resourceObject
+            $resourceObject,
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformToResourceObjectWithoutRelationships(): void
     {
         $resource = $this->createResource(
-            "user",
-            "1",
+            'user',
+            '1',
             [],
             null,
             [],
             [],
             [
-                "father" => function (): ToOneRelationship {
-                    return ToOneRelationship::create();
-                },
-            ]
+                'father' => static fn (): ToOneRelationship => ToOneRelationship::create(),
+            ],
         );
 
-        $resourceObject = $this->toResourceObject($resource, [], StubJsonApiRequest::create(["fields" => ["user" => ""]]));
+        $resourceObject = $this->toResourceObject($resource, [], StubJsonApiRequest::create(['fields' => ['user' => '']]));
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "type" => "user",
-                "id" => "1",
+                'type' => 'user',
+                'id' => '1',
             ],
-            $resourceObject
+            $resourceObject,
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformToResourceObjectWithInvalidRelationship(): void
     {
         $resource = $this->createResource(
-            "user",
-            "1",
+            'user',
+            '1',
             [],
             null,
             [],
-            ["father"],
+            ['father'],
             [
-                "father" => function (): ToOneRelationship {
-                    return ToOneRelationship::create();
-                },
-            ]
+                'father' => static fn (): ToOneRelationship => ToOneRelationship::create(),
+            ],
         );
 
         $this->expectException(InclusionUnrecognized::class);
 
-        $this->toResourceObject($resource, [], StubJsonApiRequest::create(["include" => "mother"]));
+        $this->toResourceObject($resource, [], StubJsonApiRequest::create(['include' => 'mother']));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformToResourceObjectWithRelationships(): void
     {
         $resource = $this->createResource(
-            "user",
-            "1",
+            'user',
+            '1',
             [],
             null,
             [],
             [],
             [
-                "father" => function (): ToOneRelationship {
+                'father' => static function (): ToOneRelationship {
                     return ToOneRelationship::create()
                         ->setData(null, new StubResource());
                 },
-            ]
+            ],
         );
 
         $resourceObject = $this->toResourceObject($resource, []);
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "type" => "user",
-                "id" => "1",
-                "relationships" => [
-                    "father" => [
-                        "data" => null,
+                'type' => 'user',
+                'id' => '1',
+                'relationships' => [
+                    'father' => [
+                        'data' => null,
                     ],
                 ],
             ],
-            $resourceObject
+            $resourceObject,
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformToRelationshipObjectWhenEmpty(): void
     {
         $resource = $this->createResource(
-            "user",
-            "1",
+            'user',
+            '1',
             [],
             null,
             [],
             [],
-            []
+            [],
         );
 
         $this->expectException(RelationshipNotExists::class);
 
-        $this->toRelationshipObject($resource, [], null, "father");
+        $this->toRelationshipObject($resource, [], null, 'father');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformToRelationshipObjectWhenNotFound(): void
     {
         $resource = $this->createResource(
-            "user",
-            "1",
+            'user',
+            '1',
             [],
             null,
             [],
             [],
             [
-                "father" => function (): ToOneRelationship {
+                'father' => static function (): ToOneRelationship {
                     return ToOneRelationship::create()
-                        ->setData(["Father Vader"], new StubResource("user", "2"));
+                        ->setData(['Father Vader'], new StubResource('user', '2'));
                 },
-            ]
+            ],
         );
 
         $this->expectException(RelationshipNotExists::class);
 
-        $this->toRelationshipObject($resource, [], null, "mother");
+        $this->toRelationshipObject($resource, [], null, 'mother');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformToRelationshipObject(): void
     {
         $resource = $this->createResource(
-            "user",
-            "1",
+            'user',
+            '1',
             [],
             null,
             [],
             [],
             [
-                "father" => function (): ToOneRelationship {
+                'father' => static function (): ToOneRelationship {
                     return ToOneRelationship::create()
-                        ->setData(["Father Vader"], new StubResource("user", "2"));
+                        ->setData(['Father Vader'], new StubResource('user', '2'));
                 },
-            ]
+            ],
         );
 
-        $resourceObject = $this->toRelationshipObject($resource, [], null, "father");
+        $resourceObject = $this->toRelationshipObject($resource, [], null, 'father');
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "data" => [
-                    "type" => "user",
-                    "id" => "2",
+                'data' => [
+                    'type' => 'user',
+                    'id' => '2',
                 ],
             ],
-            $resourceObject
+            $resourceObject,
         );
+    }
+
+    protected function createResourceTransformer(): ResourceTransformer
+    {
+        return new ResourceTransformer();
     }
 
     /**
@@ -421,16 +387,16 @@ class ResourceTransformerTest extends TestCase
         $transformation = new ResourceTransformation(
             $resource,
             $object,
-            "",
+            '',
             $request ?? new JsonApiRequest(
                 new DiactorosServerRequest(),
                 new DefaultExceptionFactory(),
-                new JsonDeserializer()
+                new JsonDeserializer(),
             ),
-            "",
-            "",
-            "",
-            new DefaultExceptionFactory()
+            '',
+            '',
+            '',
+            new DefaultExceptionFactory(),
         );
 
         $transformer = new ResourceTransformer();
@@ -449,16 +415,16 @@ class ResourceTransformerTest extends TestCase
         $transformation = new ResourceTransformation(
             $resource,
             $object,
-            "",
+            '',
             $request ?? new JsonApiRequest(
                 new DiactorosServerRequest(),
                 new DefaultExceptionFactory(),
-                new JsonDeserializer()
+                new JsonDeserializer(),
             ),
-            "",
-            "",
-            "",
-            new DefaultExceptionFactory()
+            '',
+            '',
+            '',
+            new DefaultExceptionFactory(),
         );
 
         $transformer = new ResourceTransformer();
@@ -473,21 +439,21 @@ class ResourceTransformerTest extends TestCase
         ResourceInterface $resource,
         $object,
         ?JsonApiRequestInterface $request = null,
-        string $requestedRelationshipName = ""
+        string $requestedRelationshipName = ''
     ): ?array {
         $transformation = new ResourceTransformation(
             $resource,
             $object,
-            "",
+            '',
             $request ?? new JsonApiRequest(
                 new DiactorosServerRequest(),
                 new DefaultExceptionFactory(),
-                new JsonDeserializer()
+                new JsonDeserializer(),
             ),
-            "",
+            '',
             $requestedRelationshipName,
             $requestedRelationshipName,
-            new DefaultExceptionFactory()
+            new DefaultExceptionFactory(),
         );
 
         $transformer = new ResourceTransformer();
@@ -496,8 +462,8 @@ class ResourceTransformerTest extends TestCase
     }
 
     private function createResource(
-        string $type = "",
-        string $id = "",
+        string $type = '',
+        string $id = '',
         array $meta = [],
         ?ResourceLinks $links = null,
         array $attributes = [],
@@ -505,10 +471,5 @@ class ResourceTransformerTest extends TestCase
         array $relationships = []
     ): StubResource {
         return new StubResource($type, $id, $meta, $links, $attributes, $defaultRelationships, $relationships);
-    }
-
-    protected function createResourceTransformer(): ResourceTransformer
-    {
-        return new ResourceTransformer();
     }
 }

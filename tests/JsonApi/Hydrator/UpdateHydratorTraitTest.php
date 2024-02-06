@@ -7,6 +7,7 @@ namespace WoohooLabs\Yin\Tests\JsonApi\Hydrator;
 use Laminas\Diactoros\ServerRequest;
 use Laminas\Diactoros\Stream;
 use LogicException;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use WoohooLabs\Yin\JsonApi\Exception\DataMemberMissing;
 use WoohooLabs\Yin\JsonApi\Exception\DefaultExceptionFactory;
@@ -19,9 +20,7 @@ use function json_encode;
 
 class UpdateHydratorTraitTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function hydrateWhenBodyEmpty(): void
     {
         $body = [];
@@ -32,14 +31,12 @@ class UpdateHydratorTraitTest extends TestCase
         $hydrator->hydrateForUpdate($this->createRequest($body), new DefaultExceptionFactory(), []);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function hydrateWhenIdMissing(): void
     {
         $body = [
-            "data" => [
-                "type" => "user",
+            'data' => [
+                'type' => 'user',
             ],
         ];
 
@@ -49,36 +46,32 @@ class UpdateHydratorTraitTest extends TestCase
         $hydrator->hydrateForUpdate($this->createRequest($body), new DefaultExceptionFactory(), []);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function hydrateId(): void
     {
-        $id = "1";
+        $id = '1';
         $body = [
-            "data" => [
-                "type" => "user",
-                "id" => $id,
+            'data' => [
+                'type' => 'user',
+                'id' => $id,
             ],
         ];
 
         $hydrator = $this->createHydrator();
         $domainObject = $hydrator->hydrateForUpdate($this->createRequest($body), new DefaultExceptionFactory(), []);
-        $this->assertEquals(["id" => $id], $domainObject);
+        self::assertSame(['id' => $id], $domainObject);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validateRequest(): void
     {
-        $type = "user";
-        $id = "1";
+        $type = 'user';
+        $id = '1';
 
         $body = [
-            "data" => [
-                "type" => $type,
-                "id" => $id,
+            'data' => [
+                'type' => $type,
+                'id' => $id,
             ],
         ];
 
@@ -92,13 +85,13 @@ class UpdateHydratorTraitTest extends TestCase
     {
         $data = json_encode($body);
         if ($data === false) {
-            $data = "";
+            $data = '';
         }
 
         $psrRequest = new ServerRequest();
         $psrRequest = $psrRequest
             ->withParsedBody($body)
-            ->withBody(new Stream("php://memory", "rw"));
+            ->withBody(new Stream('php://memory', 'rw'));
         $psrRequest->getBody()->write($data);
 
         return new JsonApiRequest($psrRequest, new DefaultExceptionFactory(), new JsonDeserializer());

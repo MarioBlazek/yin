@@ -6,6 +6,7 @@ namespace WoohooLabs\Yin\Tests\JsonApi\Hydrator;
 
 use Laminas\Diactoros\ServerRequest;
 use Laminas\Diactoros\Stream;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use WoohooLabs\Yin\JsonApi\Exception\DefaultExceptionFactory;
 use WoohooLabs\Yin\JsonApi\Exception\RelationshipTypeInappropriate;
@@ -22,13 +23,11 @@ use function json_encode;
 
 class AbstractHydratorTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function validateTypeWhenMissing(): void
     {
         $body = [
-            "data" => [],
+            'data' => [],
         ];
 
         $hydrator = $this->createHydrator();
@@ -37,230 +36,211 @@ class AbstractHydratorTest extends TestCase
         $hydrator->hydrateForCreate($this->createRequest($body), new DefaultExceptionFactory(), []);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validateTypeWhenUnacceptableAndOnlyOneAcceptable(): void
     {
         $body = [
-            "data" => [
-                "type" => "elephant",
+            'data' => [
+                'type' => 'elephant',
             ],
         ];
 
-        $hydrator = $this->createHydrator(["fox"]);
+        $hydrator = $this->createHydrator(['fox']);
 
         $this->expectException(ResourceTypeUnacceptable::class);
         $hydrator->hydrateForCreate($this->createRequest($body), new DefaultExceptionFactory(), []);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validateTypeWhenUnacceptableAndMoreAcceptable(): void
     {
         $body = [
-            "data" => [
-                "type" => "elephant",
+            'data' => [
+                'type' => 'elephant',
             ],
         ];
 
-        $hydrator = $this->createHydrator(["fox", "wolf"]);
+        $hydrator = $this->createHydrator(['fox', 'wolf']);
 
         $this->expectException(ResourceTypeUnacceptable::class);
         $hydrator->hydrateForUpdate($this->createRequest($body), new DefaultExceptionFactory(), []);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function hydrateAttributesWhenEmpty(): void
     {
         $body = [
-            "data" => [
-                "type" => "elephant",
-                "id" => "1",
+            'data' => [
+                'type' => 'elephant',
+                'id' => '1',
             ],
         ];
 
-        $hydrator = $this->createHydrator(["elephant"]);
+        $hydrator = $this->createHydrator(['elephant']);
         $domainObject = $hydrator->hydrateForUpdate($this->createRequest($body), new DefaultExceptionFactory(), []);
-        $this->assertEquals([], $domainObject);
+        self::assertSame([], $domainObject);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function hydrateAttributesWhenNull(): void
     {
         $body = [
-            "data" => [
-                "type" => "elephant",
-                "id" => "1",
-                "attributes" => [
-                    "height" => null,
+            'data' => [
+                'type' => 'elephant',
+                'id' => '1',
+                'attributes' => [
+                    'height' => null,
                 ],
             ],
         ];
         $attributeHydrator = [
-            "height" => function (array &$elephant, $attribute): void {
-                $elephant["height"] = $attribute;
+            'height' => static function (array &$elephant, $attribute): void {
+                $elephant['height'] = $attribute;
             },
         ];
 
-        $hydrator = $this->createHydrator(["elephant"], $attributeHydrator);
+        $hydrator = $this->createHydrator(['elephant'], $attributeHydrator);
         $domainObject = $hydrator->hydrateForUpdate($this->createRequest($body), new DefaultExceptionFactory(), []);
-        $this->assertEquals(['height' => null], $domainObject);
+        self::assertSame(['height' => null], $domainObject);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function hydrateAttributesWhenHydratorEmpty(): void
     {
         $body = [
-            "data" => [
-                "type" => "elephant",
-                "id" => "1",
-                "attributes" => [
-                    "height" => 2.5,
+            'data' => [
+                'type' => 'elephant',
+                'id' => '1',
+                'attributes' => [
+                    'height' => 2.5,
                 ],
             ],
         ];
         $attributeHydrator = [
-            "weight" => function (array &$elephant, $attribute): void {
-                $elephant["weight"] = $attribute;
+            'weight' => static function (array &$elephant, $attribute): void {
+                $elephant['weight'] = $attribute;
             },
         ];
 
-        $hydrator = $this->createHydrator(["elephant"], $attributeHydrator);
+        $hydrator = $this->createHydrator(['elephant'], $attributeHydrator);
         $domainObject = $hydrator->hydrateForUpdate($this->createRequest($body), new DefaultExceptionFactory(), []);
-        $this->assertEquals([], $domainObject);
+        self::assertSame([], $domainObject);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function hydrateAttributesWhenHydratorReturnByReference(): void
     {
         $weight = 1000;
         $body = [
-            "data" => [
-                "type" => "elephant",
-                "id" => "1",
-                "attributes" => [
-                    "weight" => $weight,
+            'data' => [
+                'type' => 'elephant',
+                'id' => '1',
+                'attributes' => [
+                    'weight' => $weight,
                 ],
             ],
         ];
         $attributeHydrator = [
-            "weight" => function (array &$elephant, $attribute): void {
-                $elephant["weight"] = $attribute;
+            'weight' => static function (array &$elephant, $attribute): void {
+                $elephant['weight'] = $attribute;
             },
         ];
 
-        $hydrator = $this->createHydrator(["elephant"], $attributeHydrator);
+        $hydrator = $this->createHydrator(['elephant'], $attributeHydrator);
         $domainObject = $hydrator->hydrateForUpdate($this->createRequest($body), new DefaultExceptionFactory(), []);
-        $this->assertEquals(["weight" => $weight], $domainObject);
+        self::assertSame(['weight' => $weight], $domainObject);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function hydrateAttributesWhenHydratorReturnByValue(): void
     {
         $weight = 1000;
         $body = [
-            "data" => [
-                "type" => "elephant",
-                "id" => "1",
-                "attributes" => [
-                    "weight" => $weight,
+            'data' => [
+                'type' => 'elephant',
+                'id' => '1',
+                'attributes' => [
+                    'weight' => $weight,
                 ],
             ],
         ];
         $attributeHydrator = [
-            "weight" => function (array $elephant, $attribute): array {
-                $elephant["weight"] = $attribute;
+            'weight' => static function (array $elephant, $attribute): array {
+                $elephant['weight'] = $attribute;
+
                 return $elephant;
             },
         ];
 
-        $hydrator = $this->createHydrator(["elephant"], $attributeHydrator);
+        $hydrator = $this->createHydrator(['elephant'], $attributeHydrator);
         $domainObject = $hydrator->hydrateForUpdate($this->createRequest($body), new DefaultExceptionFactory(), []);
-        $this->assertEquals(["weight" => $weight], $domainObject);
+        self::assertSame(['weight' => $weight], $domainObject);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function hydrateRelationshipsWhenHydratorEmpty(): void
     {
         $body = [
-            "data" => [
-                "type" => "elephant",
-                "id" => "1",
-                "relationships" => [
-                    "parents" => [],
+            'data' => [
+                'type' => 'elephant',
+                'id' => '1',
+                'relationships' => [
+                    'parents' => [],
                 ],
             ],
         ];
         $relationshipHydrator = [
-            "children" => function (array &$elephant, ToManyRelationship $children): void {
-                $elephant["children"] = ["Dumbo", "Mambo"];
+            'children' => static function (array &$elephant, ToManyRelationship $children): void {
+                $elephant['children'] = ['Dumbo', 'Mambo'];
             },
         ];
 
-        $hydrator = $this->createHydrator(["elephant"], [], $relationshipHydrator);
+        $hydrator = $this->createHydrator(['elephant'], [], $relationshipHydrator);
         $domainObject = $hydrator->hydrateForUpdate($this->createRequest($body), new DefaultExceptionFactory(), []);
-        $this->assertEquals([], $domainObject);
+        self::assertSame([], $domainObject);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function hydrateRelationshipsWhenCardinalityInappropriate(): void
     {
         $body = [
-            "data" => [
-                "type" => "elephant",
-                "id" => "1",
-                "relationships" => [
-                    "children" => [
-                        "data" => [
-                            "type" => "elephant",
-                            "id" => "2",
+            'data' => [
+                'type' => 'elephant',
+                'id' => '1',
+                'relationships' => [
+                    'children' => [
+                        'data' => [
+                            'type' => 'elephant',
+                            'id' => '2',
                         ],
                     ],
                 ],
             ],
         ];
         $relationshipHydrator = [
-            "children" => function (array &$elephant, ToManyRelationship $children): void {
-                $elephant["children"] = $children->getResourceIdentifiers();
+            'children' => static function (array &$elephant, ToManyRelationship $children): void {
+                $elephant['children'] = $children->getResourceIdentifiers();
             },
         ];
-        $hydrator = $this->createHydrator(["elephant"], [], $relationshipHydrator);
+        $hydrator = $this->createHydrator(['elephant'], [], $relationshipHydrator);
 
         $this->expectException(RelationshipTypeInappropriate::class);
         $hydrator->hydrateForUpdate($this->createRequest($body), new DefaultExceptionFactory(), []);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function hydrateRelationshipsWhenCardinalityInappropriate2(): void
     {
         $body = [
-            "data" => [
-                "type" => "elephant",
-                "id" => "1",
-                "relationships" => [
-                    "children" => [
-                        "data" => [
+            'data' => [
+                'type' => 'elephant',
+                'id' => '1',
+                'relationships' => [
+                    'children' => [
+                        'data' => [
                             [
-                                "type" => "elephant",
-                                "id" => "2",
+                                'type' => 'elephant',
+                                'id' => '2',
                             ],
                         ],
                     ],
@@ -268,31 +248,29 @@ class AbstractHydratorTest extends TestCase
             ],
         ];
         $relationshipHydrator = [
-            "children" => function (array &$elephant, ToOneRelationship $children): void {
-                $elephant["children"] = $children->getResourceIdentifier();
+            'children' => static function (array &$elephant, ToOneRelationship $children): void {
+                $elephant['children'] = $children->getResourceIdentifier();
             },
         ];
-        $hydrator = $this->createHydrator(["elephant"], [], $relationshipHydrator);
+        $hydrator = $this->createHydrator(['elephant'], [], $relationshipHydrator);
 
         $this->expectException(RelationshipTypeInappropriate::class);
         $hydrator->hydrateForUpdate($this->createRequest($body), new DefaultExceptionFactory(), []);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function hydrateRelationshipsWhenExpectedCardinalityIsNotSet(): void
     {
         $body = [
-            "data" => [
-                "type" => "elephant",
-                "id" => "1",
-                "relationships" => [
-                    "children" => [
-                        "data" => [
+            'data' => [
+                'type' => 'elephant',
+                'id' => '1',
+                'relationships' => [
+                    'children' => [
+                        'data' => [
                             [
-                                "type" => "elephant",
-                                "id" => "2",
+                                'type' => 'elephant',
+                                'id' => '2',
                             ],
                         ],
                     ],
@@ -300,37 +278,35 @@ class AbstractHydratorTest extends TestCase
             ],
         ];
         $relationshipHydrator = [
-            "children" => function (array &$elephant, $children): void {
-                $elephant["children"] = "Dumbo";
+            'children' => static function (array &$elephant, $children): void {
+                $elephant['children'] = 'Dumbo';
             },
         ];
 
-        $hydrator = $this->createHydrator(["elephant"], [], $relationshipHydrator);
+        $hydrator = $this->createHydrator(['elephant'], [], $relationshipHydrator);
         $domainObject = $hydrator->hydrateForUpdate($this->createRequest($body), new DefaultExceptionFactory(), []);
-        $this->assertEquals(["children" => "Dumbo"], $domainObject);
+        self::assertSame(['children' => 'Dumbo'], $domainObject);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function hydrateRelationships(): void
     {
         $body = [
-            "data" => [
-                "type" => "elephant",
-                "id" => "1",
-                "relationships" => [
-                    "owner" => [
-                        "data" => [
-                            "type" => "person",
-                            "id" => "1",
+            'data' => [
+                'type' => 'elephant',
+                'id' => '1',
+                'relationships' => [
+                    'owner' => [
+                        'data' => [
+                            'type' => 'person',
+                            'id' => '1',
                         ],
                     ],
-                    "children" => [
-                        "data" => [
+                    'children' => [
+                        'data' => [
                             [
-                                "type" => "elephant",
-                                "id" => "2",
+                                'type' => 'elephant',
+                                'id' => '2',
                             ],
                         ],
                     ],
@@ -338,33 +314,34 @@ class AbstractHydratorTest extends TestCase
             ],
         ];
         $relationshipHydrator = [
-            "owner" => function (array $elephant, ToOneRelationship $owner): array {
+            'owner' => static function (array $elephant, ToOneRelationship $owner): array {
                 $resourceIdentifier = $owner->getResourceIdentifier();
 
-                $elephant["owner"] = $resourceIdentifier !== null ? $resourceIdentifier->getId() : "";
+                $elephant['owner'] = $resourceIdentifier !== null ? $resourceIdentifier->getId() : '';
+
                 return $elephant;
             },
-            "children" => function (array &$elephant, ToManyRelationship $children): void {
-                $elephant["children"] = $children->getResourceIdentifierIds();
+            'children' => static function (array &$elephant, ToManyRelationship $children): void {
+                $elephant['children'] = $children->getResourceIdentifierIds();
             },
         ];
 
-        $hydrator = $this->createHydrator(["elephant"], [], $relationshipHydrator);
+        $hydrator = $this->createHydrator(['elephant'], [], $relationshipHydrator);
         $domainObject = $hydrator->hydrateForUpdate($this->createRequest($body), new DefaultExceptionFactory(), []);
-        $this->assertEquals(["owner" => "1", "children" => ["2"]], $domainObject);
+        self::assertSame(['owner' => '1', 'children' => ['2']], $domainObject);
     }
 
     private function createRequest(array $body): JsonApiRequest
     {
         $data = json_encode($body);
         if ($data === false) {
-            $data = "";
+            $data = '';
         }
 
         $psrRequest = new ServerRequest();
         $psrRequest = $psrRequest
             ->withParsedBody($body)
-            ->withBody(new Stream("php://memory", "rw"));
+            ->withBody(new Stream('php://memory', 'rw'));
         $psrRequest->getBody()->write($data);
 
         return new JsonApiRequest($psrRequest, new DefaultExceptionFactory(), new JsonDeserializer());

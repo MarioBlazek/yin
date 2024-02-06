@@ -16,36 +16,36 @@ class UserRepository
      */
     private static $users = [
         [
-            "id" => 1,
-            "firstname" => "John",
-            "lastname" => "Doe",
-            "contacts" => [
+            'id' => 1,
+            'firstname' => 'John',
+            'lastname' => 'Doe',
+            'contacts' => [
                 [
-                    "id" => 100,
-                    "type" => "phone",
-                    "value" => "+123456789",
+                    'id' => 100,
+                    'type' => 'phone',
+                    'value' => '+123456789',
                 ],
                 [
-                    "id" => 101,
-                    "type" => "email",
-                    "value" => "john.doe@example.com",
+                    'id' => 101,
+                    'type' => 'email',
+                    'value' => 'john.doe@example.com',
                 ],
                 [
-                    "id" => 102,
-                    "type" => "email",
-                    "value" => "secret.doe@example.com",
+                    'id' => 102,
+                    'type' => 'email',
+                    'value' => 'secret.doe@example.com',
                 ],
             ],
         ],
         [
-            "id" => 2,
-            "firstname" => "Jane",
-            "lastname" => "Doe",
-            "contacts" => [
+            'id' => 2,
+            'firstname' => 'Jane',
+            'lastname' => 'Doe',
+            'contacts' => [
                 [
-                    "id" => 103,
-                    "type" => "email",
-                    "value" => "jane.doe@example.com",
+                    'id' => 103,
+                    'type' => 'email',
+                    'value' => 'jane.doe@example.com',
                 ],
             ],
         ],
@@ -62,13 +62,14 @@ class UserRepository
         }
 
         $users = array_slice(self::$users, ($page - 1) * $size, $size);
+
         return new Collection($users, count(self::$users), $page, $size);
     }
 
     public static function getUser(int $id): ?array
     {
         foreach (self::$users as $user) {
-            if ($user["id"] === $id) {
+            if ($user['id'] === $id) {
                 return $user;
             }
         }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace WoohooLabs\Yin\Tests\JsonApi\Schema\Relationship;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use WoohooLabs\Yin\JsonApi\Exception\DefaultExceptionFactory;
 use WoohooLabs\Yin\JsonApi\Schema\Link\RelationshipLinks;
@@ -17,20 +18,18 @@ use WoohooLabs\Yin\Tests\JsonApi\Double\StubResource;
 
 class ToOneRelationshipTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function transformEmpty(): void
     {
         $transformation = new ResourceTransformation(
             new StubResource(),
             [],
-            "",
+            '',
             new StubJsonApiRequest(),
-            "",
-            "",
-            "",
-            new DefaultExceptionFactory()
+            '',
+            '',
+            '',
+            new DefaultExceptionFactory(),
         );
         $relationship = $this->createRelationship();
 
@@ -38,29 +37,27 @@ class ToOneRelationshipTest extends TestCase
             $transformation,
             new ResourceTransformer(),
             new DummyData(),
-            []
+            [],
         );
 
-        $this->assertEquals(
+        self::assertSame(
             [],
-            $relationshipObject
+            $relationshipObject,
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformNull(): void
     {
         $transformation = new ResourceTransformation(
             new StubResource(),
             [],
-            "",
+            '',
             new StubJsonApiRequest(),
-            "",
-            "",
-            "",
-            new DefaultExceptionFactory()
+            '',
+            '',
+            '',
+            new DefaultExceptionFactory(),
         );
         $relationship = $this->createRelationship([], null, null, $transformation->resource);
 
@@ -68,53 +65,51 @@ class ToOneRelationshipTest extends TestCase
             $transformation,
             new ResourceTransformer(),
             new DummyData(),
-            []
+            [],
         );
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "data" => null,
+                'data' => null,
             ],
-            $relationshipObject
+            $relationshipObject,
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transform(): void
     {
         $relationship = $this->createRelationship(
             [],
             null,
             [],
-            new StubResource("abc", "1")
+            new StubResource('abc', '1'),
         );
 
         $relationshipObject = $relationship->transform(
             new ResourceTransformation(
                 new StubResource(),
                 [],
-                "",
+                '',
                 new StubJsonApiRequest(),
-                "",
-                "",
-                "",
-                new DefaultExceptionFactory()
+                '',
+                '',
+                '',
+                new DefaultExceptionFactory(),
             ),
             new ResourceTransformer(),
             new DummyData(),
-            []
+            [],
         );
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "data" => [
-                    "type" => "abc",
-                    "id" => "1",
+                'data' => [
+                    'type' => 'abc',
+                    'id' => '1',
                 ],
             ],
-            $relationshipObject
+            $relationshipObject,
         );
     }
 

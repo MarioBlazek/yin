@@ -12,11 +12,6 @@ use WoohooLabs\Yin\JsonApi\Serializer\JsonDeserializer;
 
 class StubJsonApiRequest extends JsonApiRequest
 {
-    public static function create(array $queryParams = []): StubJsonApiRequest
-    {
-        return new StubJsonApiRequest($queryParams);
-    }
-
     public function __construct(array $queryParams = [])
     {
         $streamFactory = new StreamFactory();
@@ -24,7 +19,12 @@ class StubJsonApiRequest extends JsonApiRequest
         parent::__construct(
             new ServerRequest([], [], null, null, $streamFactory->createStream(), [], [], $queryParams),
             new DefaultExceptionFactory(),
-            new JsonDeserializer()
+            new JsonDeserializer(),
         );
+    }
+
+    public static function create(array $queryParams = []): self
+    {
+        return new self($queryParams);
     }
 }

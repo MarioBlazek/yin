@@ -15,16 +15,16 @@ class FixedPageBasedPagination
      */
     protected $page;
 
-    public static function fromPaginationQueryParams(array $paginationQueryParams, int $defaultPage = 0): FixedPageBasedPagination
-    {
-        return new FixedPageBasedPagination(
-            Utils::getIntegerFromQueryParam($paginationQueryParams, "number", $defaultPage)
-        );
-    }
-
     public function __construct(int $page)
     {
         $this->page = $page;
+    }
+
+    public static function fromPaginationQueryParams(array $paginationQueryParams, int $defaultPage = 0): self
+    {
+        return new self(
+            Utils::getIntegerFromQueryParam($paginationQueryParams, 'number', $defaultPage),
+        );
     }
 
     public function getPage(): int
@@ -40,8 +40,8 @@ class FixedPageBasedPagination
     public static function getPaginationQueryParams(int $page): array
     {
         return [
-            "page" => [
-                "number" => $page,
+            'page' => [
+                'number' => $page,
             ],
         ];
     }

@@ -11,13 +11,13 @@ use WoohooLabs\Yin\JsonApi\Schema\Error\Error;
 
 abstract class AbstractJsonApiException extends Exception implements JsonApiExceptionInterface
 {
-    /**
-     * @return Error[]
-     */
-    abstract protected function getErrors(): array;
-
     public function getErrorDocument(): ErrorDocumentInterface
     {
         return new ErrorDocument($this->getErrors());
     }
+
+    /**
+     * @return Error[]
+     */
+    abstract protected function getErrors(): array;
 }

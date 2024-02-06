@@ -18,11 +18,11 @@ class DataMemberMissing extends AbstractJsonApiException
     {
         return [
             Error::create()
-                ->setStatus("400")
-                ->setCode("DATA_MEMBER_MISSING")
+                ->setStatus('400')
+                ->setCode('DATA_MEMBER_MISSING')
                 ->setTitle("Missing `data` member at the document's top level")
                 ->setDetail($this->getMessage())
-                ->setSource(ErrorSource::fromPointer("")),
+                ->setSource(ErrorSource::fromPointer('')),
         ];
     }
 }

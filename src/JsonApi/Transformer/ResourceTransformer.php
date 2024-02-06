@@ -29,7 +29,7 @@ final class ResourceTransformer
         $transformation->resource->initializeTransformation(
             $transformation->request,
             $transformation->object,
-            $transformation->exceptionFactory
+            $transformation->exceptionFactory,
         );
 
         $this->transformResourceIdentifier($transformation);
@@ -55,7 +55,7 @@ final class ResourceTransformer
         $transformation->resource->initializeTransformation(
             $transformation->request,
             $transformation->object,
-            $transformation->exceptionFactory
+            $transformation->exceptionFactory,
         );
 
         $this->transformResourceIdentifier($transformation);
@@ -86,7 +86,7 @@ final class ResourceTransformer
             $transformation,
             $data,
             $relationships[$transformation->currentRelationshipName],
-            $defaultRelationships
+            $defaultRelationships,
         );
 
         return $transformation->result;
@@ -103,13 +103,13 @@ final class ResourceTransformer
         $id = $transformation->resource->getId($transformation->object);
 
         $transformation->result = [
-            "type" => $type,
-            "id" => $id,
+            'type' => $type,
+            'id' => $id,
         ];
 
         $meta = $transformation->resource->getMeta($transformation->object);
         if (empty($meta) === false) {
-            $transformation->result["meta"] = $meta;
+            $transformation->result['meta'] = $meta;
         }
     }
 
@@ -122,7 +122,7 @@ final class ResourceTransformer
         $links = $transformation->resource->getLinks($transformation->object);
 
         if ($links !== null) {
-            $transformation->result["links"] = $links->transform();
+            $transformation->result['links'] = $links->transform();
         }
     }
 
@@ -136,7 +136,7 @@ final class ResourceTransformer
 
         foreach ($attributes as $name => $attribute) {
             if ($transformation->request->isIncludedField($transformation->resourceType, $name)) {
-                $transformation->result["attributes"][$name] = $attribute($transformation->object, $transformation->request, $name);
+                $transformation->result['attributes'][$name] = $attribute($transformation->object, $transformation->request, $name);
             }
         }
     }
@@ -158,15 +158,15 @@ final class ResourceTransformer
                 $transformation,
                 $data,
                 $relationshipCallback,
-                $defaultRelationships
+                $defaultRelationships,
             );
 
             if (empty($relationshipObject) === false) {
-                $transformation->result["relationships"][$relationshipName] = $relationshipObject;
+                $transformation->result['relationships'][$relationshipName] = $relationshipObject;
             }
         }
 
-        $transformation->currentRelationshipName = "";
+        $transformation->currentRelationshipName = '';
     }
 
     private function transformRelationshipObject(
@@ -178,8 +178,8 @@ final class ResourceTransformer
         $relationshipName = $transformation->currentRelationshipName;
 
         if (
-            $transformation->request->isIncludedField($transformation->resourceType, $relationshipName) === false &&
-            $transformation->request->isIncludedRelationship($transformation->basePath, $relationshipName, $defaultRelationships) === false
+            $transformation->request->isIncludedField($transformation->resourceType, $relationshipName) === false
+            && $transformation->request->isIncludedRelationship($transformation->basePath, $relationshipName, $defaultRelationships) === false
         ) {
             return null;
         }
@@ -197,7 +197,7 @@ final class ResourceTransformer
         $nonExistentRelationships = array_diff($requestedRelationships, array_keys($relationships));
         if (empty($nonExistentRelationships) === false) {
             foreach ($nonExistentRelationships as $key => $relationship) {
-                $nonExistentRelationships[$key] = ($transformation->basePath !== "" ? $transformation->basePath . "." : "") . $relationship;
+                $nonExistentRelationships[$key] = ($transformation->basePath !== '' ? $transformation->basePath . '.' : '') . $relationship;
             }
 
             throw $transformation->exceptionFactory->createInclusionUnrecognizedException($transformation->request, $nonExistentRelationships);

@@ -66,17 +66,14 @@ trait CursorBasedPaginationLinkProviderTrait
         return $this->createPaginatedLink($uri, $queryString, $this->getNextItem(), $this->getSize());
     }
 
-    /**
-     * @param mixed $cursor
-     */
-    protected function createPaginatedLink(string $uri, string $queryString, $cursor, int $size): ?Link
+    protected function createPaginatedLink(string $uri, string $queryString, mixed $cursor, int $size): ?Link
     {
         if ($cursor === null) {
             return null;
         }
 
         return new Link(
-            Utils::getUri($uri, $queryString, CursorBasedPagination::getPaginationQueryParams($cursor, $size))
+            Utils::getUri($uri, $queryString, CursorBasedPagination::getPaginationQueryParams($cursor, $size)),
         );
     }
 }

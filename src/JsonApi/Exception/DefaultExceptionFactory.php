@@ -117,7 +117,7 @@ class DefaultExceptionFactory implements ExceptionFactoryInterface
         return new RelationshipTypeInappropriate(
             $relationshipName,
             $currentRelationshipType,
-            $expectedRelationshipType
+            $expectedRelationshipType,
         );
     }
 

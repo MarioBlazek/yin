@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace WoohooLabs\Yin\Tests\JsonApi\Response;
 
 use Laminas\Diactoros\Response;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use WoohooLabs\Yin\JsonApi\Exception\DefaultExceptionFactory;
 use WoohooLabs\Yin\JsonApi\Response\Responder;
@@ -20,55 +21,47 @@ use function json_decode;
 
 class ResponderTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function ok(): void
     {
         $response = $this->createResponder()->ok(new StubResourceDocument(), []);
 
         $statusCode = $response->getStatusCode();
 
-        $this->assertEquals(200, $statusCode);
+        self::assertSame(200, $statusCode);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function okWithoutLinks(): void
     {
         $response = $this->createResponder()->ok(
             new StubResourceDocument(),
-            []
+            [],
         );
 
-        $contentType = $response->getHeaderLine("content-type");
+        $contentType = $response->getHeaderLine('content-type');
 
-        $this->assertEquals("application/vnd.api+json", $contentType);
+        self::assertSame('application/vnd.api+json', $contentType);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function okWithLinksWithoutProfiles(): void
     {
         $response = $this->createResponder()->ok(
             new StubResourceDocument(
                 null,
                 [],
-                DocumentLinks::createWithoutBaseUri()
+                DocumentLinks::createWithoutBaseUri(),
             ),
-            []
+            [],
         );
 
-        $contentType = $response->getHeaderLine("content-type");
+        $contentType = $response->getHeaderLine('content-type');
 
-        $this->assertEquals("application/vnd.api+json", $contentType);
+        self::assertSame('application/vnd.api+json', $contentType);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function nokWithProfiles(): void
     {
         $response = $this->createResponder()->ok(
@@ -76,49 +69,43 @@ class ResponderTest extends TestCase
                 null,
                 [],
                 DocumentLinks::createWithoutBaseUri()
-                    ->addProfile(new Link("https://example.com/profiles/last-modified"))
-                    ->addProfile(new Link("https://example.com/profiles/created"))
+                    ->addProfile(new Link('https://example.com/profiles/last-modified'))
+                    ->addProfile(new Link('https://example.com/profiles/created')),
             ),
-            []
+            [],
         );
 
-        $contentType = $response->getHeaderLine("content-type");
+        $contentType = $response->getHeaderLine('content-type');
 
-        $this->assertEquals(
+        self::assertSame(
             'application/vnd.api+json;profile="https://example.com/profiles/last-modified https://example.com/profiles/created"',
-            $contentType
+            $contentType,
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function okWithMeta(): void
     {
-        $response = $this->createResponder()->okWithMeta(new StubResourceDocument(null, ["abc" => "def"]), []);
+        $response = $this->createResponder()->okWithMeta(new StubResourceDocument(null, ['abc' => 'def']), []);
 
         $statusCode = $response->getStatusCode();
-        $meta = json_decode($response->getBody()->__toString(), true)["meta"];
+        $meta = json_decode($response->getBody()->__toString(), true)['meta'];
 
-        $this->assertEquals(200, $statusCode);
-        $this->assertEquals("def", $meta["abc"]);
+        self::assertSame(200, $statusCode);
+        self::assertSame('def', $meta['abc']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function okWithRelationship(): void
     {
-        $response = $this->createResponder()->okWithRelationship("", new StubResourceDocument(), []);
+        $response = $this->createResponder()->okWithRelationship('', new StubResourceDocument(), []);
 
         $statusCode = $response->getStatusCode();
 
-        $this->assertEquals(200, $statusCode);
+        self::assertSame(200, $statusCode);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function created(): void
     {
         $response = $this->createResponder()->created(new StubResourceDocument(), []);
@@ -126,173 +113,151 @@ class ResponderTest extends TestCase
         $statusCode = $response->getStatusCode();
         $body = json_decode($response->getBody()->__toString(), true);
 
-        $this->assertEquals(201, $statusCode);
-        $this->assertNotEmpty($body);
+        self::assertSame(201, $statusCode);
+        self::assertNotEmpty($body);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function createdWithLinks(): void
     {
         $response = $this->createResponder()->created(
             new StubResourceDocument(
                 null,
                 [],
-                new DocumentLinks("", ["self" => new Link("https://example.com/users")])
+                new DocumentLinks('', ['self' => new Link('https://example.com/users')]),
             ),
-            []
+            [],
         );
 
-        $location = $response->getHeader("location");
+        $location = $response->getHeader('location');
 
-        $this->assertEquals(["https://example.com/users"], $location);
+        self::assertSame(['https://example.com/users'], $location);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function createdWithMeta(): void
     {
         $response = $this->createResponder()->createdWithMeta(
             new StubResourceDocument(
                 null,
                 [],
-                new DocumentLinks("", ["self" => new Link("https://example.com/users")])
+                new DocumentLinks('', ['self' => new Link('https://example.com/users')]),
             ),
-            []
+            [],
         );
 
         $statusCode = $response->getStatusCode();
-        $location = $response->getHeader("location");
+        $location = $response->getHeader('location');
         $body = json_decode($response->getBody()->__toString(), true);
 
-        $this->assertEquals(201, $statusCode);
-        $this->assertEquals(["https://example.com/users"], $location);
-        $this->assertNotEmpty($body);
+        self::assertSame(201, $statusCode);
+        self::assertSame(['https://example.com/users'], $location);
+        self::assertNotEmpty($body);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function createdWithRelationship(): void
     {
-        $response = $this->createResponder()->createdWithRelationship("", new StubResourceDocument(), []);
+        $response = $this->createResponder()->createdWithRelationship('', new StubResourceDocument(), []);
 
         $statusCode = $response->getStatusCode();
 
-        $this->assertEquals(201, $statusCode);
+        self::assertSame(201, $statusCode);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function accepted(): void
     {
         $response = $this->createResponder()->accepted();
 
         $statusCode = $response->getStatusCode();
 
-        $this->assertEquals(202, $statusCode);
+        self::assertSame(202, $statusCode);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function noContent(): void
     {
         $response = $this->createResponder()->noContent();
 
         $statusCode = $response->getStatusCode();
 
-        $this->assertEquals(204, $statusCode);
+        self::assertSame(204, $statusCode);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function forbidden(): void
     {
         $response = $this->createResponder()->forbidden(new ErrorDocument());
 
         $statusCode = $response->getStatusCode();
 
-        $this->assertEquals(403, $statusCode);
+        self::assertSame(403, $statusCode);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function notFound(): void
     {
         $response = $this->createResponder()->notFound(new ErrorDocument());
 
         $statusCode = $response->getStatusCode();
 
-        $this->assertEquals(404, $statusCode);
+        self::assertSame(404, $statusCode);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function notFoundWithProfiles(): void
     {
         $response = $this->createResponder()->notFound(
             ErrorDocument::create()
                 ->setLinks(
                     DocumentLinks::createWithoutBaseUri()
-                        ->addProfile(new Link("https://example.com/profiles/last-modified"))
-                        ->addProfile(new Link("https://example.com/profiles/created"))
-                )
+                        ->addProfile(new Link('https://example.com/profiles/last-modified'))
+                        ->addProfile(new Link('https://example.com/profiles/created')),
+                ),
         );
 
-        $contentType = $response->getHeaderLine("content-type");
+        $contentType = $response->getHeaderLine('content-type');
 
-        $this->assertEquals(
+        self::assertSame(
             'application/vnd.api+json;profile="https://example.com/profiles/last-modified https://example.com/profiles/created"',
-            $contentType
+            $contentType,
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function conflict(): void
     {
         $response = $this->createResponder()->conflict(new ErrorDocument());
 
         $statusCode = $response->getStatusCode();
 
-        $this->assertEquals(409, $statusCode);
+        self::assertSame(409, $statusCode);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function genericSuccess(): void
     {
         $response = $this->createResponder()->genericSuccess(201);
 
         $statusCode = $response->getStatusCode();
 
-        $this->assertEquals(201, $statusCode);
+        self::assertSame(201, $statusCode);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function genericError(): void
     {
         $response = $this->createResponder()->genericError(
             new ErrorDocument([new Error(), new Error()]),
-            418
+            418,
         );
 
         $statusCode = $response->getStatusCode();
-        $errors = json_decode($response->getBody()->__toString(), true)["errors"];
+        $errors = json_decode($response->getBody()->__toString(), true)['errors'];
 
-        $this->assertEquals(418, $statusCode);
-        $this->assertCount(2, $errors);
+        self::assertSame(418, $statusCode);
+        self::assertCount(2, $errors);
     }
 
     private function createResponder(): Responder
@@ -301,7 +266,7 @@ class ResponderTest extends TestCase
             new StubJsonApiRequest(),
             new Response(),
             new DefaultExceptionFactory(),
-            new JsonSerializer()
+            new JsonSerializer(),
         );
     }
 }

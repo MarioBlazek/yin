@@ -11,7 +11,7 @@ class ToManyRelationship
     /**
      * @var ResourceIdentifier[]
      */
-    protected $resourceIdentifiers = [];
+    protected array $resourceIdentifiers = [];
 
     /**
      * @param ResourceIdentifier[] $resourceIdentifiers
@@ -23,7 +23,7 @@ class ToManyRelationship
         }
     }
 
-    public function addResourceIdentifier(ResourceIdentifier $resourceIdentifier): ToManyRelationship
+    public function addResourceIdentifier(ResourceIdentifier $resourceIdentifier): self
     {
         $this->resourceIdentifiers[] = $resourceIdentifier;
 

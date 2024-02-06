@@ -28,9 +28,9 @@ class GetBooksAction
             new BookResource(
                 new AuthorResource(),
                 new PublisherResource(
-                    new RepresentativeResource()
-                )
-            )
+                    new RepresentativeResource(),
+                ),
+            ),
         );
 
         // Responding with "200 Ok" status code along with the Books document

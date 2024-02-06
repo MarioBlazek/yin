@@ -35,7 +35,7 @@ abstract class AbstractResponder
     protected $documentTransformer;
 
     /**
-     * @var ExceptionFactoryInterface $exceptionFactory
+     * @var ExceptionFactoryInterface
      */
     protected $exceptionFactory;
 
@@ -44,12 +44,9 @@ abstract class AbstractResponder
      */
     protected $serializer;
 
-    /**
-     * @param mixed $object
-     */
     protected function getResourceResponse(
         ResourceDocumentInterface $document,
-        $object,
+        mixed $object,
         int $statusCode,
         array $additionalMeta = []
     ): ResponseInterface {
@@ -57,10 +54,10 @@ abstract class AbstractResponder
             $document,
             $object,
             $this->request,
-            "",
-            "",
+            '',
+            '',
             $additionalMeta,
-            $this->exceptionFactory
+            $this->exceptionFactory,
         );
 
         $transformation = $this->documentTransformer->transformResourceDocument($transformation);
@@ -69,12 +66,9 @@ abstract class AbstractResponder
         return $this->serializer->serialize($response, $transformation->result);
     }
 
-    /**
-     * @param mixed $object
-     */
     protected function getMetaResponse(
         ResourceDocumentInterface $document,
-        $object,
+        mixed $object,
         int $statusCode,
         array $additionalMeta = []
     ): ResponseInterface {
@@ -82,10 +76,10 @@ abstract class AbstractResponder
             $document,
             $object,
             $this->request,
-            "",
-            "",
+            '',
+            '',
             $additionalMeta,
-            $this->exceptionFactory
+            $this->exceptionFactory,
         );
 
         $transformation = $this->documentTransformer->transformMetaDocument($transformation);
@@ -94,13 +88,10 @@ abstract class AbstractResponder
         return $this->serializer->serialize($response, $transformation->result);
     }
 
-    /**
-     * @param mixed $object
-     */
     protected function getRelationshipResponse(
         string $relationshipName,
         ResourceDocumentInterface $document,
-        $object,
+        mixed $object,
         int $statusCode,
         array $additionalMeta = []
     ): ResponseInterface {
@@ -108,10 +99,10 @@ abstract class AbstractResponder
             $document,
             $object,
             $this->request,
-            "",
+            '',
             $relationshipName,
             $additionalMeta,
-            $this->exceptionFactory
+            $this->exceptionFactory,
         );
 
         $transformation = $this->documentTransformer->transformRelationshipDocument($transformation);
@@ -129,7 +120,7 @@ abstract class AbstractResponder
             $document,
             $this->request,
             $additionalMeta,
-            $this->exceptionFactory
+            $this->exceptionFactory,
         );
 
         $transformation = $this->documentTransformer->transformErrorDocument($transformation);
@@ -141,37 +132,36 @@ abstract class AbstractResponder
     protected function getResponse(DocumentInterface $document, ResponseInterface $response, int $statusCode): ResponseInterface
     {
         $response = $response->withStatus($statusCode);
-        $response = $this->getResponseWithContentTypeHeader($document, $response);
 
-        return $response;
+        return $this->getResponseWithContentTypeHeader($document, $response);
     }
 
     protected function getResponseWithContentTypeHeader(DocumentInterface $document, ResponseInterface $response): ResponseInterface
     {
         $links = $document->getLinks();
         if ($links === null) {
-            return $response->withHeader("content-type", "application/vnd.api+json");
+            return $response->withHeader('content-type', 'application/vnd.api+json');
         }
 
         $profiles = $links->getProfiles();
         if (empty($profiles)) {
-            return $response->withHeader("content-type", "application/vnd.api+json");
+            return $response->withHeader('content-type', 'application/vnd.api+json');
         }
 
         $hrefs = [];
         foreach ($profiles as $profile) {
             $hrefs[] = $profile->getHref();
         }
-        $profileLinks = implode(" ", $hrefs);
+        $profileLinks = implode(' ', $hrefs);
 
-        return $response->withHeader("content-type", "application/vnd.api+json;profile=\"$profileLinks\"");
+        return $response->withHeader('content-type', "application/vnd.api+json;profile=\"{$profileLinks}\"");
     }
 
     protected function getResponseWithLocationHeader(ResourceDocumentInterface $document, ResponseInterface $response): ResponseInterface
     {
         $links = $document->getLinks();
         if ($links !== null && $links->getSelf() !== null) {
-            $response = $response->withHeader("location", $links->getSelf()->getHref());
+            $response = $response->withHeader('location', $links->getSelf()->getHref());
         }
 
         return $response;

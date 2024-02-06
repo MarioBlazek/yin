@@ -4,157 +4,138 @@ declare(strict_types=1);
 
 namespace WoohooLabs\Yin\Tests\JsonApi\Schema\Data;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use WoohooLabs\Yin\JsonApi\Schema\Data\SingleResourceData;
 
 class SingleResourceDataTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function getNonExistentResource(): void
     {
         $resources = [
             [
-                "type" => "resource",
-                "id" => "1",
+                'type' => 'resource',
+                'id' => '1',
             ],
         ];
 
         $data = $this->createData()->setIncludedResources($resources);
-        $this->assertNull($data->getResource("resource", "2"));
-        $this->assertNull($data->getResource("resources", "1"));
+        self::assertNull($data->getResource('resource', '2'));
+        self::assertNull($data->getResource('resources', '1'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getResource(): void
     {
         $resource = [
-            "type" => "resource",
-            "id" => "1",
+            'type' => 'resource',
+            'id' => '1',
         ];
 
         $data = $this->createData()->addIncludedResource($resource);
-        $this->assertEquals($resource, $data->getResource("resource", "1"));
+        self::assertSame($resource, $data->getResource('resource', '1'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function isEmptyByDefault(): void
     {
         $included = $this->createData();
-        $this->assertFalse($included->hasIncludedResources());
+        self::assertFalse($included->hasIncludedResources());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function isEmptyWhenIncludingNoResource(): void
     {
         $resources = [
             [
-                "type" => "resource",
-                "id" => "1",
+                'type' => 'resource',
+                'id' => '1',
             ],
         ];
 
         $data = $this->createData()->setIncludedResources($resources);
-        $this->assertTrue($data->hasIncludedResources());
+        self::assertTrue($data->hasIncludedResources());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function isEmptyWhenIncludingResources(): void
     {
         $resources = [];
 
         $data = $this->createData()->setIncludedResources($resources);
-        $this->assertFalse($data->hasIncludedResources());
+        self::assertFalse($data->hasIncludedResources());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addResource(): void
     {
         $resource = [
-            "type" => "resource",
-            "id" => "1",
+            'type' => 'resource',
+            'id' => '1',
         ];
 
         $data = $this->createData()->addIncludedResource($resource);
-        $this->assertEquals($resource, $data->getResource("resource", "1"));
+        self::assertSame($resource, $data->getResource('resource', '1'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformEmpty(): void
     {
         $data = $this->createData();
 
-        $this->assertEquals([], $data->transformIncluded());
+        self::assertSame([], $data->transformIncluded());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transform(): void
     {
         $data = $this->createData()->setIncludedResources([
-            ["type" => "item", "id" => "1"],
-            ["type" => "resource", "id" => "2"],
-            ["type" => "resource", "id" => "1"],
-            ["type" => "item", "id" => "2"],
-            ["type" => "item", "id" => "1"],
-            ["type" => "resource", "id" => "2"],
+            ['type' => 'item', 'id' => '1'],
+            ['type' => 'resource', 'id' => '2'],
+            ['type' => 'resource', 'id' => '1'],
+            ['type' => 'item', 'id' => '2'],
+            ['type' => 'item', 'id' => '1'],
+            ['type' => 'resource', 'id' => '2'],
         ]);
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                ["type" => "item", "id" => "1"],
-                ["type" => "resource", "id" => "2"],
-                ["type" => "resource", "id" => "1"],
-                ["type" => "item", "id" => "2"],
+                ['type' => 'item', 'id' => '1'],
+                ['type' => 'resource', 'id' => '2'],
+                ['type' => 'resource', 'id' => '1'],
+                ['type' => 'item', 'id' => '2'],
             ],
-            $data->transformIncluded()
+            $data->transformIncluded(),
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformSinglePrimaryResources(): void
     {
         $data = $this->createData();
 
-        $data->addPrimaryResource(["type" => "user", "id" => "1"]);
+        $data->addPrimaryResource(['type' => 'user', 'id' => '1']);
 
-        $this->assertEquals(["type" => "user", "id" => "1"], $data->transformPrimaryData());
+        self::assertSame(['type' => 'user', 'id' => '1'], $data->transformPrimaryData());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformMultiplePrimaryResources(): void
     {
         $data = $this->createData();
 
         $data->setPrimaryResources(
             [
-                ["type" => "user", "id" => "1"],
-                ["type" => "user", "id" => "2"],
-                ["type" => "dog", "id" => "4"],
-                ["type" => "dog", "id" => "3"],
-                ["type" => "user", "id" => "3"],
-            ]
+                ['type' => 'user', 'id' => '1'],
+                ['type' => 'user', 'id' => '2'],
+                ['type' => 'dog', 'id' => '4'],
+                ['type' => 'dog', 'id' => '3'],
+                ['type' => 'user', 'id' => '3'],
+            ],
         );
 
-        $this->assertEquals(["type" => "user", "id" => "1"], $data->transformPrimaryData());
+        self::assertSame(['type' => 'user', 'id' => '1'], $data->transformPrimaryData());
     }
 
     private function createData(): SingleResourceData

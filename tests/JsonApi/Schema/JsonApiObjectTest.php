@@ -4,80 +4,71 @@ declare(strict_types=1);
 
 namespace WoohooLabs\Yin\Tests\JsonApi\Schema;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use WoohooLabs\Yin\JsonApi\Schema\JsonApiObject;
 
 class JsonApiObjectTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function getVersion(): void
     {
-        $jsonApi = $this->createJsonApiObject("1.0");
+        $jsonApi = $this->createJsonApiObject('1.0');
 
         $version = $jsonApi->getVersion();
 
-        $this->assertEquals("1.0", $version);
+        self::assertSame('1.0', $version);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getMeta(): void
     {
-        $jsonApi = $this->createJsonApiObject("", ["abc" => "def"]);
+        $jsonApi = $this->createJsonApiObject('', ['abc' => 'def']);
 
         $meta = $jsonApi->getMeta();
 
-        $this->assertEquals(["abc" => "def"], $meta);
+        self::assertSame(['abc' => 'def'], $meta);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setMeta(): void
     {
-        $jsonApi = $this->createJsonApiObject("")
-            ->setMeta(["abc" => "def"]);
+        $jsonApi = $this->createJsonApiObject('')
+            ->setMeta(['abc' => 'def']);
 
         $meta = $jsonApi->getMeta();
 
-        $this->assertEquals(["abc" => "def"], $meta);
+        self::assertSame(['abc' => 'def'], $meta);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformWithEmptyVersion(): void
     {
-        $jsonApi = $this->createJsonApiObject("", ["abc" => "def"]);
+        $jsonApi = $this->createJsonApiObject('', ['abc' => 'def']);
 
         $jsonApiObject = $jsonApi->transform();
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "meta" => ["abc" => "def"],
+                'meta' => ['abc' => 'def'],
             ],
-            $jsonApiObject
+            $jsonApiObject,
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformWithEmptyMeta(): void
     {
-        $jsonApi = $this->createJsonApiObject("1.0", ["abc" => "def"]);
+        $jsonApi = $this->createJsonApiObject('1.0', ['abc' => 'def']);
 
         $jsonApiObject = $jsonApi->transform();
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "version" => "1.0",
-                "meta" => ["abc" => "def"],
+                'version' => '1.0',
+                'meta' => ['abc' => 'def'],
             ],
-            $jsonApiObject
+            $jsonApiObject,
         );
     }
 

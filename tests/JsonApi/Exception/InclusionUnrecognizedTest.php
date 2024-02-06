@@ -4,34 +4,31 @@ declare(strict_types=1);
 
 namespace WoohooLabs\Yin\Tests\JsonApi\Exception;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use WoohooLabs\Yin\JsonApi\Exception\InclusionUnrecognized;
 
 class InclusionUnrecognizedTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function getErrors(): void
     {
         $exception = $this->createException([]);
 
         $errors = $exception->getErrorDocument()->getErrors();
 
-        $this->assertCount(1, $errors);
-        $this->assertEquals("400", $errors[0]->getStatus());
+        self::assertCount(1, $errors);
+        self::assertSame('400', $errors[0]->getStatus());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getIncludes(): void
     {
-        $exception = $this->createException(["a", "b", "c"]);
+        $exception = $this->createException(['a', 'b', 'c']);
 
         $includes = $exception->getUnrecognizedIncludes();
 
-        $this->assertEquals(["a", "b", "c"], $includes);
+        self::assertSame(['a', 'b', 'c'], $includes);
     }
 
     private function createException(array $includes): InclusionUnrecognized

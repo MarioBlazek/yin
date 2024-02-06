@@ -4,34 +4,31 @@ declare(strict_types=1);
 
 namespace WoohooLabs\Yin\Tests\JsonApi\Exception;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use WoohooLabs\Yin\JsonApi\Exception\ResourceIdentifierIdMissing;
 
 class ResourceIdentifierIdMissingTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function getErrors(): void
     {
         $exception = $this->createException();
 
         $errors = $exception->getErrorDocument()->getErrors();
 
-        $this->assertCount(1, $errors);
-        $this->assertEquals("400", $errors[0]->getStatus());
+        self::assertCount(1, $errors);
+        self::assertSame('400', $errors[0]->getStatus());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getResourceIdentifier(): void
     {
-        $exception = $this->createException(["type" => "abc"]);
+        $exception = $this->createException(['type' => 'abc']);
 
         $resourceIdentifier = $exception->getResourceIdentifier();
 
-        $this->assertEquals(["type" => "abc"], $resourceIdentifier);
+        self::assertSame(['type' => 'abc'], $resourceIdentifier);
     }
 
     private function createException(array $resourceIdentifier = []): ResourceIdentifierIdMissing

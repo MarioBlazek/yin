@@ -6,16 +6,13 @@ namespace WoohooLabs\Yin\JsonApi\Schema\Link;
 
 class ProfileLinkObject extends LinkObject
 {
-    /**
+    public function __construct(string $href, array $meta = [], /**
      * @var string[]
      */
-    private $aliases;
-
-    public function __construct(string $href, array $meta = [], array $aliases = [])
+        private array $aliases = [])
     {
         parent::__construct($href);
         $this->meta = $meta;
-        $this->aliases = $aliases;
     }
 
     public function getAliases(): array
@@ -25,10 +22,10 @@ class ProfileLinkObject extends LinkObject
 
     public function getAlias(string $keyword): string
     {
-        return $this->aliases[$keyword] ?? "";
+        return $this->aliases[$keyword] ?? '';
     }
 
-    public function addAlias(string $keyword, string $alias): ProfileLinkObject
+    public function addAlias(string $keyword, string $alias): self
     {
         $this->aliases[$keyword] = $alias;
 
@@ -37,6 +34,7 @@ class ProfileLinkObject extends LinkObject
 
     /**
      * @internal
+     *
      * @return array|mixed
      */
     public function transform(string $baseUri)
@@ -44,7 +42,7 @@ class ProfileLinkObject extends LinkObject
         $link = parent::transform($baseUri);
 
         foreach ($this->aliases as $keyword => $alias) {
-            $link["aliases"][$keyword] = $alias;
+            $link['aliases'][$keyword] = $alias;
         }
 
         return $link;

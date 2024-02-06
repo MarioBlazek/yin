@@ -27,6 +27,7 @@ trait HydratorTrait
      * The method should return an array of acceptable resource types. When such a resource is received for hydration
      * which can't be accepted (its type doesn't match the acceptable types of the hydrator), a ResourceTypeUnacceptable
      * exception will be raised.
+     *
      * @return list<string>
      */
     abstract protected function getAcceptedTypes(): array;
@@ -42,10 +43,10 @@ trait HydratorTrait
      * to be hydrated as their arguments, and they should mutate the state of the domain object.
      * If it is an immutable object or an array (and passing by reference isn't used),
      * the callable should return the domain object.
-     * @param mixed $domainObject
+     *
      * @return array<string, callable>
      */
-    abstract protected function getAttributeHydrator($domainObject): array;
+    abstract protected function getAttributeHydrator(mixed $domainObject): array;
 
     /**
      * Provides the relationship hydrators.
@@ -59,44 +60,43 @@ trait HydratorTrait
      * they should mutate the state of the domain object.
      * If it is an immutable object or an array (and passing by reference isn't used),
      * the callable should return the domain object.
-     * @param mixed $domainObject
+     *
      * @return array<string, callable>
      */
-    abstract protected function getRelationshipHydrator($domainObject): array;
+    abstract protected function getRelationshipHydrator(mixed $domainObject): array;
 
     /**
      * @throws JsonApiExceptionInterface
      */
     protected function validateType(array $data, ExceptionFactoryInterface $exceptionFactory): void
     {
-        if (empty($data["type"])) {
+        if (empty($data['type'])) {
             throw $exceptionFactory->createResourceTypeMissingException();
         }
 
         $acceptedTypes = $this->getAcceptedTypes();
 
-        if (in_array($data["type"], $acceptedTypes, true) === false) {
-            throw $exceptionFactory->createResourceTypeUnacceptableException($data["type"], $acceptedTypes);
+        if (in_array($data['type'], $acceptedTypes, true) === false) {
+            throw $exceptionFactory->createResourceTypeUnacceptableException($data['type'], $acceptedTypes);
         }
     }
 
     /**
-     * @param mixed $domainObject
      * @return mixed
      */
-    protected function hydrateAttributes($domainObject, array $data)
+    protected function hydrateAttributes(mixed $domainObject, array $data)
     {
-        if (empty($data["attributes"])) {
+        if (empty($data['attributes'])) {
             return $domainObject;
         }
 
         $attributeHydrator = $this->getAttributeHydrator($domainObject);
         foreach ($attributeHydrator as $attribute => $hydrator) {
-            if (array_key_exists($attribute, $data["attributes"]) === false) {
+            if (array_key_exists($attribute, $data['attributes']) === false) {
                 continue;
             }
 
-            $result = $hydrator($domainObject, $data["attributes"][$attribute], $data, $attribute);
+            $result = $hydrator($domainObject, $data['attributes'][$attribute], $data, $attribute);
             if ($result) {
                 $domainObject = $result;
             }
@@ -106,18 +106,17 @@ trait HydratorTrait
     }
 
     /**
-     * @param mixed $domainObject
      * @return mixed
      */
-    protected function hydrateRelationships($domainObject, array $data, ExceptionFactoryInterface $exceptionFactory)
+    protected function hydrateRelationships(mixed $domainObject, array $data, ExceptionFactoryInterface $exceptionFactory)
     {
-        if (empty($data["relationships"])) {
+        if (empty($data['relationships'])) {
             return $domainObject;
         }
 
         $relationshipHydrator = $this->getRelationshipHydrator($domainObject);
         foreach ($relationshipHydrator as $relationship => $hydrator) {
-            if (isset($data["relationships"][$relationship]) === false) {
+            if (isset($data['relationships'][$relationship]) === false) {
                 continue;
             }
 
@@ -126,8 +125,8 @@ trait HydratorTrait
                 $relationship,
                 $hydrator,
                 $exceptionFactory,
-                $data["relationships"][$relationship],
-                $data
+                $data['relationships'][$relationship],
+                $data,
             );
         }
 
@@ -135,11 +134,10 @@ trait HydratorTrait
     }
 
     /**
-     * @param mixed $domainObject
      * @return mixed
      */
     protected function doHydrateRelationship(
-        $domainObject,
+        mixed $domainObject,
         string $relationshipName,
         callable $hydrator,
         ExceptionFactoryInterface $exceptionFactory,
@@ -148,7 +146,7 @@ trait HydratorTrait
     ) {
         $relationshipObject = $this->createRelationship(
             $relationshipData,
-            $exceptionFactory
+            $exceptionFactory,
         );
 
         if ($relationshipObject !== null) {
@@ -158,7 +156,7 @@ trait HydratorTrait
                 $domainObject,
                 $relationshipObject,
                 $data,
-                $exceptionFactory
+                $exceptionFactory,
             );
 
             if ($result !== null) {
@@ -170,15 +168,16 @@ trait HydratorTrait
     }
 
     /**
-     * @param mixed $domainObject
      * @param ToOneRelationship|ToManyRelationship $relationshipObject
+     *
      * @return mixed
+     *
      * @throws RelationshipTypeInappropriate|JsonApiExceptionInterface
      */
     protected function getRelationshipHydratorResult(
         string $relationshipName,
         callable $hydrator,
-        $domainObject,
+        mixed $domainObject,
         $relationshipObject,
         ?array $data,
         ExceptionFactoryInterface $exceptionFactory
@@ -186,11 +185,11 @@ trait HydratorTrait
         // Checking if the current and expected relationship types match
         $relationshipType = $this->getRelationshipType($relationshipObject);
         $expectedRelationshipType = $this->getRelationshipType($this->getArgumentTypeHintFromCallable($hydrator));
-        if ($expectedRelationshipType !== "" && $relationshipType !== $expectedRelationshipType) {
+        if ($expectedRelationshipType !== '' && $relationshipType !== $expectedRelationshipType) {
             throw $exceptionFactory->createRelationshipTypeInappropriateException(
                 $relationshipName,
                 $relationshipType,
-                $expectedRelationshipType
+                $expectedRelationshipType,
             );
         }
 
@@ -208,8 +207,8 @@ trait HydratorTrait
     {
         $function = &$callable;
         $reflection = new ReflectionFunction(Closure::fromCallable($function));
-        $arguments  = $reflection->getParameters();
-        $class = isset($arguments[1]) ? $arguments[1]->getClass() : null;
+        $arguments = $reflection->getParameters();
+        $class = isset($arguments[1]) ? $arguments[1]->getType() : null;
 
         if ($class === null) {
             return null;
@@ -224,14 +223,14 @@ trait HydratorTrait
     protected function getRelationshipType($object): string
     {
         if ($object instanceof ToOneRelationship || $object === ToOneRelationship::class) {
-            return "to-one";
+            return 'to-one';
         }
 
         if ($object instanceof ToManyRelationship || $object === ToManyRelationship::class) {
-            return "to-many";
+            return 'to-many';
         }
 
-        return "";
+        return '';
     }
 
     /**
@@ -239,22 +238,22 @@ trait HydratorTrait
      */
     private function createRelationship(?array $relationship, ExceptionFactoryInterface $exceptionFactory)
     {
-        if ($relationship === null || array_key_exists("data", $relationship) === false) {
+        if ($relationship === null || array_key_exists('data', $relationship) === false) {
             return null;
         }
 
-        //If this is a request to clear the relationship, we create an empty relationship
-        if ($relationship["data"] === null) {
+        // If this is a request to clear the relationship, we create an empty relationship
+        if ($relationship['data'] === null) {
             $result = new ToOneRelationship();
-        } elseif ($this->isAssociativeArray($relationship["data"])) {
+        } elseif ($this->isAssociativeArray($relationship['data'])) {
             $result = new ToOneRelationship(
-                ResourceIdentifier::fromArray($relationship["data"], $exceptionFactory)
+                ResourceIdentifier::fromArray($relationship['data'], $exceptionFactory),
             );
         } else {
             $result = new ToManyRelationship();
-            foreach ($relationship["data"] as $data) {
+            foreach ($relationship['data'] as $data) {
                 $result->addResourceIdentifier(
-                    ResourceIdentifier::fromArray($data, $exceptionFactory)
+                    ResourceIdentifier::fromArray($data, $exceptionFactory),
                 );
             }
         }

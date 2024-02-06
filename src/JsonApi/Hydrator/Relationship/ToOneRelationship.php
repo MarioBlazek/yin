@@ -8,19 +8,17 @@ use WoohooLabs\Yin\JsonApi\Schema\ResourceIdentifier;
 
 class ToOneRelationship
 {
-    /**
-     * @var ResourceIdentifier|null
-     */
-    protected $resourceIdentifier;
+    protected ?ResourceIdentifier $resourceIdentifier;
 
     public function __construct(?ResourceIdentifier $resourceIdentifier = null)
     {
         $this->resourceIdentifier = $resourceIdentifier;
     }
 
-    public function setResourceIdentifier(?ResourceIdentifier $resourceIdentifier): ToOneRelationship
+    public function setResourceIdentifier(?ResourceIdentifier $resourceIdentifier): self
     {
         $this->resourceIdentifier = $resourceIdentifier;
+
         return $this;
     }
 

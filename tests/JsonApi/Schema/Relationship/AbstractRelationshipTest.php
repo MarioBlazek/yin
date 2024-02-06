@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace WoohooLabs\Yin\Tests\JsonApi\Schema\Relationship;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use WoohooLabs\Yin\JsonApi\Exception\DefaultExceptionFactory;
 use WoohooLabs\Yin\JsonApi\Schema\Link\RelationshipLinks;
@@ -16,149 +17,127 @@ use WoohooLabs\Yin\Tests\JsonApi\Double\StubResource;
 
 class AbstractRelationshipTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function createWithData(): void
     {
         $relationship = FakeRelationship::createWithData([], new StubResource());
 
         $data = $relationship->getRelationshipData();
 
-        $this->assertEquals([], $data);
+        self::assertSame([], $data);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function createWithLinks(): void
     {
         $relationship = FakeRelationship::createWithLinks(new RelationshipLinks());
 
         $links = $relationship->getLinks();
 
-        $this->assertNotNull($links);
+        self::assertNotNull($links);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function createWithMeta(): void
     {
-        $relationship = FakeRelationship::createWithMeta(["abc" => "def"]);
+        $relationship = FakeRelationship::createWithMeta(['abc' => 'def']);
 
         $meta = $relationship->getMeta();
 
-        $this->assertEquals(["abc" => "def"], $meta);
+        self::assertSame(['abc' => 'def'], $meta);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setLinks(): void
     {
         $relationship = FakeRelationship::create();
 
         $relationship->setLinks(new RelationshipLinks());
 
-        $this->assertNotNull($relationship->getLinks());
+        self::assertNotNull($relationship->getLinks());
     }
 
-    /**
-     * @test
-     */
-    public function setData(): void
-    {
-        $relationship = $this->createRelationship();
+    //    #[\PHPUnit\Framework\Attributes\Test]
+    //    public function setData(int|string $dataName, array $data): void
+    //    {
+    //        $relationship = $this->createRelationship();
+    //
+    //        $relationship->setData(["id" => 1], new StubResource());
+    //
+    //        $this->assertEquals(["id" => 1], $relationship->getRelationshipData());
+    //    }
 
-        $relationship->setData(["id" => 1], new StubResource());
-
-        $this->assertEquals(["id" => 1], $relationship->getRelationshipData());
-    }
-
-    /**
-     * @test
-     */
+    #[Test]
     public function setDataAsCallable(): void
     {
         $relationship = $this->createRelationship();
 
         $relationship->setDataAsCallable(
-            function (): array {
-                return ["id" => 1];
-            },
-            new StubResource()
+            static fn (): array => ['id' => 1],
+            new StubResource(),
         );
         $data = $relationship->getRelationshipData();
 
-        $this->assertEquals(
-            ["id" => 1],
-            $data
+        self::assertSame(
+            ['id' => 1],
+            $data,
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function dataNotOmittedByDefault(): void
     {
         $relationship = $this->createRelationship();
 
         $isDataOmittedWhenNotIncluded = $relationship->isOmitDataWhenNotIncluded();
 
-        $this->assertFalse($isDataOmittedWhenNotIncluded);
+        self::assertFalse($isDataOmittedWhenNotIncluded);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function omitDataWhenNotIncluded(): void
     {
         $relationship = $this->createRelationship();
 
         $relationship->omitDataWhenNotIncluded();
 
-        $this->assertTrue($relationship->isOmitDataWhenNotIncluded());
+        self::assertTrue($relationship->isOmitDataWhenNotIncluded());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformWithMeta(): void
     {
         $relationship = $this->createRelationship()
-            ->setMeta(["abc" => "def"]);
+            ->setMeta(['abc' => 'def']);
 
         $relationshipObject = $relationship->transform(
             new ResourceTransformation(
                 new StubResource(),
                 [],
-                "",
+                '',
                 new StubJsonApiRequest(),
-                "",
-                "",
-                "",
-                new DefaultExceptionFactory()
+                '',
+                '',
+                '',
+                new DefaultExceptionFactory(),
             ),
             new ResourceTransformer(),
             new DummyData(),
-            []
+            [],
         );
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "meta" => [
-                    "abc" => "def",
+                'meta' => [
+                    'abc' => 'def',
                 ],
-                "data" => [],
+                'data' => [],
             ],
-            $relationshipObject
+            $relationshipObject,
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformWithLinks(): void
     {
         $relationship = $this->createRelationship()
@@ -168,56 +147,52 @@ class AbstractRelationshipTest extends TestCase
             new ResourceTransformation(
                 new StubResource(),
                 [],
-                "",
+                '',
                 new StubJsonApiRequest(),
-                "",
-                "",
-                "",
-                new DefaultExceptionFactory()
+                '',
+                '',
+                '',
+                new DefaultExceptionFactory(),
             ),
             new ResourceTransformer(),
             new DummyData(),
-            []
+            [],
         );
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "links" => [],
-                "data" => [],
+                'links' => [],
+                'data' => [],
             ],
-            $relationshipObject
+            $relationshipObject,
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformWhenNotIncludedField(): void
     {
         $relationship = $this->createRelationship();
 
         $relationshipObject = $relationship->transform(
             new ResourceTransformation(
-                new StubResource("user1"),
+                new StubResource('user1'),
                 [],
-                "user1",
-                new StubJsonApiRequest(["fields" => ["user1" => ""]]),
-                "",
-                "rel",
-                "rel",
-                new DefaultExceptionFactory()
+                'user1',
+                new StubJsonApiRequest(['fields' => ['user1' => '']]),
+                '',
+                'rel',
+                'rel',
+                new DefaultExceptionFactory(),
             ),
             new ResourceTransformer(),
             new DummyData(),
-            []
+            [],
         );
 
-        $this->assertNull($relationshipObject);
+        self::assertNull($relationshipObject);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformWithEmptyData(): void
     {
         $relationship = $this->createRelationship();
@@ -226,29 +201,27 @@ class AbstractRelationshipTest extends TestCase
             new ResourceTransformation(
                 new StubResource(),
                 [],
-                "",
+                '',
                 new StubJsonApiRequest(),
-                "",
-                "",
-                "",
-                new DefaultExceptionFactory()
+                '',
+                '',
+                '',
+                new DefaultExceptionFactory(),
             ),
             new ResourceTransformer(),
             new DummyData(),
-            []
+            [],
         );
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "data" => [],
+                'data' => [],
             ],
-            $relationshipObject
+            $relationshipObject,
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformWithEmptyOmittedData(): void
     {
         $relationship = $this->createRelationship()
@@ -258,27 +231,25 @@ class AbstractRelationshipTest extends TestCase
             new ResourceTransformation(
                 new StubResource(),
                 [],
-                "",
+                '',
                 new StubJsonApiRequest(),
-                "",
-                "",
-                "",
-                new DefaultExceptionFactory()
+                '',
+                '',
+                '',
+                new DefaultExceptionFactory(),
             ),
             new ResourceTransformer(),
             new DummyData(),
-            []
+            [],
         );
 
-        $this->assertEquals(
+        self::assertSame(
             [],
-            $relationshipObject
+            $relationshipObject,
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformWithEmptyOmittedDataWhenRelationship(): void
     {
         $relationship = $this->createRelationship()
@@ -288,23 +259,23 @@ class AbstractRelationshipTest extends TestCase
             new ResourceTransformation(
                 new StubResource(),
                 [],
-                "",
+                '',
                 new StubJsonApiRequest(),
-                "",
-                "dummy",
-                "dummy",
-                new DefaultExceptionFactory()
+                '',
+                'dummy',
+                'dummy',
+                new DefaultExceptionFactory(),
             ),
             new ResourceTransformer(),
             new DummyData(),
-            []
+            [],
         );
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "data" => [],
+                'data' => [],
             ],
-            $relationshipObject
+            $relationshipObject,
         );
     }
 

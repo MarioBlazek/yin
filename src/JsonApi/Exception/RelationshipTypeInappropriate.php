@@ -30,25 +30,13 @@ class RelationshipTypeInappropriate extends AbstractJsonApiException
         string $expectedRelationshipType
     ) {
         parent::__construct(
-            "The provided relationship '$relationshipName' is of type of $currentRelationshipType, but " .
-            ($expectedRelationshipType !== "" ? "$expectedRelationshipType is" : "it is not the one which is") . " expected!",
-            400
+            "The provided relationship '{$relationshipName}' is of type of {$currentRelationshipType}, but " .
+            ($expectedRelationshipType !== '' ? "{$expectedRelationshipType} is" : 'it is not the one which is') . ' expected!',
+            400,
         );
         $this->relationshipName = $relationshipName;
         $this->currentRelationshipType = $currentRelationshipType;
         $this->expectedRelationshipType = $expectedRelationshipType;
-    }
-
-    protected function getErrors(): array
-    {
-        return [
-            Error::create()
-                ->setStatus("400")
-                ->setCode("RELATIONSHIP_TYPE_INAPPROPRIATE")
-                ->setTitle("Relationship type is inappropriate")
-                ->setDetail($this->getMessage())
-                ->setSource(ErrorSource::fromPointer("/data/relationships/$this->relationshipName")),
-        ];
     }
 
     public function getRelationshipName(): string
@@ -64,5 +52,17 @@ class RelationshipTypeInappropriate extends AbstractJsonApiException
     public function getExpectedRelationshipType(): string
     {
         return $this->expectedRelationshipType;
+    }
+
+    protected function getErrors(): array
+    {
+        return [
+            Error::create()
+                ->setStatus('400')
+                ->setCode('RELATIONSHIP_TYPE_INAPPROPRIATE')
+                ->setTitle('Relationship type is inappropriate')
+                ->setDetail($this->getMessage())
+                ->setSource(ErrorSource::fromPointer("/data/relationships/{$this->relationshipName}")),
+        ];
     }
 }

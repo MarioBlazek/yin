@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace WoohooLabs\Yin\Tests\JsonApi\Transformer;
 
 use Laminas\Diactoros\ServerRequest;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use WoohooLabs\Yin\JsonApi\Exception\DefaultExceptionFactory;
 use WoohooLabs\Yin\JsonApi\Request\JsonApiRequest;
@@ -26,114 +27,100 @@ use WoohooLabs\Yin\Tests\JsonApi\Double\StubResourceDocument;
 
 class DocumentTransformerTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function transformMetaDocumentWithoutJsonApiObject(): void
     {
         $document = $this->createDocument(null);
 
         $transformedDocument = $this->toMetaDocument($document, []);
 
-        $this->assertEquals(
+        self::assertSame(
             [],
-            $transformedDocument
+            $transformedDocument,
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformMetaDocumentWithJsonApiObject(): void
     {
-        $document = $this->createDocument(new JsonApiObject("1.0"));
+        $document = $this->createDocument(new JsonApiObject('1.0'));
 
         $transformedDocument = $this->toMetaDocument($document, []);
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "jsonapi" => [
-                    "version" => "1.0",
+                'jsonapi' => [
+                    'version' => '1.0',
                 ],
             ],
-            $transformedDocument
+            $transformedDocument,
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformMetaDocumentWithMeta(): void
     {
-        $document = $this->createDocument(null, ["abc" => "def"]);
+        $document = $this->createDocument(null, ['abc' => 'def']);
 
         $transformedDocument = $this->toMetaDocument($document, []);
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "meta" => [
-                    "abc" => "def",
+                'meta' => [
+                    'abc' => 'def',
                 ],
             ],
-            $transformedDocument
+            $transformedDocument,
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformMetaDocumentWithEmptyLinks(): void
     {
         $document = $this->createDocument(null, [], new DocumentLinks());
 
         $transformedDocument = $this->toMetaDocument($document, []);
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "links" => [],
+                'links' => [],
             ],
-            $transformedDocument
+            $transformedDocument,
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformResourceDocumentWithEmptyData(): void
     {
         $document = $this->createDocument(null, [], null, new SingleResourceData());
 
         $transformedDocument = $this->toResourceDocument($document, []);
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "data" => null,
+                'data' => null,
             ],
-            $transformedDocument
+            $transformedDocument,
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformResourceDocumentWithEmptyIncluded(): void
     {
         $document = $this->createDocument(null, [], null, new SingleResourceData());
 
-        $transformedDocument = $this->toResourceDocument($document, [], new StubJsonApiRequest(["include" => "animal"]));
+        $transformedDocument = $this->toResourceDocument($document, [], new StubJsonApiRequest(['include' => 'animal']));
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "data" => null,
-                "included" => [],
+                'data' => null,
+                'included' => [],
             ],
-            $transformedDocument
+            $transformedDocument,
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformRelationshipDocumentWithEmptyIncluded(): void
     {
         $document = $this->createDocument(
@@ -142,24 +129,22 @@ class DocumentTransformerTest extends TestCase
             null,
             new SingleResourceData(),
             [
-                "data" => [],
-            ]
+                'data' => [],
+            ],
         );
 
-        $transformedDocument = $this->toRelationshipDocument($document, [], new StubJsonApiRequest(["include" => "animal"]));
+        $transformedDocument = $this->toRelationshipDocument($document, [], new StubJsonApiRequest(['include' => 'animal']));
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "data" => [],
-                "included" => [],
+                'data' => [],
+                'included' => [],
             ],
-            $transformedDocument
+            $transformedDocument,
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformRelationshipDocumentWithIncluded(): void
     {
         $document = $this->createDocument(
@@ -170,138 +155,126 @@ class DocumentTransformerTest extends TestCase
                 ->setIncludedResources(
                     [
                         [
-                            "type" => "user",
-                            "id" => "2",
+                            'type' => 'user',
+                            'id' => '2',
                         ],
                         [
-                            "type" => "user",
-                            "id" => "3",
+                            'type' => 'user',
+                            'id' => '3',
                         ],
-                    ]
-                )
+                    ],
+                ),
         );
 
         $transformedDocument = $this->toRelationshipDocument($document, []);
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "included" => [
+                'included' => [
                     [
-                        "type" => "user",
-                        "id" => "2",
+                        'type' => 'user',
+                        'id' => '2',
                     ],
                     [
-                        "type" => "user",
-                        "id" => "3",
+                        'type' => 'user',
+                        'id' => '3',
                     ],
                 ],
             ],
-            $transformedDocument
+            $transformedDocument,
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformRelationshipDocumentByIncludedQueryParam(): void
     {
         $document = $this->createDocument();
 
-        $transformedDocument = $this->toRelationshipDocument($document, [], new StubJsonApiRequest(["include" => "animal"]));
+        $transformedDocument = $this->toRelationshipDocument($document, [], new StubJsonApiRequest(['include' => 'animal']));
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "included" => [],
+                'included' => [],
             ],
-            $transformedDocument
+            $transformedDocument,
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformErrorDocumentWithoutJsonApiObject(): void
     {
         $document = $this->createErrorDocument(null);
 
         $transformedDocument = $this->toErrorDocument($document);
 
-        $this->assertEquals(
+        self::assertSame(
             [],
-            $transformedDocument
+            $transformedDocument,
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformErrorDocumentWithJsonApiObject(): void
     {
-        $document = $this->createErrorDocument(new JsonApiObject(""));
+        $document = $this->createErrorDocument(new JsonApiObject(''));
 
         $transformedDocument = $this->toErrorDocument($document);
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "jsonapi" => [],
+                'jsonapi' => [],
             ],
-            $transformedDocument
+            $transformedDocument,
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformErrorDocumentWithMeta(): void
     {
-        $document = $this->createErrorDocument(null, ["abc" => "def"]);
+        $document = $this->createErrorDocument(null, ['abc' => 'def']);
 
         $transformedDocument = $this->toErrorDocument($document);
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "meta" => [
-                    "abc" => "def",
+                'meta' => [
+                    'abc' => 'def',
                 ],
             ],
-            $transformedDocument
+            $transformedDocument,
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformErrorDocumentWithLinks(): void
     {
         $document = $this->createErrorDocument(null, [], new DocumentLinks());
 
         $transformedDocument = $this->toErrorDocument($document);
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "links" => [],
+                'links' => [],
             ],
-            $transformedDocument
+            $transformedDocument,
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformErrorDocumentWithErrors(): void
     {
         $document = $this->createErrorDocument(null, [], null, [new Error(), new Error()]);
 
         $transformedDocument = $this->toErrorDocument($document);
 
-        $this->assertEquals(
+        self::assertSame(
             [
-                "errors" => [
+                'errors' => [
                     [],
                     [],
                 ],
             ],
-            $transformedDocument
+            $transformedDocument,
         );
     }
 
@@ -312,7 +285,7 @@ class DocumentTransformerTest extends TestCase
         ResourceDocumentInterface $document,
         $object,
         ?JsonApiRequestInterface $request = null,
-        string $requestedRelationshipName = ""
+        string $requestedRelationshipName = ''
     ): array {
         $transformation = new ResourceDocumentTransformation(
             $document,
@@ -320,12 +293,12 @@ class DocumentTransformerTest extends TestCase
             $request ?? new JsonApiRequest(
                 new ServerRequest(),
                 new DefaultExceptionFactory(),
-                new JsonDeserializer()
+                new JsonDeserializer(),
             ),
-            "",
+            '',
             $requestedRelationshipName,
             [],
-            new DefaultExceptionFactory()
+            new DefaultExceptionFactory(),
         );
 
         $transformer = new DocumentTransformer();
@@ -340,7 +313,7 @@ class DocumentTransformerTest extends TestCase
         ResourceDocumentInterface $document,
         $object,
         ?JsonApiRequestInterface $request = null,
-        string $requestedRelationshipName = ""
+        string $requestedRelationshipName = ''
     ): array {
         $transformation = new ResourceDocumentTransformation(
             $document,
@@ -348,12 +321,12 @@ class DocumentTransformerTest extends TestCase
             $request ?? new JsonApiRequest(
                 new ServerRequest(),
                 new DefaultExceptionFactory(),
-                new JsonDeserializer()
+                new JsonDeserializer(),
             ),
-            "",
+            '',
             $requestedRelationshipName,
             [],
-            new DefaultExceptionFactory()
+            new DefaultExceptionFactory(),
         );
 
         $transformer = new DocumentTransformer();
@@ -368,7 +341,7 @@ class DocumentTransformerTest extends TestCase
         ResourceDocumentInterface $document,
         $object,
         ?JsonApiRequestInterface $request = null,
-        string $requestedRelationshipName = ""
+        string $requestedRelationshipName = ''
     ): array {
         $transformation = new ResourceDocumentTransformation(
             $document,
@@ -376,12 +349,12 @@ class DocumentTransformerTest extends TestCase
             $request ?? new JsonApiRequest(
                 new ServerRequest(),
                 new DefaultExceptionFactory(),
-                new JsonDeserializer()
+                new JsonDeserializer(),
             ),
-            "",
+            '',
             $requestedRelationshipName,
             [],
-            new DefaultExceptionFactory()
+            new DefaultExceptionFactory(),
         );
 
         $transformer = new DocumentTransformer();
@@ -396,10 +369,10 @@ class DocumentTransformerTest extends TestCase
             $request ?? new JsonApiRequest(
                 new ServerRequest(),
                 new DefaultExceptionFactory(),
-                new JsonDeserializer()
+                new JsonDeserializer(),
             ),
             [],
-            new DefaultExceptionFactory()
+            new DefaultExceptionFactory(),
         );
 
         $transformer = new DocumentTransformer();
@@ -419,7 +392,7 @@ class DocumentTransformerTest extends TestCase
             $meta,
             $links,
             $data,
-            $relationshipResponseContent
+            $relationshipResponseContent,
         );
     }
 

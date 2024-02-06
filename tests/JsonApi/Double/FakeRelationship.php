@@ -11,15 +11,6 @@ use WoohooLabs\Yin\JsonApi\Transformer\ResourceTransformer;
 
 class FakeRelationship extends AbstractRelationship
 {
-    protected function transformData(
-        ResourceTransformation $transformation,
-        ResourceTransformer $resourceTransformer,
-        DataInterface $data,
-        array $defaultRelationships
-    ): ?array {
-        return [];
-    }
-
     /**
      * @return mixed
      */
@@ -31,5 +22,14 @@ class FakeRelationship extends AbstractRelationship
     public function isOmitDataWhenNotIncluded(): bool
     {
         return $this->omitDataWhenNotIncluded;
+    }
+
+    protected function transformData(
+        ResourceTransformation $transformation,
+        ResourceTransformer $resourceTransformer,
+        DataInterface $data,
+        array $defaultRelationships
+    ): ?array {
+        return [];
     }
 }

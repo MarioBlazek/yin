@@ -9,7 +9,7 @@ use function array_values;
 /**
  * @internal
  */
-class CollectionData extends AbstractData
+final class CollectionData extends AbstractData
 {
     public function transformPrimaryData(): ?iterable
     {

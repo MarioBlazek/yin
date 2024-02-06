@@ -8,30 +8,24 @@ use WoohooLabs\Yin\JsonApi\Schema\Error\Error;
 
 class ResourceIdentifierTypeMissing extends AbstractJsonApiException
 {
-    /**
-     * @var array
-     */
-    private $resourceIdentifier;
-
-    public function __construct(array $resourceIdentifier)
+    public function __construct(private readonly array $resourceIdentifier)
     {
-        parent::__construct("A type for the resource identifier must be included!", 400);
-        $this->resourceIdentifier = $resourceIdentifier;
+        parent::__construct('A type for the resource identifier must be included!', 400);
+    }
+
+    public function getResourceIdentifier(): array
+    {
+        return $this->resourceIdentifier;
     }
 
     protected function getErrors(): array
     {
         return [
             Error::create()
-                ->setStatus("400")
-                ->setCode("RESOURCE_IDENTIFIER_TYPE_MISSING")
-                ->setTitle("A type for the resource identifier is missing")
-                ->setDetail("A type for the resource identifier must be included!"),
+                ->setStatus('400')
+                ->setCode('RESOURCE_IDENTIFIER_TYPE_MISSING')
+                ->setTitle('A type for the resource identifier is missing')
+                ->setDetail('A type for the resource identifier must be included!'),
         ];
-    }
-
-    public function getResourceIdentifier(): array
-    {
-        return $this->resourceIdentifier;
     }
 }

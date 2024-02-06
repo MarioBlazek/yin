@@ -14,20 +14,11 @@ use function realpath;
 
 abstract class AbstractMessageValidator
 {
-    /**
-     * @var ExceptionFactoryInterface
-     */
-    protected $exceptionFactory;
+    protected ExceptionFactoryInterface $exceptionFactory;
 
-    /**
-     * @var bool
-     */
-    protected $includeOriginalMessage;
+    protected bool $includeOriginalMessage;
 
-    /**
-     * @var string|null
-     */
-    protected $customSchemaPath;
+    protected ?string $customSchemaPath;
 
     public function __construct(
         ExceptionFactoryInterface $exceptionFactory,
@@ -42,7 +33,7 @@ abstract class AbstractMessageValidator
     protected function validateJsonMessage(string $message): string
     {
         if (empty($message)) {
-            return "";
+            return '';
         }
 
         $parser = new JsonParser();
@@ -52,7 +43,7 @@ abstract class AbstractMessageValidator
             return $result->getMessage();
         }
 
-        return "";
+        return '';
     }
 
     protected function validateJsonApiMessage(string $message): array
@@ -66,7 +57,7 @@ abstract class AbstractMessageValidator
         $validator = new Validator();
         $validator->validate(
             $decodedMessage,
-            (object) ['$ref' => "file://" . ($this->customSchemaPath ?? realpath(__DIR__ . "/json-api-schema.json"))]
+            (object) ['$ref' => 'file://' . ($this->customSchemaPath ?? realpath(__DIR__ . '/json-api-schema.json'))],
         );
 
         return $validator->getErrors();

@@ -39,6 +39,7 @@ trait PageBasedPaginationLinkProviderTrait
         }
 
         $page = $this->getLastPage();
+
         return $this->createPaginatedLink($uri, $queryString, $page, $this->getSize());
     }
 
@@ -67,7 +68,7 @@ trait PageBasedPaginationLinkProviderTrait
         }
 
         return new Link(
-            Utils::getUri($uri, $queryString, PageBasedPagination::getPaginationQueryParams($page, $size))
+            Utils::getUri($uri, $queryString, PageBasedPagination::getPaginationQueryParams($page, $size)),
         );
     }
 

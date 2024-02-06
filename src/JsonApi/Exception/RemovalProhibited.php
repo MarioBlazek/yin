@@ -16,24 +16,24 @@ class RemovalProhibited extends AbstractJsonApiException
 
     public function __construct(string $relationshipName)
     {
-        parent::__construct("Removal of relationship '$relationshipName' is prohibited!", 403);
+        parent::__construct("Removal of relationship '{$relationshipName}' is prohibited!", 403);
         $this->relationshipName = $relationshipName;
+    }
+
+    public function getRelationshipName(): string
+    {
+        return $this->relationshipName;
     }
 
     protected function getErrors(): array
     {
         return [
             Error::create()
-                ->setStatus("403")
-                ->setCode("REMOVAL_PROHIBITED")
-                ->setTitle("Removal is prohibited")
+                ->setStatus('403')
+                ->setCode('REMOVAL_PROHIBITED')
+                ->setTitle('Removal is prohibited')
                 ->setDetail($this->getMessage())
-                ->setSource(ErrorSource::fromPointer("/data/relationships/$this->relationshipName")),
+                ->setSource(ErrorSource::fromPointer("/data/relationships/{$this->relationshipName}")),
         ];
-    }
-
-    public function getRelationshipName(): string
-    {
-        return $this->relationshipName;
     }
 }

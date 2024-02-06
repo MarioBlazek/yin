@@ -47,8 +47,8 @@ class StubResource extends AbstractResource
     protected $relationships;
 
     public function __construct(
-        string $type = "",
-        string $id = "",
+        string $type = '',
+        string $id = '',
         array $meta = [],
         ?ResourceLinks $links = null,
         array $attributes = [],

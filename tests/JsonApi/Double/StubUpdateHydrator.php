@@ -23,17 +23,16 @@ class StubUpdateHydrator
         $this->validationException = $validationException;
     }
 
-    protected function validateType(array $data, ExceptionFactoryInterface $exceptionFactory): void
-    {
-    }
+    protected function validateType(array $data, ExceptionFactoryInterface $exceptionFactory): void {}
 
     /**
      * @param mixed $domainObject
+     *
      * @return mixed|void
      */
     protected function setId($domainObject, string $id)
     {
-        $domainObject["id"] = $id;
+        $domainObject['id'] = $id;
 
         return $domainObject;
     }
@@ -47,6 +46,7 @@ class StubUpdateHydrator
 
     /**
      * @param mixed $domainObject
+     *
      * @return mixed
      */
     protected function hydrateAttributes($domainObject, array $data)
@@ -56,6 +56,7 @@ class StubUpdateHydrator
 
     /**
      * @param mixed $domainObject
+     *
      * @return mixed
      */
     protected function hydrateRelationships($domainObject, array $data, ExceptionFactoryInterface $exceptionFactory)
@@ -73,6 +74,7 @@ class StubUpdateHydrator
 
     /**
      * @param mixed $domainObject
+     *
      * @return mixed
      */
     protected function doHydrateRelationship(

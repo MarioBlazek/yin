@@ -4,100 +4,87 @@ declare(strict_types=1);
 
 namespace WoohooLabs\Yin\Tests\JsonApi\Schema\Error;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use WoohooLabs\Yin\JsonApi\Schema\Error\ErrorSource;
 
 class ErrorSourceTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function createFromPointer(): void
     {
-        $pointer = "/data/attributes/name";
+        $pointer = '/data/attributes/name';
 
-        $errorSource = $this->createErrorSource($pointer, "");
-        $this->assertEquals($errorSource, ErrorSource::fromPointer($pointer));
+        $errorSource = $this->createErrorSource($pointer, '');
+        self::assertSame($errorSource, ErrorSource::fromPointer($pointer));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function createFromParameter(): void
     {
-        $parameter = "name";
+        $parameter = 'name';
 
-        $errorSource = $this->createErrorSource("", $parameter);
-        $this->assertEquals($errorSource, ErrorSource::fromParameter($parameter));
+        $errorSource = $this->createErrorSource('', $parameter);
+        self::assertSame($errorSource, ErrorSource::fromParameter($parameter));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getPointer(): void
     {
-        $pointer = "/data/attributes/name";
+        $pointer = '/data/attributes/name';
 
-        $errorSource = $this->createErrorSource($pointer, "");
-        $this->assertEquals($pointer, $errorSource->getPointer());
+        $errorSource = $this->createErrorSource($pointer, '');
+        self::assertSame($pointer, $errorSource->getPointer());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getParameter(): void
     {
-        $parameter = "name";
+        $parameter = 'name';
 
-        $errorSource = $this->createErrorSource("", $parameter);
-        $this->assertEquals($parameter, $errorSource->getParameter());
+        $errorSource = $this->createErrorSource('', $parameter);
+        self::assertSame($parameter, $errorSource->getParameter());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformWithPointer(): void
     {
-        $pointer = "/data/attributes/name";
+        $pointer = '/data/attributes/name';
 
-        $errorSource = $this->createErrorSource($pointer, "");
+        $errorSource = $this->createErrorSource($pointer, '');
 
         $transformedErrorSource = [
-            "pointer" => "/data/attributes/name",
+            'pointer' => '/data/attributes/name',
         ];
-        $this->assertEquals($transformedErrorSource, $errorSource->transform());
+        self::assertSame($transformedErrorSource, $errorSource->transform());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformWithParameter(): void
     {
-        $parameter = "name";
+        $parameter = 'name';
 
-        $errorSource = $this->createErrorSource("", $parameter);
+        $errorSource = $this->createErrorSource('', $parameter);
 
         $transformedErrorSource = [
-            "parameter" => "name",
+            'parameter' => 'name',
         ];
-        $this->assertEquals($transformedErrorSource, $errorSource->transform());
+        self::assertSame($transformedErrorSource, $errorSource->transform());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function transformWithBothAttributes(): void
     {
-        $pointer = "/data/attributes/name";
-        $parameter = "name";
+        $pointer = '/data/attributes/name';
+        $parameter = 'name';
 
         $errorSource = $this->createErrorSource($pointer, $parameter);
 
         $transformedErrorSource = [
-            "pointer" => "/data/attributes/name",
-            "parameter" => "name",
+            'pointer' => '/data/attributes/name',
+            'parameter' => 'name',
         ];
-        $this->assertEquals($transformedErrorSource, $errorSource->transform());
+        self::assertSame($transformedErrorSource, $errorSource->transform());
     }
 
     private function createErrorSource(string $pointer, string $parameter): ErrorSource

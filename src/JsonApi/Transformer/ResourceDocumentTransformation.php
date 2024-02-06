@@ -11,34 +11,14 @@ use WoohooLabs\Yin\JsonApi\Schema\Document\ResourceDocumentInterface;
 /**
  * @internal
  */
-class ResourceDocumentTransformation extends AbstractDocumentTransformation
+final class ResourceDocumentTransformation extends AbstractDocumentTransformation
 {
-    /**
-     * @var ResourceDocumentInterface
-     */
-    public $document;
+    public string $basePath;
+    public string $requestedRelationshipName;
 
-    /**
-     * @var mixed
-     */
-    public $object;
-
-    /**
-     * @var string
-     */
-    public $basePath;
-
-    /**
-     * @var string
-     */
-    public $requestedRelationshipName;
-
-    /**
-     * @param mixed $object
-     */
     public function __construct(
         ResourceDocumentInterface $document,
-        $object,
+        public $object,
         JsonApiRequestInterface $request,
         string $basePath,
         string $relationpshipName,
@@ -46,7 +26,6 @@ class ResourceDocumentTransformation extends AbstractDocumentTransformation
         ExceptionFactoryInterface $exceptionFactory
     ) {
         parent::__construct($document, $request, $additionalMeta, $exceptionFactory);
-        $this->object = $object;
         $this->basePath = $basePath;
         $this->requestedRelationshipName = $relationpshipName;
     }

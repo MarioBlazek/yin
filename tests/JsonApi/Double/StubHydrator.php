@@ -49,24 +49,19 @@ class StubHydrator extends AbstractHydrator
         string $clientGeneratedId,
         JsonApiRequestInterface $request,
         ExceptionFactoryInterface $exceptionFactory
-    ): void {
-    }
+    ): void {}
 
     protected function generateId(): string
     {
-        return "1";
+        return '1';
     }
 
     /**
-     * @return void
+     * @param mixed $domainObject
      */
-    protected function setId($domainObject, string $id)
-    {
-    }
+    protected function setId($domainObject, string $id) {}
 
-    protected function validateRequest(JsonApiRequestInterface $request): void
-    {
-    }
+    protected function validateRequest(JsonApiRequestInterface $request): void {}
 
     protected function getAttributeHydrator($domainObject): array
     {

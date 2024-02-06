@@ -6,22 +6,22 @@ namespace WoohooLabs\Yin\JsonApi\Schema\Link;
 
 class RelationshipLinks extends AbstractLinks
 {
-    public static function createWithoutBaseUri(?Link $self = null, ?Link $related = null): RelationshipLinks
+    public function __construct(string $baseUri = '', ?Link $self = null, ?Link $related = null)
     {
-        return new RelationshipLinks("", $self, $related);
+        parent::__construct($baseUri, ['self' => $self, 'related' => $related]);
     }
 
-    public static function createWithBaseUri(string $baseUri, ?Link $self = null, ?Link $related = null): RelationshipLinks
+    public static function createWithoutBaseUri(?Link $self = null, ?Link $related = null): self
     {
-        return new RelationshipLinks($baseUri, $self, $related);
+        return new self('', $self, $related);
     }
 
-    public function __construct(string $baseUri = "", ?Link $self = null, ?Link $related = null)
+    public static function createWithBaseUri(string $baseUri, ?Link $self = null, ?Link $related = null): self
     {
-        parent::__construct($baseUri, ["self" => $self, "related" => $related]);
+        return new self($baseUri, $self, $related);
     }
 
-    public function setBaseUri(string $baseUri): RelationshipLinks
+    public function setBaseUri(string $baseUri): self
     {
         $this->baseUri = $baseUri;
 
@@ -30,24 +30,24 @@ class RelationshipLinks extends AbstractLinks
 
     public function getSelf(): ?Link
     {
-        return $this->getLink("self");
+        return $this->getLink('self');
     }
 
-    public function setSelf(?Link $self): RelationshipLinks
+    public function setSelf(?Link $self): self
     {
-        $this->addLink("self", $self);
+        $this->addLink('self', $self);
 
         return $this;
     }
 
     public function getRelated(): ?Link
     {
-        return $this->getLink("related");
+        return $this->getLink('related');
     }
 
-    public function setRelated(?Link $related): RelationshipLinks
+    public function setRelated(?Link $related): self
     {
-        $this->addLink("related", $related);
+        $this->addLink('related', $related);
 
         return $this;
     }

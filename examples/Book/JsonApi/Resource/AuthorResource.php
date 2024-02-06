@@ -23,7 +23,7 @@ class AuthorResource extends AbstractResource
      */
     public function getType($author): string
     {
-        return "authors";
+        return 'authors';
     }
 
     /**
@@ -35,7 +35,7 @@ class AuthorResource extends AbstractResource
      */
     public function getId($author): string
     {
-        return (string) $this->object["id"];
+        return (string) $this->object['id'];
     }
 
     /**
@@ -76,9 +76,7 @@ class AuthorResource extends AbstractResource
     public function getAttributes($author): array
     {
         return [
-            "name" => function () {
-                return $this->object["name"];
-            },
+            'name' => fn () => $this->object['name'],
         ];
     }
 

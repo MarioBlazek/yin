@@ -20,21 +20,21 @@ class PageBasedPagination
      */
     protected $size;
 
-    public static function fromPaginationQueryParams(
-        array $paginationQueryParams,
-        int $defaultPage = 0,
-        int $defaultSize = 0
-    ): PageBasedPagination {
-        return new PageBasedPagination(
-            Utils::getIntegerFromQueryParam($paginationQueryParams, "number", $defaultPage),
-            Utils::getIntegerFromQueryParam($paginationQueryParams, "size", $defaultSize)
-        );
-    }
-
     public function __construct(int $page, int $size)
     {
         $this->page = $page;
         $this->size = $size;
+    }
+
+    public static function fromPaginationQueryParams(
+        array $paginationQueryParams,
+        int $defaultPage = 0,
+        int $defaultSize = 0
+    ): self {
+        return new self(
+            Utils::getIntegerFromQueryParam($paginationQueryParams, 'number', $defaultPage),
+            Utils::getIntegerFromQueryParam($paginationQueryParams, 'size', $defaultSize),
+        );
     }
 
     public function getPage(): int
@@ -55,9 +55,9 @@ class PageBasedPagination
     public static function getPaginationQueryParams(int $page, int $size): array
     {
         return [
-            "page" => [
-                "number" => $page,
-                "size" => $size,
+            'page' => [
+                'number' => $page,
+                'size' => $size,
             ],
         ];
     }

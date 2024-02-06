@@ -4,61 +4,52 @@ declare(strict_types=1);
 
 namespace WoohooLabs\Yin\Tests\JsonApi\Request\Pagination;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use WoohooLabs\Yin\JsonApi\Request\Pagination\FixedCursorBasedPagination;
 
 class FixedCursorBasedPaginationTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function fromPaginationQueryParams(): void
     {
-        $pagination = FixedCursorBasedPagination::fromPaginationQueryParams(["cursor" => "abc"]);
+        $pagination = FixedCursorBasedPagination::fromPaginationQueryParams(['cursor' => 'abc']);
 
-        $this->assertEquals("abc", $pagination->getCursor());
+        self::assertSame('abc', $pagination->getCursor());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function fromMissingPaginationQueryParams(): void
     {
-        $pagination = FixedCursorBasedPagination::fromPaginationQueryParams([], "abc");
+        $pagination = FixedCursorBasedPagination::fromPaginationQueryParams([], 'abc');
 
-        $this->assertEquals("abc", $pagination->getCursor());
+        self::assertSame('abc', $pagination->getCursor());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function fromEmptyPaginationQueryParams(): void
     {
-        $pagination = FixedCursorBasedPagination::fromPaginationQueryParams(["cursor" => ""], "abc");
+        $pagination = FixedCursorBasedPagination::fromPaginationQueryParams(['cursor' => ''], 'abc');
 
-        $this->assertEquals("", $pagination->getCursor());
+        self::assertSame('', $pagination->getCursor());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getCursor(): void
     {
-        $pagination = $this->createPagination("abc");
+        $pagination = $this->createPagination('abc');
 
         $cursor = $pagination->getCursor();
 
-        $this->assertEquals("abc", $cursor);
+        self::assertSame('abc', $cursor);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getPaginationQueryString(): void
     {
-        $queryString = FixedCursorBasedPagination::getPaginationQueryString("abc");
+        $queryString = FixedCursorBasedPagination::getPaginationQueryString('abc');
 
-        $this->assertEquals("page%5Bcursor%5D=abc", $queryString);
+        self::assertSame('page%5Bcursor%5D=abc', $queryString);
     }
 
     private function createPagination(string $cursor): FixedCursorBasedPagination

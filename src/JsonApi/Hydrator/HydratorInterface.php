@@ -12,9 +12,9 @@ use WoohooLabs\Yin\JsonApi\Request\JsonApiRequestInterface;
 interface HydratorInterface
 {
     /**
-     * @param mixed $domainObject
      * @return mixed
+     *
      * @throws ResourceTypeMissing|JsonApiExceptionInterface
      */
-    public function hydrate(JsonApiRequestInterface $request, ExceptionFactoryInterface $exceptionFactory, $domainObject);
+    public function hydrate(JsonApiRequestInterface $request, ExceptionFactoryInterface $exceptionFactory, mixed $domainObject);
 }

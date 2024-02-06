@@ -19,7 +19,7 @@ class ContactResource extends AbstractResource
      */
     public function getType($contact): string
     {
-        return "contacts";
+        return 'contacts';
     }
 
     /**
@@ -31,7 +31,7 @@ class ContactResource extends AbstractResource
      */
     public function getId($contact): string
     {
-        return (string) $contact["id"];
+        return (string) $contact['id'];
     }
 
     /**
@@ -57,7 +57,7 @@ class ContactResource extends AbstractResource
      */
     public function getLinks($contact): ?ResourceLinks
     {
-        return ResourceLinks::createWithoutBaseUri(new Link("/contacts/" . $this->getId($contact)));
+        return ResourceLinks::createWithoutBaseUri(new Link('/contacts/' . $this->getId($contact)));
     }
 
     /**
@@ -78,14 +78,13 @@ class ContactResource extends AbstractResource
      * and they should return the value of the corresponding attribute.
      *
      * @param array $contact
+     *
      * @return callable[]
      */
     public function getAttributes($contact): array
     {
         return [
-            $contact["type"] => function (array $contact) {
-                return $contact["value"];
-            },
+            $contact['type'] => static fn (array $contact) => $contact['value'],
         ];
     }
 
@@ -97,6 +96,7 @@ class ContactResource extends AbstractResource
      * and they should return a new relationship instance (to-one or to-many).
      *
      * @param array $contact
+     *
      * @return callable[]
      */
     public function getRelationships($contact): array

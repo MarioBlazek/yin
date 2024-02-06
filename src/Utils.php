@@ -8,8 +8,6 @@ use function array_merge;
 use function http_build_query;
 use function is_numeric;
 use function parse_str;
-use function strpos;
-use function substr;
 use function urldecode;
 
 class Utils
@@ -27,13 +25,13 @@ class Utils
      */
     public static function getUri(string $uri, string $queryString, array $additionalQueryParams): string
     {
-        $uriQueryStringSeparator = strpos($uri, "?");
+        $uriQueryStringSeparator = mb_strpos($uri, '?');
         if ($uriQueryStringSeparator === false) {
             $uriWithoutQueryString = $uri;
-            $uriQueryString = "";
+            $uriQueryString = '';
         } else {
-            $uriWithoutQueryString = substr($uri, 0, $uriQueryStringSeparator);
-            $uriQueryString = substr($uri, $uriQueryStringSeparator + 1);
+            $uriWithoutQueryString = mb_substr($uri, 0, $uriQueryStringSeparator);
+            $uriQueryString = mb_substr($uri, $uriQueryStringSeparator + 1);
         }
 
         $parsedUriQueryString = [];
@@ -46,6 +44,6 @@ class Utils
 
         $finalQueryString = http_build_query($parsedFinalQueryString);
 
-        return $uriWithoutQueryString . ($finalQueryString === "" ? "" : "?" . $finalQueryString);
+        return $uriWithoutQueryString . ($finalQueryString === '' ? '' : '?' . $finalQueryString);
     }
 }

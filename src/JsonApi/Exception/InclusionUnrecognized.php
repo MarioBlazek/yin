@@ -18,27 +18,27 @@ class InclusionUnrecognized extends AbstractJsonApiException
 
     public function __construct(array $unrecognizedIncludes)
     {
-        parent::__construct("Included paths '" . implode(", ", $unrecognizedIncludes) . "' can't be recognized!", 400);
+        parent::__construct("Included paths '" . implode(', ', $unrecognizedIncludes) . "' can't be recognized!", 400);
         $this->unrecognizedIncludes = $unrecognizedIncludes;
+    }
+
+    public function getUnrecognizedIncludes(): array
+    {
+        return $this->unrecognizedIncludes;
     }
 
     protected function getErrors(): array
     {
         return [
             Error::create()
-                ->setStatus("400")
-                ->setCode("INCLUSION_UNRECOGNIZED")
-                ->setTitle("Inclusion is unrecognized")
+                ->setStatus('400')
+                ->setCode('INCLUSION_UNRECOGNIZED')
+                ->setTitle('Inclusion is unrecognized')
                 ->setDetail(
-                    "Included paths '" . implode(", ", $this->unrecognizedIncludes) .
-                    "' can't be recognized by the endpoint!"
+                    "Included paths '" . implode(', ', $this->unrecognizedIncludes) .
+                    "' can't be recognized by the endpoint!",
                 )
-                ->setSource(ErrorSource::fromParameter("include")),
+                ->setSource(ErrorSource::fromParameter('include')),
         ];
-    }
-
-    public function getUnrecognizedIncludes(): array
-    {
-        return $this->unrecognizedIncludes;
     }
 }

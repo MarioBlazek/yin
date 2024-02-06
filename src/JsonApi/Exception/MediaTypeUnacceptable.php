@@ -20,20 +20,20 @@ class MediaTypeUnacceptable extends AbstractJsonApiException
         $this->mediaTypeName = $mediaTypeName;
     }
 
+    public function getMediaTypeName(): string
+    {
+        return $this->mediaTypeName;
+    }
+
     protected function getErrors(): array
     {
         return [
             Error::create()
-                ->setStatus("406")
-                ->setCode("MEDIA_TYPE_UNACCEPTABLE")
-                ->setTitle("The provided media type is unacceptable")
+                ->setStatus('406')
+                ->setCode('MEDIA_TYPE_UNACCEPTABLE')
+                ->setTitle('The provided media type is unacceptable')
                 ->setDetail($this->getMessage())
-                ->setSource(ErrorSource::fromParameter("accept")),
+                ->setSource(ErrorSource::fromParameter('accept')),
         ];
-    }
-
-    public function getMediaTypeName(): string
-    {
-        return $this->mediaTypeName;
     }
 }

@@ -19,7 +19,7 @@ abstract class AbstractLinks
     /**
      * @param Link[]|null[] $links
      */
-    public function __construct(string $baseUri = "", array $links = [])
+    public function __construct(string $baseUri = '', array $links = [])
     {
         $this->baseUri = $baseUri;
 
@@ -56,6 +56,7 @@ abstract class AbstractLinks
 
     /**
      * @param Link[] $links
+     *
      * @return static
      */
     public function setLinks(array $links)

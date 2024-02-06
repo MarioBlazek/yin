@@ -12,8 +12,8 @@ use WoohooLabs\Yin\JsonApi\Request\JsonApiRequestInterface;
 
 abstract class AbstractHydrator implements HydratorInterface, UpdateRelationshipHydratorInterface
 {
-    use HydratorTrait;
     use CreateHydratorTrait;
+    use HydratorTrait;
     use UpdateHydratorTrait;
 
     /**
@@ -22,15 +22,18 @@ abstract class AbstractHydrator implements HydratorInterface, UpdateRelationship
      * If the request method is POST then the domain object is hydrated
      * as a create. If it is a PATCH request then the domain object is
      * hydrated as an update.
+     *
      * @param mixed $domainObject
+     *
      * @return mixed
+     *
      * @throws ResourceTypeMissing|JsonApiExceptionInterface
      */
     public function hydrate(JsonApiRequestInterface $request, ExceptionFactoryInterface $exceptionFactory, $domainObject)
     {
-        if ($request->getMethod() === "POST") {
+        if ($request->getMethod() === 'POST') {
             $domainObject = $this->hydrateForCreate($request, $exceptionFactory, $domainObject);
-        } elseif ($request->getMethod() === "PATCH") {
+        } elseif ($request->getMethod() === 'PATCH') {
             $domainObject = $this->hydrateForUpdate($request, $exceptionFactory, $domainObject);
         }
 
@@ -41,7 +44,9 @@ abstract class AbstractHydrator implements HydratorInterface, UpdateRelationship
 
     /**
      * @param mixed $domainObject
+     *
      * @return mixed
+     *
      * @throws RelationshipNotExists|JsonApiExceptionInterface
      */
     public function hydrateRelationship(
@@ -49,18 +54,16 @@ abstract class AbstractHydrator implements HydratorInterface, UpdateRelationship
         JsonApiRequestInterface $request,
         ExceptionFactoryInterface $exceptionFactory,
         $domainObject
-    ) {
+    ): mixed {
         return $this->hydrateForRelationshipUpdate($relationship, $request, $exceptionFactory, $domainObject);
     }
 
     /**
      * You can validate the domain object after it has been hydrated from the request.
-     * @param mixed $domainObject
      */
     protected function validateDomainObject(
         JsonApiRequestInterface $request,
         ExceptionFactoryInterface $exceptionFactory,
-        $domainObject
-    ): void {
-    }
+        mixed $domainObject
+    ): void {}
 }
