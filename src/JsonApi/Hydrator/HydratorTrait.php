@@ -134,8 +134,7 @@ trait HydratorTrait
         ExceptionFactoryInterface $exceptionFactory,
         ?array $relationshipData,
         ?array $data
-    ): mixed
-    {
+    ): mixed {
         $relationshipObject = $this->createRelationship(
             $relationshipData,
             $exceptionFactory,
@@ -163,14 +162,13 @@ trait HydratorTrait
      * @throws RelationshipTypeInappropriate|JsonApiExceptionInterface
      */
     protected function getRelationshipHydratorResult(
-        string                               $relationshipName,
-        callable                             $hydrator,
-        mixed                                $domainObject,
+        string $relationshipName,
+        callable $hydrator,
+        mixed $domainObject,
         ToManyRelationship|ToOneRelationship $relationshipObject,
-        ?array                               $data,
-        ExceptionFactoryInterface            $exceptionFactory
-    ): mixed
-    {
+        ?array $data,
+        ExceptionFactoryInterface $exceptionFactory
+    ): mixed {
         // Checking if the current and expected relationship types match
         $relationshipType = $this->getRelationshipType($relationshipObject);
         $expectedRelationshipType = $this->getRelationshipType($this->getArgumentTypeHintFromCallable($hydrator));
@@ -206,7 +204,7 @@ trait HydratorTrait
         return $class->getName();
     }
 
-    protected function getRelationshipType(object|string|null $object): string
+    protected function getRelationshipType(null|object|string $object): string
     {
         if ($object instanceof ToOneRelationship || $object === ToOneRelationship::class) {
             return 'to-one';
@@ -219,7 +217,7 @@ trait HydratorTrait
         return '';
     }
 
-    private function createRelationship(?array $relationship, ExceptionFactoryInterface $exceptionFactory): ToManyRelationship|ToOneRelationship|null
+    private function createRelationship(?array $relationship, ExceptionFactoryInterface $exceptionFactory): null|ToManyRelationship|ToOneRelationship
     {
         if ($relationship === null || array_key_exists('data', $relationship) === false) {
             return null;

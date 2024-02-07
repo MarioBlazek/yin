@@ -18,8 +18,7 @@ class ToOneRelationship extends AbstractRelationship
         ResourceTransformer $resourceTransformer,
         DataInterface $data,
         array $defaultRelationships
-    ): false|array|null
-    {
+    ): null|array|false {
         if ($this->resource === null) {
             return false;
         }

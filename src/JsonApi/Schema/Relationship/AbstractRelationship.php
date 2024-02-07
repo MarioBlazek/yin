@@ -152,7 +152,7 @@ abstract class AbstractRelationship
         ResourceTransformer $resourceTransformer,
         DataInterface $data,
         array $defaultRelationships
-    ): false|array|null;
+    ): null|array|false;
 
     /**
      * @internal

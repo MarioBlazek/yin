@@ -26,8 +26,7 @@ trait CreateHydratorTrait
         JsonApiRequestInterface $request,
         ExceptionFactoryInterface $exceptionFactory,
         mixed $domainObject
-    ): mixed
-    {
+    ): mixed {
         $data = $request->getResource();
         if ($data === null) {
             throw $exceptionFactory->createDataMemberMissingException($request);
@@ -103,8 +102,7 @@ trait CreateHydratorTrait
         array $data,
         JsonApiRequestInterface $request,
         ExceptionFactoryInterface $exceptionFactory
-    ): mixed
-    {
+    ): mixed {
         if (empty($data['id']) === false && is_string($data['id']) === false) {
             throw $exceptionFactory->createResourceIdInvalidException($data['id']);
         }

@@ -19,7 +19,6 @@ class Error
     protected string $detail = '';
     protected ?ErrorSource $source = null;
 
-
     public static function create(): self
     {
         return new self();

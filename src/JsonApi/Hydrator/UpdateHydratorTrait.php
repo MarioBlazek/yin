@@ -27,8 +27,7 @@ trait UpdateHydratorTrait
         JsonApiRequestInterface $request,
         ExceptionFactoryInterface $exceptionFactory,
         mixed $domainObject
-    ): mixed
-    {
+    ): mixed {
         $data = $request->getResource();
         if ($data === null) {
             throw $exceptionFactory->createDataMemberMissingException($request);
