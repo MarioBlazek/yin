@@ -29,9 +29,7 @@ abstract class AbstractRequest
     }
 
     /**
-     * @param string $version HTTP protocol version
-     *
-     * @return static
+     * @param string $version HTTP protocol versionWW
      */
     public function withProtocolVersion(string $version): MessageInterface
     {
@@ -75,8 +73,6 @@ abstract class AbstractRequest
     /**
      * @param string $name case-insensitive header field name
      * @param string|string[] $value header value(s)
-     *
-     * @return static
      */
     public function withHeader(string $name, $value): MessageInterface
     {
@@ -90,8 +86,6 @@ abstract class AbstractRequest
     /**
      * @param string $name case-insensitive header field name to add
      * @param string|string[] $value header value(s)
-     *
-     * @return static
      */
     public function withAddedHeader(string $name, $value): MessageInterface
     {

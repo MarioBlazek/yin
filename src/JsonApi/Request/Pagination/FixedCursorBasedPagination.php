@@ -17,10 +17,7 @@ class FixedCursorBasedPagination
         );
     }
 
-    /**
-     * @return mixed
-     */
-    public function getCursor()
+    public function getCursor(): mixed
     {
         return $this->cursor;
     }

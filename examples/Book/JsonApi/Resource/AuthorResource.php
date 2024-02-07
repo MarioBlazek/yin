@@ -12,16 +12,14 @@ class AuthorResource extends AbstractResource
     /**
      * @var array
      */
-    protected $object;
+    protected mixed $object;
 
     /**
      * Provides information about the "type" member of the current resource.
      *
      * The method returns the type of the current resource.
-     *
-     * @param array $author
      */
-    public function getType($author): string
+    public function getType(mixed $object): string
     {
         return 'authors';
     }
@@ -30,10 +28,8 @@ class AuthorResource extends AbstractResource
      * Provides information about the "id" member of the current resource.
      *
      * The method returns the ID of the current resource which should be a UUID.
-     *
-     * @param array $author
      */
-    public function getId($author): string
+    public function getId(mixed $object): string
     {
         return (string) $this->object['id'];
     }
@@ -46,7 +42,7 @@ class AuthorResource extends AbstractResource
      *
      * @param array $author
      */
-    public function getMeta($author): array
+    public function getMeta(mixed $object): array
     {
         return [];
     }
@@ -59,7 +55,7 @@ class AuthorResource extends AbstractResource
      *
      * @param array $author
      */
-    public function getLinks($author): ?ResourceLinks
+    public function getLinks(mixed $author): ?ResourceLinks
     {
         return null;
     }
@@ -73,7 +69,7 @@ class AuthorResource extends AbstractResource
      *
      * @param array $author
      */
-    public function getAttributes($author): array
+    public function getAttributes(mixed $author): array
     {
         return [
             'name' => fn () => $this->object['name'],
@@ -82,10 +78,8 @@ class AuthorResource extends AbstractResource
 
     /**
      * Returns an array of relationship names which are included in the response by default.
-     *
-     * @param array $author
      */
-    public function getDefaultIncludedRelationships($author): array
+    public function getDefaultIncludedRelationships(mixed $author): array
     {
         return [];
     }
@@ -96,10 +90,8 @@ class AuthorResource extends AbstractResource
      * The method returns an array where the keys signify the relationship names,
      * while the values are callables receiving the domain object as an argument,
      * and they should return a new relationship instance (to-one or to-many).
-     *
-     * @param array $author
      */
-    public function getRelationships($author): array
+    public function getRelationships(mixed $author): array
     {
         return [];
     }

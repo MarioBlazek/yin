@@ -10,30 +10,15 @@ use WoohooLabs\Yin\Utils;
 
 trait FixedCursorBasedPaginationLinkProviderTrait
 {
-    /**
-     * @return mixed
-     */
-    abstract public function getFirstItem();
+    abstract public function getFirstItem(): mixed;
 
-    /**
-     * @return mixed
-     */
-    abstract public function getLastItem();
+    abstract public function getLastItem(): mixed;
 
-    /**
-     * @return mixed
-     */
-    abstract public function getCurrentItem();
+    abstract public function getCurrentItem(): mixed;
 
-    /**
-     * @return mixed
-     */
-    abstract public function getPreviousItem();
+    abstract public function getPreviousItem(): mixed;
 
-    /**
-     * @return mixed
-     */
-    abstract public function getNextItem();
+    abstract public function getNextItem(): mixed;
 
     public function getSelfLink(string $uri, string $queryString): ?Link
     {

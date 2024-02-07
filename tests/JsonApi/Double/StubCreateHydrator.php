@@ -76,7 +76,7 @@ class StubCreateHydrator
      *
      * @return mixed
      */
-    protected function hydrateAttributes($domainObject, array $data)
+    protected function hydrateAttributes($domainObject, array $data): mixed
     {
         return $domainObject;
     }
@@ -86,7 +86,7 @@ class StubCreateHydrator
      *
      * @return mixed
      */
-    protected function hydrateRelationships($domainObject, array $data, ExceptionFactoryInterface $exceptionFactory)
+    protected function hydrateRelationships($domainObject, array $data, ExceptionFactoryInterface $exceptionFactory): mixed
     {
         return $domainObject;
     }

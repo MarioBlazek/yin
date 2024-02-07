@@ -19,30 +19,11 @@ use function implode;
 
 abstract class AbstractResponder
 {
-    /**
-     * @var JsonApiRequestInterface
-     */
-    protected $request;
-
-    /**
-     * @var ResponseInterface
-     */
-    protected $response;
-
-    /**
-     * @var DocumentTransformer
-     */
-    protected $documentTransformer;
-
-    /**
-     * @var ExceptionFactoryInterface
-     */
-    protected $exceptionFactory;
-
-    /**
-     * @var SerializerInterface
-     */
-    protected $serializer;
+    protected JsonApiRequestInterface $request;
+    protected ResponseInterface $response;
+    protected DocumentTransformer $documentTransformer;
+    protected ExceptionFactoryInterface $exceptionFactory;
+    protected SerializerInterface $serializer;
 
     protected function getResourceResponse(
         ResourceDocumentInterface $document,

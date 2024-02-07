@@ -11,7 +11,7 @@ class ErrorLinks extends AbstractLinks
     /**
      * @var Link[]
      */
-    protected $types;
+    protected array $types;
 
     /**
      * @param Link[] $types

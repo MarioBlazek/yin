@@ -34,10 +34,8 @@ class ProfileLinkObject extends LinkObject
 
     /**
      * @internal
-     *
-     * @return array|mixed
      */
-    public function transform(string $baseUri)
+    public function transform(string $baseUri): mixed
     {
         $link = parent::transform($baseUri);
 

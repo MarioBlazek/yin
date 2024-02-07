@@ -15,15 +15,11 @@ abstract class AbstractCreateHydrator implements HydratorInterface
     use HydratorTrait;
 
     /**
-     * @param mixed $domainObject
-     *
-     * @return mixed
-     *
      * @throws ResourceTypeMissing|JsonApiExceptionInterface
      *
      * @see CreateHydratorTrait::hydrateForCreate()
      */
-    public function hydrate(JsonApiRequestInterface $request, ExceptionFactoryInterface $exceptionFactory, $domainObject)
+    public function hydrate(JsonApiRequestInterface $request, ExceptionFactoryInterface $exceptionFactory, mixed $domainObject): mixed
     {
         $domainObject = $this->hydrateForCreate($request, $exceptionFactory, $domainObject);
 

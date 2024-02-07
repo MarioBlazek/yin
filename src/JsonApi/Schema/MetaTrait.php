@@ -6,20 +6,14 @@ namespace WoohooLabs\Yin\JsonApi\Schema;
 
 trait MetaTrait
 {
-    /**
-     * @var array
-     */
-    protected $meta = [];
+    protected array $meta = [];
 
     public function getMeta(): array
     {
         return $this->meta;
     }
 
-    /**
-     * @return $this
-     */
-    public function setMeta(array $meta)
+    public function setMeta(array $meta): static
     {
         $this->meta = $meta;
 

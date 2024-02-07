@@ -20,15 +20,14 @@ trait CreateHydratorTrait
      * The domain object's attributes and relationships are hydrated
      * according to the JSON:API specification.
      *
-     * @return mixed
-     *
      * @throws JsonApiExceptionInterface
      */
     public function hydrateForCreate(
         JsonApiRequestInterface $request,
         ExceptionFactoryInterface $exceptionFactory,
         mixed $domainObject
-    ) {
+    ): mixed
+    {
         $data = $request->getResource();
         if ($data === null) {
             throw $exceptionFactory->createDataMemberMissingException($request);
@@ -91,29 +90,21 @@ trait CreateHydratorTrait
      */
     abstract protected function setId(mixed $domainObject, string $id);
 
-    /**
-     * @return mixed
-     */
-    abstract protected function hydrateAttributes(mixed $domainObject, array $data);
+    abstract protected function hydrateAttributes(mixed $domainObject, array $data): mixed;
 
-    /**
-     * @return mixed
-     */
     abstract protected function hydrateRelationships(
         mixed $domainObject,
         array $data,
         ExceptionFactoryInterface $exceptionFactory
-    );
+    ): mixed;
 
-    /**
-     * @return mixed
-     */
     protected function hydrateIdForCreate(
         mixed $domainObject,
         array $data,
         JsonApiRequestInterface $request,
         ExceptionFactoryInterface $exceptionFactory
-    ) {
+    ): mixed
+    {
         if (empty($data['id']) === false && is_string($data['id']) === false) {
             throw $exceptionFactory->createResourceIdInvalidException($data['id']);
         }

@@ -6,15 +6,12 @@ namespace WoohooLabs\Yin\JsonApi\Schema\Link;
 
 abstract class AbstractLinks
 {
-    /**
-     * @var string
-     */
-    protected $baseUri;
+    protected string $baseUri;
 
     /**
      * @var Link[]|null[]
      */
-    protected $links = [];
+    protected array $links = [];
 
     /**
      * @param Link[]|null[] $links
@@ -56,10 +53,8 @@ abstract class AbstractLinks
 
     /**
      * @param Link[] $links
-     *
-     * @return static
      */
-    public function setLinks(array $links)
+    public function setLinks(array $links): static
     {
         foreach ($links as $rel => $link) {
             $this->addLink($rel, $link);
@@ -68,10 +63,7 @@ abstract class AbstractLinks
         return $this;
     }
 
-    /**
-     * @return static
-     */
-    public function setLink(string $name, ?Link $link)
+    public function setLink(string $name, ?Link $link): static
     {
         $this->addLink($name, $link);
 

@@ -18,10 +18,8 @@ class LinkObject extends Link
 
     /**
      * @internal
-     *
-     * @return array|mixed
      */
-    public function transform(string $baseUri)
+    public function transform(string $baseUri): mixed
     {
         $link = ['href' => parent::transform($baseUri)];
 

@@ -81,10 +81,7 @@ trait HydratorTrait
         }
     }
 
-    /**
-     * @return mixed
-     */
-    protected function hydrateAttributes(mixed $domainObject, array $data)
+    protected function hydrateAttributes(mixed $domainObject, array $data): mixed
     {
         if (empty($data['attributes'])) {
             return $domainObject;
@@ -105,10 +102,7 @@ trait HydratorTrait
         return $domainObject;
     }
 
-    /**
-     * @return mixed
-     */
-    protected function hydrateRelationships(mixed $domainObject, array $data, ExceptionFactoryInterface $exceptionFactory)
+    protected function hydrateRelationships(mixed $domainObject, array $data, ExceptionFactoryInterface $exceptionFactory): mixed
     {
         if (empty($data['relationships'])) {
             return $domainObject;
@@ -133,9 +127,6 @@ trait HydratorTrait
         return $domainObject;
     }
 
-    /**
-     * @return mixed
-     */
     protected function doHydrateRelationship(
         mixed $domainObject,
         string $relationshipName,
@@ -143,7 +134,8 @@ trait HydratorTrait
         ExceptionFactoryInterface $exceptionFactory,
         ?array $relationshipData,
         ?array $data
-    ) {
+    ): mixed
+    {
         $relationshipObject = $this->createRelationship(
             $relationshipData,
             $exceptionFactory,
@@ -168,20 +160,17 @@ trait HydratorTrait
     }
 
     /**
-     * @param ToOneRelationship|ToManyRelationship $relationshipObject
-     *
-     * @return mixed
-     *
      * @throws RelationshipTypeInappropriate|JsonApiExceptionInterface
      */
     protected function getRelationshipHydratorResult(
-        string $relationshipName,
-        callable $hydrator,
-        mixed $domainObject,
-        $relationshipObject,
-        ?array $data,
-        ExceptionFactoryInterface $exceptionFactory
-    ) {
+        string                               $relationshipName,
+        callable                             $hydrator,
+        mixed                                $domainObject,
+        ToManyRelationship|ToOneRelationship $relationshipObject,
+        ?array                               $data,
+        ExceptionFactoryInterface            $exceptionFactory
+    ): mixed
+    {
         // Checking if the current and expected relationship types match
         $relationshipType = $this->getRelationshipType($relationshipObject);
         $expectedRelationshipType = $this->getRelationshipType($this->getArgumentTypeHintFromCallable($hydrator));
@@ -217,10 +206,7 @@ trait HydratorTrait
         return $class->getName();
     }
 
-    /**
-     * @param object|string|null $object
-     */
-    protected function getRelationshipType($object): string
+    protected function getRelationshipType(object|string|null $object): string
     {
         if ($object instanceof ToOneRelationship || $object === ToOneRelationship::class) {
             return 'to-one';
@@ -233,10 +219,7 @@ trait HydratorTrait
         return '';
     }
 
-    /**
-     * @return ToOneRelationship|ToManyRelationship|null
-     */
-    private function createRelationship(?array $relationship, ExceptionFactoryInterface $exceptionFactory)
+    private function createRelationship(?array $relationship, ExceptionFactoryInterface $exceptionFactory): ToManyRelationship|ToOneRelationship|null
     {
         if ($relationship === null || array_key_exists('data', $relationship) === false) {
             return null;

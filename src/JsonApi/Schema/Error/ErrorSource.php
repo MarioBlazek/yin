@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace WoohooLabs\Yin\JsonApi\Schema\Error;
 
-class ErrorSource
+readonly class ErrorSource
 {
-    public function __construct(private readonly string $pointer, private readonly string $parameter) {}
+    public function __construct(private string $pointer, private string $parameter) {}
 
     public static function fromPointer(string $pointer): self
     {

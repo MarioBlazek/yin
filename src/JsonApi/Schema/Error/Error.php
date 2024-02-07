@@ -11,40 +11,14 @@ class Error
 {
     use MetaTrait;
 
-    /**
-     * @var string
-     */
-    protected $id = '';
+    protected string $id = '';
+    protected ?ErrorLinks $links = null;
+    protected string $status = '';
+    protected string $code = '';
+    protected string $title = '';
+    protected string $detail = '';
+    protected ?ErrorSource $source = null;
 
-    /**
-     * @var ErrorLinks|null
-     */
-    protected $links;
-
-    /**
-     * @var string
-     */
-    protected $status = '';
-
-    /**
-     * @var string
-     */
-    protected $code = '';
-
-    /**
-     * @var string
-     */
-    protected $title = '';
-
-    /**
-     * @var string
-     */
-    protected $detail = '';
-
-    /**
-     * @var ErrorSource|null
-     */
-    protected $source;
 
     public static function create(): self
     {

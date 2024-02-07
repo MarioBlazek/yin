@@ -15,10 +15,8 @@ class Link
 
     /**
      * @internal
-     *
-     * @return string|mixed
      */
-    public function transform(string $baseUri)
+    public function transform(string $baseUri): mixed
     {
         return $baseUri . $this->href;
     }

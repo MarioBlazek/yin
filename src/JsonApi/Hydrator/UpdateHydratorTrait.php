@@ -21,15 +21,14 @@ trait UpdateHydratorTrait
      * The domain object's attributes and relationships are hydrated
      * according to the JSON:API specification.
      *
-     * @return mixed
-     *
      * @throws JsonApiExceptionInterface
      */
     public function hydrateForUpdate(
         JsonApiRequestInterface $request,
         ExceptionFactoryInterface $exceptionFactory,
         mixed $domainObject
-    ) {
+    ): mixed
+    {
         $data = $request->getResource();
         if ($data === null) {
             throw $exceptionFactory->createDataMemberMissingException($request);
@@ -44,8 +43,6 @@ trait UpdateHydratorTrait
     }
 
     /**
-     * @return mixed
-     *
      * @throws RelationshipNotExists|JsonApiExceptionInterface
      */
     public function hydrateForRelationshipUpdate(
@@ -53,7 +50,7 @@ trait UpdateHydratorTrait
         JsonApiRequestInterface $request,
         ExceptionFactoryInterface $exceptionFactory,
         mixed $domainObject
-    ) {
+    ): mixed {
         $relationshipHydrators = $this->getRelationshipHydrator($domainObject);
 
         if (isset($relationshipHydrators[$relationship]) === false) {
@@ -98,19 +95,13 @@ trait UpdateHydratorTrait
      */
     abstract protected function setId(mixed $domainObject, string $id);
 
-    /**
-     * @return mixed
-     */
-    abstract protected function hydrateAttributes(mixed $domainObject, array $data);
+    abstract protected function hydrateAttributes(mixed $domainObject, array $data): mixed;
 
-    /**
-     * @return mixed
-     */
     abstract protected function hydrateRelationships(
         mixed $domainObject,
         array $data,
         ExceptionFactoryInterface $exceptionFactory
-    );
+    ): mixed;
 
     /**
      * Provides the relationship hydrators.
@@ -129,9 +120,6 @@ trait UpdateHydratorTrait
      */
     abstract protected function getRelationshipHydrator(mixed $domainObject): array;
 
-    /**
-     * @return mixed
-     */
     abstract protected function doHydrateRelationship(
         mixed $domainObject,
         string $relationshipName,
@@ -139,14 +127,12 @@ trait UpdateHydratorTrait
         ExceptionFactoryInterface $exceptionFactory,
         ?array $relationshipData,
         ?array $data
-    );
+    ): mixed;
 
     /**
-     * @return mixed
-     *
      * @throws JsonApiExceptionInterface
      */
-    protected function hydrateIdForUpdate(mixed $domainObject, array $data, ExceptionFactoryInterface $exceptionFactory)
+    protected function hydrateIdForUpdate(mixed $domainObject, array $data, ExceptionFactoryInterface $exceptionFactory): mixed
     {
         if (empty($data['id'])) {
             throw $exceptionFactory->createResourceIdMissingException();

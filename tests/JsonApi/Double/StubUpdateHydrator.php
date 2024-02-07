@@ -13,10 +13,7 @@ class StubUpdateHydrator
 {
     use UpdateHydratorTrait;
 
-    /**
-     * @var bool
-     */
-    private $validationException;
+    private bool $validationException;
 
     public function __construct(bool $validationException = false)
     {
@@ -26,11 +23,9 @@ class StubUpdateHydrator
     protected function validateType(array $data, ExceptionFactoryInterface $exceptionFactory): void {}
 
     /**
-     * @param mixed $domainObject
-     *
      * @return mixed|void
      */
-    protected function setId($domainObject, string $id)
+    protected function setId(mixed $domainObject, string $id)
     {
         $domainObject['id'] = $id;
 
@@ -49,7 +44,7 @@ class StubUpdateHydrator
      *
      * @return mixed
      */
-    protected function hydrateAttributes($domainObject, array $data)
+    protected function hydrateAttributes(mixed $domainObject, array $data): mixed
     {
         return $domainObject;
     }
@@ -59,7 +54,7 @@ class StubUpdateHydrator
      *
      * @return mixed
      */
-    protected function hydrateRelationships($domainObject, array $data, ExceptionFactoryInterface $exceptionFactory)
+    protected function hydrateRelationships($domainObject, array $data, ExceptionFactoryInterface $exceptionFactory): mixed
     {
         return $domainObject;
     }
@@ -84,7 +79,8 @@ class StubUpdateHydrator
         ExceptionFactoryInterface $exceptionFactory,
         ?array $relationshipData,
         ?array $data
-    ) {
+    ): mixed
+    {
         return $domainObject;
     }
 }

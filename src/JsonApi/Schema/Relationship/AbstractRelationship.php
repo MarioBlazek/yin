@@ -17,25 +17,10 @@ abstract class AbstractRelationship
 {
     use MetaTrait;
 
-    /**
-     * @var RelationshipLinks|null
-     */
-    protected $links;
-
-    /**
-     * @var bool
-     */
-    protected $isCallableData = false;
-
-    /**
-     * @var bool
-     */
-    protected $omitDataWhenNotIncluded = false;
-
-    /**
-     * @var ResourceInterface|null
-     */
-    protected $resource;
+    protected ?RelationshipLinks $links;
+    protected bool $isCallableData = false;
+    protected bool $omitDataWhenNotIncluded = false;
+    protected ?ResourceInterface $resource;
 
     final public function __construct(
         array $meta = [],
@@ -48,34 +33,22 @@ abstract class AbstractRelationship
         $this->resource = $resource;
     }
 
-    /**
-     * @return static
-     */
-    public static function create()
+    public static function create(): static
     {
         return new static();
     }
 
-    /**
-     * @return static
-     */
-    public static function createWithMeta(array $meta)
+    public static function createWithMeta(array $meta): static
     {
         return new static($meta);
     }
 
-    /**
-     * @return static
-     */
-    public static function createWithLinks(?RelationshipLinks $links)
+    public static function createWithLinks(?RelationshipLinks $links): static
     {
         return new static([], $links);
     }
 
-    /**
-     * @return static
-     */
-    public static function createWithData(array $data, ResourceInterface $resource)
+    public static function createWithData(array $data, ResourceInterface $resource): static
     {
         return new static([], null, $data, $resource);
     }
@@ -85,20 +58,14 @@ abstract class AbstractRelationship
         return $this->links;
     }
 
-    /**
-     * @return $this
-     */
-    public function setLinks(RelationshipLinks $links)
+    public function setLinks(RelationshipLinks $links): static
     {
         $this->links = $links;
 
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function setData(mixed $data, ResourceInterface $resource)
+    public function setData(mixed $data, ResourceInterface $resource): static
     {
         $this->data = $data;
         $this->isCallableData = false;
@@ -107,10 +74,7 @@ abstract class AbstractRelationship
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function setDataAsCallable(callable $callableData, ResourceInterface $resource)
+    public function setDataAsCallable(callable $callableData, ResourceInterface $resource): static
     {
         $this->data = $callableData;
         $this->isCallableData = true;
@@ -119,10 +83,7 @@ abstract class AbstractRelationship
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function omitDataWhenNotIncluded()
+    public function omitDataWhenNotIncluded(): static
     {
         $this->omitDataWhenNotIncluded = true;
 
@@ -185,22 +146,18 @@ abstract class AbstractRelationship
 
     /**
      * @internal
-     *
-     * @return array|false|null
      */
     abstract protected function transformData(
         ResourceTransformation $transformation,
         ResourceTransformer $resourceTransformer,
         DataInterface $data,
         array $defaultRelationships
-    );
+    ): false|array|null;
 
     /**
      * @internal
-     *
-     * @return mixed
      */
-    protected function getData()
+    protected function getData(): mixed
     {
         return $this->isCallableData ? call_user_func($this->data, $this) : $this->data;
     }

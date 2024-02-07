@@ -29,7 +29,7 @@ abstract class AbstractHydrator implements HydratorInterface, UpdateRelationship
      *
      * @throws ResourceTypeMissing|JsonApiExceptionInterface
      */
-    public function hydrate(JsonApiRequestInterface $request, ExceptionFactoryInterface $exceptionFactory, $domainObject)
+    public function hydrate(JsonApiRequestInterface $request, ExceptionFactoryInterface $exceptionFactory, mixed $domainObject): mixed
     {
         if ($request->getMethod() === 'POST') {
             $domainObject = $this->hydrateForCreate($request, $exceptionFactory, $domainObject);

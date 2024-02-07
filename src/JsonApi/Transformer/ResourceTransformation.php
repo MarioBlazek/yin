@@ -13,45 +13,14 @@ use WoohooLabs\Yin\JsonApi\Schema\Resource\ResourceInterface;
  */
 final class ResourceTransformation
 {
-    /**
-     * @var ResourceInterface|null
-     */
-    public $resource;
-
-    /**
-     * @var string
-     */
-    public $resourceType;
-
-    /**
-     * @var JsonApiRequestInterface
-     */
-    public $request;
-
-    /**
-     * @var string
-     */
-    public $basePath;
-
-    /**
-     * @var string
-     */
-    public $requestedRelationshipName;
-
-    /**
-     * @var string
-     */
-    public $currentRelationshipName;
-
-    /**
-     * @var ExceptionFactoryInterface
-     */
-    public $exceptionFactory;
-
-    /**
-     * @var array|null
-     */
-    public $result;
+    public ?ResourceInterface $resource;
+    public string $resourceType;
+    public JsonApiRequestInterface $request;
+    public string $basePath;
+    public string $requestedRelationshipName;
+    public string $currentRelationshipName;
+    public ExceptionFactoryInterface $exceptionFactory;
+    public ?array $result;
 
     public function __construct(
         ?ResourceInterface $resource,

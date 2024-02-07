@@ -41,7 +41,7 @@ class Collection implements IteratorAggregate, PaginationLinkProviderInterface
         $this->size = $size;
     }
 
-    public function getIterator(): iterable
+    public function getIterator(): \Traversable
     {
         return $this->items;
     }

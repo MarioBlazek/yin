@@ -10,25 +10,10 @@ use WoohooLabs\Yin\JsonApi\Transformer\ResourceDocumentTransformation;
 
 abstract class AbstractResourceDocument implements ResourceDocumentInterface
 {
-    /**
-     * @var JsonApiRequestInterface
-     */
-    protected $request;
-
-    /**
-     * @var mixed
-     */
-    protected $object;
-
-    /**
-     * @var ExceptionFactoryInterface
-     */
-    protected $exceptionFactory;
-
-    /**
-     * @var array
-     */
-    protected $additionalMeta = [];
+    protected JsonApiRequestInterface $request;
+    protected mixed $object;
+    protected ExceptionFactoryInterface $exceptionFactory;
+    protected array $additionalMeta = [];
 
     /**
      * @internal

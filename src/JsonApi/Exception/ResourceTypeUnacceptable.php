@@ -9,15 +9,8 @@ use WoohooLabs\Yin\JsonApi\Schema\Error\ErrorSource;
 
 class ResourceTypeUnacceptable extends AbstractJsonApiException
 {
-    /**
-     * @var mixed
-     */
-    protected $currentType;
-
-    /**
-     * @var array
-     */
-    protected $acceptedTypes;
+    protected mixed $currentType;
+    protected array $acceptedTypes;
 
     public function __construct(mixed $currentType, array $acceptedTypes)
     {
@@ -38,10 +31,7 @@ class ResourceTypeUnacceptable extends AbstractJsonApiException
         ];
     }
 
-    /**
-     * @return mixed
-     */
-    public function getCurrentType()
+    public function getCurrentType(): mixed
     {
         return $this->currentType;
     }

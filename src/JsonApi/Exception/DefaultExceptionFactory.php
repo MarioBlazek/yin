@@ -78,13 +78,10 @@ class DefaultExceptionFactory implements ExceptionFactoryInterface
         return new QueryParamUnrecognized($queryParamName);
     }
 
-    /**
-     * @param mixed $queryParamValue
-     */
     public function createQueryParamMalformedException(
         JsonApiRequestInterface $request,
         string $queryParamName,
-        $queryParamValue
+        mixed $queryParamValue
     ): JsonApiExceptionInterface {
         return new QueryParamMalformed($queryParamName, $queryParamValue);
     }
@@ -162,10 +159,7 @@ class DefaultExceptionFactory implements ExceptionFactoryInterface
         return new ResourceIdentifierTypeMissing($resourceIdentifier);
     }
 
-    /**
-     * @param mixed $id
-     */
-    public function createResourceIdInvalidException($id): JsonApiExceptionInterface
+    public function createResourceIdInvalidException(mixed $id): JsonApiExceptionInterface
     {
         return new ResourceIdInvalid(gettype($id));
     }
@@ -185,11 +179,8 @@ class DefaultExceptionFactory implements ExceptionFactoryInterface
         return new ResourceNotFound();
     }
 
-    /**
-     * @param mixed $currentType
-     */
     public function createResourceTypeUnacceptableException(
-        $currentType,
+        mixed $currentType,
         array $acceptedTypes
     ): JsonApiExceptionInterface {
         return new ResourceTypeUnacceptable($currentType, $acceptedTypes);

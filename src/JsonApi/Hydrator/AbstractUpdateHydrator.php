@@ -20,13 +20,9 @@ abstract class AbstractUpdateHydrator implements HydratorInterface, UpdateRelati
      *
      * @see UpdateHydratorTrait::hydrateForUpdate()
      *
-     * @param mixed $domainObject
-     *
-     * @return mixed
-     *
      * @throws ResourceTypeMissing|JsonApiExceptionInterface
      */
-    public function hydrate(JsonApiRequestInterface $request, ExceptionFactoryInterface $exceptionFactory, $domainObject)
+    public function hydrate(JsonApiRequestInterface $request, ExceptionFactoryInterface $exceptionFactory, mixed $domainObject): mixed
     {
         $domainObject = $this->hydrateForUpdate($request, $exceptionFactory, $domainObject);
 
@@ -36,10 +32,6 @@ abstract class AbstractUpdateHydrator implements HydratorInterface, UpdateRelati
     }
 
     /**
-     * @param mixed $domainObject
-     *
-     * @return mixed
-     *
      * @throws RelationshipNotExists|JsonApiExceptionInterface
      */
     public function hydrateRelationship(

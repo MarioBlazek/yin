@@ -32,4 +32,6 @@ interface DocumentInterface
      * for the document or null if the member should be omitted from the response.
      */
     public function getLinks(): ?DocumentLinks;
+
+
 }

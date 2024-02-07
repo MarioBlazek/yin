@@ -19,25 +19,13 @@ interface DataInterface
 
     public function hasIncludedResource(string $type, string $id): bool;
 
-    /**
-     * @return $this
-     */
-    public function setPrimaryResources(iterable $transformedResources);
+    public function setPrimaryResources(iterable $transformedResources): static;
 
-    /**
-     * @return $this
-     */
-    public function addPrimaryResource(array $transformedResource);
+    public function addPrimaryResource(array $transformedResource): static;
 
-    /**
-     * @return $this
-     */
-    public function setIncludedResources(iterable $transformedResources);
+    public function setIncludedResources(iterable $transformedResources): static;
 
-    /**
-     * @return $this
-     */
-    public function addIncludedResource(array $transformedResource);
+    public function addIncludedResource(array $transformedResource): static;
 
     public function transformPrimaryData(): ?iterable;
 

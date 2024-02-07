@@ -46,13 +46,10 @@ interface ExceptionFactoryInterface
         string $queryParamName
     ): JsonApiExceptionInterface;
 
-    /**
-     * @param mixed $queryParamValue
-     */
     public function createQueryParamMalformedException(
         JsonApiRequestInterface $request,
         string $queryParamName,
-        $queryParamValue
+        mixed $queryParamValue
     ): JsonApiExceptionInterface;
 
     public function createRequiredTopLevelMembersMissingException(JsonApiRequestInterface $request): JsonApiExceptionInterface;
@@ -91,10 +88,7 @@ interface ExceptionFactoryInterface
 
     public function createResourceIdentifierTypeMissingException(array $resourceIdentifier): JsonApiExceptionInterface;
 
-    /**
-     * @param mixed $id
-     */
-    public function createResourceIdInvalidException($id): JsonApiExceptionInterface;
+    public function createResourceIdInvalidException(mixed $id): JsonApiExceptionInterface;
 
     public function createResourceIdMissingException(): JsonApiExceptionInterface;
 
@@ -102,10 +96,7 @@ interface ExceptionFactoryInterface
 
     public function createResourceTypeMissingException(): JsonApiExceptionInterface;
 
-    /**
-     * @param mixed $currentType
-     */
-    public function createResourceTypeUnacceptableException($currentType, array $acceptedTypes): JsonApiExceptionInterface;
+    public function createResourceTypeUnacceptableException(mixed $currentType, array $acceptedTypes): JsonApiExceptionInterface;
 
     public function createResponseBodyInvalidJsonException(
         ResponseInterface $response,

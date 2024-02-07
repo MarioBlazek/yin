@@ -54,7 +54,7 @@ class StubFixedCursorBasedPaginationProvider
     /**
      * @return mixed
      */
-    public function getFirstItem()
+    public function getFirstItem(): mixed
     {
         return $this->firstItem;
     }
@@ -62,7 +62,7 @@ class StubFixedCursorBasedPaginationProvider
     /**
      * @return mixed
      */
-    public function getLastItem()
+    public function getLastItem(): mixed
     {
         return $this->lastItem;
     }
@@ -70,7 +70,7 @@ class StubFixedCursorBasedPaginationProvider
     /**
      * @return mixed
      */
-    public function getCurrentItem()
+    public function getCurrentItem(): mixed
     {
         return $this->currentItem;
     }
@@ -78,7 +78,7 @@ class StubFixedCursorBasedPaginationProvider
     /**
      * @return mixed
      */
-    public function getPreviousItem()
+    public function getPreviousItem(): mixed
     {
         return $this->previousItem;
     }
@@ -86,7 +86,7 @@ class StubFixedCursorBasedPaginationProvider
     /**
      * @return mixed
      */
-    public function getNextItem()
+    public function getNextItem(): mixed
     {
         return $this->nextItem;
     }

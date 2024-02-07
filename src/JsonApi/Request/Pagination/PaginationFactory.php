@@ -6,9 +6,9 @@ namespace WoohooLabs\Yin\JsonApi\Request\Pagination;
 
 use WoohooLabs\Yin\JsonApi\Request\JsonApiRequestInterface;
 
-class PaginationFactory
+readonly class PaginationFactory
 {
-    public function __construct(private readonly JsonApiRequestInterface $request) {}
+    public function __construct(private JsonApiRequestInterface $request) {}
 
     /**
      * Returns a FixedPageBasedPagination class in order to be used for fixed page-based pagination.

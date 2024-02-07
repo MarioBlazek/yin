@@ -71,10 +71,8 @@ interface ResourceInterface
 
     /**
      * @internal
-     *
-     * @param mixed $object
      */
-    public function initializeTransformation(JsonApiRequestInterface $request, $object, ExceptionFactoryInterface $exceptionFactory): void;
+    public function initializeTransformation(JsonApiRequestInterface $request, mixed $object, ExceptionFactoryInterface $exceptionFactory): void;
 
     /**
      * @internal

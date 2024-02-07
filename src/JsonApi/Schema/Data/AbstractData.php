@@ -11,20 +11,9 @@ use function array_values;
  */
 abstract class AbstractData implements DataInterface
 {
-    /**
-     * @var array
-     */
-    protected $resources = [];
-
-    /**
-     * @var array
-     */
-    protected $primaryKeys = [];
-
-    /**
-     * @var array
-     */
-    protected $includedKeys = [];
+    protected array $resources = [];
+    protected array $primaryKeys = [];
+    protected array $includedKeys = [];
 
     public function getResource(string $type, string $id): ?array
     {
@@ -51,10 +40,7 @@ abstract class AbstractData implements DataInterface
         return isset($this->includedKeys["{$type}.{$id}"]);
     }
 
-    /**
-     * @return $this
-     */
-    public function setPrimaryResources(iterable $transformedResources)
+    public function setPrimaryResources(iterable $transformedResources): static
     {
         $this->primaryKeys = [];
         foreach ($transformedResources as $resource) {
@@ -64,10 +50,7 @@ abstract class AbstractData implements DataInterface
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function addPrimaryResource(array $transformedResource = [])
+    public function addPrimaryResource(array $transformedResource = []): static
     {
         $type = $transformedResource['type'];
         $id = $transformedResource['id'];
@@ -80,10 +63,7 @@ abstract class AbstractData implements DataInterface
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function setIncludedResources(iterable $transformedResources)
+    public function setIncludedResources(iterable $transformedResources): static
     {
         $this->includedKeys = [];
         foreach ($transformedResources as $resource) {
@@ -93,10 +73,7 @@ abstract class AbstractData implements DataInterface
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function addIncludedResource(array $transformedResource)
+    public function addIncludedResource(array $transformedResource): static
     {
         if ($this->hasPrimaryResource($transformedResource['type'], $transformedResource['id']) === false) {
             $this->addResourceToIncludedData($transformedResource);

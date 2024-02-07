@@ -10,10 +10,7 @@ use function http_build_query;
 
 class FixedPageBasedPagination
 {
-    /**
-     * @var int
-     */
-    protected $page;
+    protected int $page;
 
     public function __construct(int $page)
     {

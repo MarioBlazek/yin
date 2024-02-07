@@ -14,7 +14,7 @@ abstract class AbstractErrorDocument implements ErrorDocumentInterface
     /**
      * @var Error[]
      */
-    protected $errors = [];
+    protected array $errors = [];
 
     /**
      * @return Error[]
@@ -29,7 +29,7 @@ abstract class AbstractErrorDocument implements ErrorDocumentInterface
      *
      * @return $this
      */
-    public function addError(Error $error)
+    public function addError(Error $error): static
     {
         $this->errors[] = $error;
 
