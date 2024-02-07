@@ -27,6 +27,10 @@ use function explode;
 use function in_array;
 use function is_array;
 use function is_string;
+use function mb_strlen;
+use function mb_strpos;
+use function mb_strtolower;
+use function mb_substr;
 use function preg_match;
 use function trim;
 

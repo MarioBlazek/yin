@@ -7,6 +7,8 @@ namespace WoohooLabs\Yin;
 use function array_merge;
 use function http_build_query;
 use function is_numeric;
+use function mb_strpos;
+use function mb_substr;
 use function parse_str;
 use function urldecode;
 

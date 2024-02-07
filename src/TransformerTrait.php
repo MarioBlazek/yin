@@ -33,7 +33,7 @@ trait TransformerTrait
      */
     public function toIso8601Date(DateTimeInterface $dateTime, ?DateTimeZone $displayedTimeZone = null): string
     {
-        if ($displayedTimeZone !== null && ($dateTime instanceof \DateTimeImmutable || $dateTime instanceof DateTimeImmutable)) {
+        if ($displayedTimeZone !== null && ($dateTime instanceof DateTimeImmutable || $dateTime instanceof DateTimeImmutable)) {
             $dateTime = $dateTime->setTimezone($displayedTimeZone);
         }
 
@@ -47,7 +47,7 @@ trait TransformerTrait
      */
     public function toIso8601DateTime(DateTimeInterface $dateTime, ?DateTimeZone $displayedTimeZone = null): string
     {
-        if ($displayedTimeZone !== null && ($dateTime instanceof \DateTimeImmutable || $dateTime instanceof DateTimeImmutable)) {
+        if ($displayedTimeZone !== null && ($dateTime instanceof DateTimeImmutable || $dateTime instanceof DateTimeImmutable)) {
             $dateTime = $dateTime->setTimezone($displayedTimeZone);
         }
 
@@ -59,7 +59,7 @@ trait TransformerTrait
      */
     public function fromSqlToIso8601Time(string $string, ?DateTimeZone $displayedTimeZone = null): string
     {
-        $dateTime = \DateTimeImmutable::createFromFormat(
+        $dateTime = DateTimeImmutable::createFromFormat(
             'Y-m-d H:i:s',
             $string,
             $displayedTimeZone,
